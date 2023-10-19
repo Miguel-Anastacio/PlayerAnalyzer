@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{20b90ce4-7fcb-4731-b9a0-075f875de82d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources">
+      <UniqueIdentifier>{f18ab499-84e1-499f-8eff-9754361e0e52}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="sources\Headers">
+      <UniqueIdentifier>{324f0429-9ddd-4e3d-9782-444d6fefab2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Cpp">
+      <UniqueIdentifier>{37d55a1d-815d-41c6-9dcb-01a36b58edd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Headers\ImguiGraphicsAPI">
+      <UniqueIdentifier>{b3965df5-5a65-4b92-b8de-93798a981e8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Headers\UI">
+      <UniqueIdentifier>{2d51ebda-a1d5-4860-bfb3-70ce62e27acf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Cpp\UI">
+      <UniqueIdentifier>{f476a44b-da7f-42ba-8fd6-d8083c2bc1e5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\imgui.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\imgui_demo.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\imgui_draw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\imgui_tables.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\imgui_widgets.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\backends\imgui_impl_glfw.cpp">
+      <Filter>sources\Headers\ImguiGraphicsAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\backends\imgui_impl_opengl3.cpp">
+      <Filter>sources\Headers\ImguiGraphicsAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>sources\Cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Database.cpp">
+      <Filter>sources\Cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="RoleAnalysis.cpp">
+      <Filter>sources\Cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel.cpp">
+      <Filter>sources\Cpp\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="FileUploader.cpp">
+      <Filter>sources\Cpp\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerUploadText.cpp">
+      <Filter>sources\Cpp\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerAttributesPanel.cpp">
+      <Filter>sources\Cpp\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerUploadFile.cpp">
+      <Filter>sources\Cpp\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="RoleEfficiencyPanel.cpp">
+      <Filter>sources\Cpp\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="RoleEditor.cpp">
+      <Filter>sources\Cpp\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="RoleSelector.cpp">
+      <Filter>sources\Cpp\UI</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\imconfig.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\imgui.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\imgui_internal.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\backends\imgui_impl_glfw.h">
+      <Filter>sources\Headers\ImguiGraphicsAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\backends\imgui_impl_opengl3.h">
+      <Filter>sources\Headers\ImguiGraphicsAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\backends\imgui_impl_opengl3_loader.h">
+      <Filter>sources\Headers\ImguiGraphicsAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>sources\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Define.h">
+      <Filter>sources\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Database.h">
+      <Filter>sources\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UI.hpp">
+      <Filter>sources\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="RoleAnalysis.h">
+      <Filter>sources\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>sources\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="boilerplate.h">
+      <Filter>sources\Headers\ImguiGraphicsAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="glfw_callbacks.hpp">
+      <Filter>sources\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="File.h">
+      <Filter>sources\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPanel.h">
+      <Filter>sources\Headers\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="FileUploader.h">
+      <Filter>sources\Headers\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerUploadText.h">
+      <Filter>sources\Headers\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerAttributesPanel.h">
+      <Filter>sources\Headers\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerUploadFile.h">
+      <Filter>sources\Headers\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="RoleEfficiencyPanel.h">
+      <Filter>sources\Headers\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="RoleEditor.h">
+      <Filter>sources\Headers\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="RoleSelector.h">
+      <Filter>sources\Headers\UI</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\README.txt" />
+    <None Include="..\..\misc\debuggers\imgui.natvis">
+      <Filter>imgui</Filter>
+    </None>
+    <None Include="..\..\misc\debuggers\imgui.natstepfilter">
+      <Filter>imgui</Filter>
+    </None>
+  </ItemGroup>
+</Project>
