@@ -30,9 +30,10 @@ void RoleEditor::RenderPanel()
 
 
             RenderAllAttributes();
-
             ImGui::EndTable();
         }
+
+        RenderAttributeSelected(AttributeSelected);
     }
     ImGui::End();
 
@@ -78,9 +79,10 @@ void RoleEditor::BuildAllAttributesArray()
 
 void RoleEditor::RenderAllAttributes()
 {
+
     int Column = 0;
     ImGui::TableSetColumnIndex(Column);
-    for (const auto& att : AllAttributesSorted)
+    for (auto& att : AllAttributesSorted)
     {
         bool RoleHasDataAboutThisAttribute = false;
         float weight = 0.0;
@@ -94,7 +96,7 @@ void RoleEditor::RenderAllAttributes()
                 break;
             }
         }
-        int index = ImGui::TableGetColumnIndex();
+
 
 
         // no data so just use the default
@@ -102,10 +104,13 @@ void RoleEditor::RenderAllAttributes()
         {
             ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, IM_COL32(0, 0, 0, 0));
             //ImGui::Text("%s", att.Name.c_str());
-            if (ImGui::BeginMenu((att.Name.c_str())))
+            if (ImGui::Button((att.Name.c_str())))
             {
-                ImGui::Text("Remove Item");
-                ImGui::EndMenu();
+                //ImGui::Text("Remove Item");
+                AttributeSelected = &att;
+                //ImGui::EndMenu();
+
+
             }
             ImGui::TableNextColumn();
             ImGui::Text("%.1f", att.Weight);
@@ -114,7 +119,10 @@ void RoleEditor::RenderAllAttributes()
         {
             ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, IM_COL32(0, 255, 0, 255));
 
-            ImGui::Button(att.Name.c_str());
+            if (ImGui::Button(att.Name.c_str()))
+            {
+                AttributeSelected = &att;
+            }
 
             ImGui::TableNextColumn();
             ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, IM_COL32(0, 255, 0, 255));
@@ -123,4 +131,47 @@ void RoleEditor::RenderAllAttributes()
         }
         ImGui::TableNextColumn();
     }
+}
+
+void RoleEditor::RenderAttributeSelected(AttributeWeight* attribute)
+{
+    if (attribute == NULL)
+        return;
+
+    // evaluate weight
+    if (attribute->Weight > 0)
+        AttributeSelectedIsInUse = true;
+  
+    ImGui::Text("AttributeSelected : %-25s", attribute->Name.c_str());
+    ImGui::SameLine();
+    if (ImGui::Checkbox("Use", &AttributeSelectedIsInUse))
+    {
+
+    }
+    ImGui::SameLine();
+    ImGui::Text("%.2f", attribute->Weight);
+    ImGui::SameLine();
+    ImGui::InputFloat("New Weight", &attribute->Weight);
+
+    // if weight is > 0
+    if (attribute->Weight > 0 && AttributeSelectedIsInUse)
+    {
+        bool isPresent = false;
+        // check if it is present in the current role
+        for (auto& att : CurrentRole->Attributes)
+        {
+            if (att.Name == attribute->Name)
+            {
+                att.Weight = attribute->Weight;
+                isPresent = true;
+                break;
+            }
+        }
+        if (!isPresent)
+        {
+            CurrentRole->Attributes.push_back(*attribute);
+     
+        }
+    }
+  
 }

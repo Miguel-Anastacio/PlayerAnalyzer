@@ -188,6 +188,8 @@ struct AttributeWeight
 
     AttributeWeight(std::string name, float value) : Name(name), Weight(value) {
     }
+
+    AttributeWeight() {};
 };
 
 

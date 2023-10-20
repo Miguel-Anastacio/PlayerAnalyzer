@@ -1,8 +1,10 @@
 #pragma once
 #include "UIPanel.h"
 #include <vector>
+#include<memory>
 struct Role;
 struct AttributeWeight;
+
 class RoleEditor : public UIPanel
 {
 public:
@@ -12,6 +14,10 @@ public:
 protected:
     void BuildAllAttributesArray();
     void RenderAllAttributes();
+
+    bool AttributeSelectedIsInUse = false;
+    AttributeWeight* AttributeSelected = NULL;
+    void RenderAttributeSelected(AttributeWeight* attribute);
 
     std::vector<AttributeWeight> AllAttributesSorted;
     Role* CurrentRole = NULL;
