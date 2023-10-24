@@ -23,6 +23,12 @@
     <Filter Include="sources\Cpp\UI">
       <UniqueIdentifier>{f476a44b-da7f-42ba-8fd6-d8083c2bc1e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Headers\States">
+      <UniqueIdentifier>{15d8f399-aeee-496a-ab5a-1778358ae837}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Cpp\States">
+      <UniqueIdentifier>{0b94a23a-ec31-4997-87e2-6ec046f3f18a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -81,6 +87,9 @@
     </ClCompile>
     <ClCompile Include="RoleSelector.cpp">
       <Filter>sources\Cpp\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomRoleLoader.cpp">
+      <Filter>sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +162,8 @@
     <ClInclude Include="RoleSelector.h">
       <Filter>sources\Headers\UI</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerAnalyzerApp.hpp" />
+    <ClInclude Include="CustomRoleLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.txt" />

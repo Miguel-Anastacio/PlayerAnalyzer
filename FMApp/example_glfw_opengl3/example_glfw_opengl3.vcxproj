@@ -108,6 +108,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..;..\..\backends;..\libs\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -147,6 +148,7 @@
       <AdditionalIncludeDirectories>..\..;..\..\backends;..\libs\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -167,6 +169,7 @@
     <ClCompile Include="..\..\imgui_widgets.cpp" />
     <ClCompile Include="..\..\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="..\..\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="CustomRoleLoader.cpp" />
     <ClCompile Include="Database.cpp" />
     <ClCompile Include="FileUploader.cpp" />
     <ClCompile Include="PlayerAttributesPanel.cpp" />
@@ -188,10 +191,12 @@
     <ClInclude Include="..\..\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="..\..\backends\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="boilerplate.h" />
+    <ClInclude Include="CustomRoleLoader.h" />
     <ClInclude Include="Database.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="FileUploader.h" />
+    <ClInclude Include="PlayerAnalyzerApp.hpp" />
     <ClInclude Include="PlayerAttributesPanel.h" />
     <ClInclude Include="PlayerUploadFile.h" />
     <ClInclude Include="PlayerUploadText.h" />

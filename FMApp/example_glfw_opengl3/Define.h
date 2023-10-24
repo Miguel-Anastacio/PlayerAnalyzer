@@ -5,6 +5,7 @@
 #include <sstream>
 #include <map>
 #include <vector>
+#include <functional>
 const std::vector<std::string> AttributesNames = { "Acceleration",
                                                 "Aggression",
                                                 "Agility",
@@ -94,9 +95,16 @@ enum AttributeType
 
 struct Attribute
 {
+    uint64_t ID = 0;
     int Value = 0;
     std::string Name = "Null";
     AttributeType Type;
+
+    void HashAttribute()
+    {
+        ID = std::hash<std::string>{}(Name);
+    }
+
     void ClampValue()
     {
         if (Value > 20)
@@ -157,9 +165,15 @@ enum RoleType
 
 struct AttributeWeight
 {
+    uint64_t ID = 0;
     std::string Name = "Default";
     float Weight = 0.0f;
     AttributeType Type;
+
+    void HashAttribute()
+    {
+        ID = std::hash<std::string>{}(Name);
+    }
 
     void AssignType(std::string name)
     {
@@ -186,7 +200,10 @@ struct AttributeWeight
         }
     }
 
+
     AttributeWeight(std::string name, float value) : Name(name), Weight(value) {
+        ID = std::hash<std::string>{}(Name);
+        AssignType(name);
     }
 
     AttributeWeight() {};
@@ -195,6 +212,7 @@ struct AttributeWeight
 
 struct Role
 {
+    uint64_t ID = 0;
     std::string Type = "Default";
     RoleType TypeEnum;
     std::vector<AttributeWeight> Attributes;
@@ -203,6 +221,55 @@ struct Role
 
     float TotalWeight = 0;
 
+    void HashRole()
+    {
+        ID = std::hash<std::string>{}(Name);
+    }
+
+    bool IsAttributePartOfRole(const std::string& name)
+    {
+        for (const auto& att : Attributes)
+        {
+            if (att.Name == name)
+                return true;
+        }
+        return false;
+    }
+    bool IsAttributePartOfRole(const uint64_t& id)
+    {
+        for (const auto& att : Attributes)
+        {
+            if (att.ID == id)
+                return true;
+        }
+        return false;
+    }
+
+    int GetAttributeIndex(const std::string& name)
+    {
+        int i = 0;
+        for (const auto& att : Attributes)
+        {
+            if (att.Name == name)
+                return i;
+            i++;
+        }
+
+        return -1;
+    }
+
+    int GetAttributeIndex(const uint64_t& id)
+    {
+        int i = 0;
+        for (const auto& att : Attributes)
+        {
+            if (att.ID == id)
+                return i;
+            i++;
+        }
+
+        return -1;
+    }
 
     void SetType(const std::string& type)
     {
@@ -231,17 +298,33 @@ struct Role
         Attributes.emplace_back(name, weight);
         TotalWeight += weight;
     }
+
+    void CalculateTotalWeight()
+    {
+        TotalWeight = 0;
+        for (const auto& att : Attributes)
+        {
+            TotalWeight += att.Weight;
+        }
+    }
 };
 
 
 struct RoleEfficiency
 {
+    uint64_t ID = 0;
     std::string RoleName = "Default";
     float Value = 0;
+    void HashRole()
+    {
+        ID = std::hash<std::string>{}(RoleName);
+    }
 
     RoleEfficiency(std::string name, float value) : RoleName(name), Value(value) {
+        HashRole();
     }
     RoleEfficiency() {
+        HashRole();
     }
 
 };

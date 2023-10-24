@@ -1,6 +1,7 @@
 #pragma once
 #include <fstream>
 #include <iostream>
+#include <filesystem>
 #include <list>
 #include "json.hpp"
 
@@ -14,4 +15,8 @@ void PrintArrayOfRoles(const std::vector<Role>& AllPlayerRoles);
 
 void CleanUpDatabase(std::vector<Role>& AllPlayerRoles);
 
-void WriteDatabaseFile(const std::vector<Role>& AllPlayerRoles);
+void WriteRoleWeightsFile(const Role& AllPlayerRoles, const std::string& fileName);
+
+void UpdateRoleFromCustomFile(std::vector<Role>& AllRoles, const std::string& fileName);
+
+

@@ -17,9 +17,15 @@ protected:
 
     bool AttributeSelectedIsInUse = false;
     AttributeWeight* AttributeSelected = NULL;
-    void RenderAttributeSelected(AttributeWeight* attribute);
+    void RenderAttributeFromVector(std::vector<AttributeWeight>& vector, int index);
+    void RenderAttributeTableMember(AttributeWeight& att, const bool& highlight = false);
+    void RenderAttributeSelected(const AttributeWeight* attribute);
 
-    std::vector<AttributeWeight> AllAttributesSorted;
+    std::vector<AttributeWeight> TechnicalAttributes;
+    std::vector<AttributeWeight> MentalAttributes;
+    std::vector<AttributeWeight> PhysicalAttributes;
     Role* CurrentRole = NULL;
+
+    bool saveWindow = false;
 };
 

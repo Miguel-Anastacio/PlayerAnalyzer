@@ -52,7 +52,7 @@ float RoleAnalysis::CalculateRoleEfficiency(Role role, const std::vector<Attribu
     {
         for (auto& playerAttribute : playerAtt)
         {
-            if (att.Name == playerAttribute.Name)
+            if (att.ID == playerAttribute.ID)
             {
                 //std::cout << temp.Name << " " << temp.Value << std::endl;
 

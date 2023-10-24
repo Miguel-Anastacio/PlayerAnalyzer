@@ -20,6 +20,7 @@ public:
     RoleEfficiency GetBestPlayerRole();
 
     void CalculateEfficiencyAllRoles(const std::vector<Role>& AllRoles);
+    void UpdateEfficiency(const std::vector<Role>& AllRoles);
 
     std::vector <RoleEfficiency> GetDefensiveRoles();
     std::vector <RoleEfficiency> GetMidfieldRoles();

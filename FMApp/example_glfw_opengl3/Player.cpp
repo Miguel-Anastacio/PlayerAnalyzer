@@ -95,6 +95,7 @@ bool Player::ReadAttributesFromFile(std::string FileName)
                     std::string tempValueString = line.substr(startValuePos, endValuePos - startValuePos);
                     try {
                         aux.Value = std::stoi(tempValueString);
+                        aux.HashAttribute();
                         Attributes.push_back(aux);
                     }
                     catch (std::invalid_argument const& ex) {
@@ -179,8 +180,65 @@ void Player::CalculateEfficiencyAllRoles(const std::vector<Role>& AllRoles)
         default:
             break;
         }
+//        std::cout << Name << " efficiencey at " << it.Name << ": " << efficiency << std::endl;
+    }
+        int a = 2;
+}
 
-        std::cout << Name << " efficiencey at " << it.Name << ": " << efficiency << std::endl;
+void Player::UpdateEfficiency(const std::vector<Role>& AllRoles)
+{
+    for (auto& it : AllRoles)
+    {
+        float efficiency = RoleAnalysis::CalculateRoleEfficiency(it, Attributes);
+
+        if (BestPlayerRole == nullptr)
+        {
+            BestPlayerRole = std::make_shared<RoleEfficiency>();
+        }
+        if (efficiency > BestPlayerRole->Value)
+        {
+            BestPlayerRole->RoleName = it.Name;
+            BestPlayerRole->Value = efficiency;
+        }
+
+
+
+        switch (it.TypeEnum)
+        {
+        case Defensive:
+            for (auto& defEfficiency : DefensiveRoles)
+            {
+                if (it.ID == defEfficiency.ID)
+                {
+                    defEfficiency.Value = efficiency;
+                    break;
+                }
+            }
+            break;
+        case Midfield:
+            for (auto& midEfficiency : MidfieldRoles)
+            {
+                if (it.ID == midEfficiency.ID)
+                {
+                    midEfficiency.Value = efficiency;
+                    break;
+                }
+            }
+            break;
+        case Attacking:
+            for (auto& attackEfficiency : AttackingRoles)
+            {
+                if (it.ID == attackEfficiency.ID)
+                {
+                    attackEfficiency.Value = efficiency;
+                    break;
+                }
+            }
+            break;
+        default:
+            break;
+        }
+
     }
 }
 

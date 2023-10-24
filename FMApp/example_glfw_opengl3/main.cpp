@@ -10,8 +10,8 @@
 
 #include "Player.h"
 #include "Database.h"
+#include "PlayerAnalyzerApp.hpp"
 //#include "UI.hpp"
-
 
 
 int IsPlayerAlreadyLoaded(std::string name, const std::vector<std::shared_ptr<Player>>& allPlayers)
@@ -61,7 +61,7 @@ int main(int, char**)
 #endif
 
     // Create window with graphics context
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+OpenGL3 example", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "Player Analyzer", nullptr, nullptr);
     if (window == nullptr)
         return 1;
     glfwMakeContextCurrent(window);
@@ -122,11 +122,8 @@ int main(int, char**)
     std::shared_ptr<Player> ActivePlayer;
 
 
-    std::vector<Role>AllRoles = BuildRoleDatabase();
-    CleanUpDatabase(AllRoles);
-    PrintArrayOfRoles(AllRoles);
 
-    
+
     glfwSetDropCallback(window, Callback::DragAndDropCallback);
     bool state = true;
 
@@ -139,10 +136,14 @@ int main(int, char**)
     RoleEditor RoleEditorScreen(false, false, true, std::string("Role Editor"), true);
     RoleSelector RoleSelectorScreen(false, false, true, std::string("Role Selector"), true);
 
-    RoleSelectorScreen.SetRoleEditor(&RoleEditorScreen);
-    RoleSelectorScreen.AllRoles = AllRoles;
-    //AppInterface::SetupEmptyAttributes();
+    CustomRoleLoader CustomRoleLoaderScreen(false, false, true, std::string("Load Files"), true);
 
+    RoleSelectorScreen.SetRoleEditor(&RoleEditorScreen);
+    RoleSelectorScreen.AllRoles = BuildRoleDatabase();
+
+    CleanUpDatabase(RoleSelectorScreen.AllRoles);
+    std::vector<Role> OriginalDB = RoleSelectorScreen.AllRoles;
+    //PrintArrayOfRoles(AllRoles);
 
     // Main loop
 #ifdef __EMSCRIPTEN__
@@ -165,17 +166,10 @@ int main(int, char**)
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window)
-            //ImGui::ShowDemoWindow(&show_demo_window);
-
-        
-
+      
         // our application
-        //AppInterface::RenderFileInsertText(ActivePlayer);
-        //ImGui::SetNextWindowSize(ImVec2(display_w, display_h));
-        //ImGui::SetNextWindowPos(ImVec2(0, 0));
+
+        ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
         if (ImGui::BeginMainMenuBar())
         {
@@ -184,60 +178,72 @@ int main(int, char**)
             if (ImGui::Button("Main Screen"))
             {
                 //ShowExampleMenuFile();
-                state = true;
+                App::SwitchState(App::MAIN_MENU, RoleSelectorScreen.AllRoles, ActivePlayer);
                 //ImGui::EndMenu();
             }
             if (ImGui::Button("Edit Players Roles"))
             {
-                state = false;
- 
+                App::SwitchState(App::ROLE_EDITOR, RoleSelectorScreen.AllRoles);
+
+            }
+            if (ImGui::Button("Load Custom Player Roles"))
+            {
+                App::SwitchState(App::LOAD_FILES, RoleSelectorScreen.AllRoles, NULL, &CustomRoleLoaderScreen);
+
             }
             style = ImGui::GetStyle();
             style.Colors[ImGuiCol_Button] = ImVec4(0.2f, 0.4f, 0.6f, 1.0f);
             ImGui::EndMainMenuBar();
         }
-        if (state)
+        std::string temp;
+        switch (App::State)
         {
-            if (Callback::fileUploadState.isDragging)
-            {
-                int a = 0;
-            }
-            FileUploaderScreen.SetFileState(Callback::fileUploadState);
-            FileUploaderScreen.RenderPanel();
-            Callback::fileUploadState = FileUploaderScreen.GetFileState();
-            //AppInterface::RenderFileUploader(ActivePlayer, Callback::fileUploadState);
-            ActivePlayer = FileUploaderScreen.GetPlayerUploaded();
-            if (ActivePlayer != nullptr)
-            {
-                int index = IsPlayerAlreadyLoaded(ActivePlayer->GetName(), AllPlayersLoaded);
-                if (index != -1)
+            case App::MAIN_MENU:
+                FileUploaderScreen.SetFileState(Callback::fileUploadState);
+                FileUploaderScreen.RenderPanel();
+                Callback::fileUploadState = FileUploaderScreen.GetFileState();
+                ActivePlayer = FileUploaderScreen.GetPlayerUploaded();
+                if (ActivePlayer != nullptr)
                 {
-                    ActivePlayer = AllPlayersLoaded[index];
+                    int index = IsPlayerAlreadyLoaded(ActivePlayer->GetName(), AllPlayersLoaded);
+                    if (index != -1)
+                    {
+                        ActivePlayer = AllPlayersLoaded[index];
+                        ActivePlayer->UpdateEfficiency(RoleSelectorScreen.AllRoles);
+                    }
+                    else
+                    {
+                        AllPlayersLoaded.emplace_back(ActivePlayer);
+                        ActivePlayer->CalculateEfficiencyAllRoles(RoleSelectorScreen.AllRoles);
+                    }
                 }
-                else
-                {
-                    ActivePlayer->CalculateEfficiencyAllRoles(AllRoles);
-                    AllPlayersLoaded.emplace_back(ActivePlayer);
-                }
-            }
 
-           
-            PlayerAttributesScreen.SetPlayerToDisplay(ActivePlayer);
-            PlayerAttributesScreen.RenderPanel();
-                //AppInterface::RenderPlayerAttributes(ActivePlayer);
+                PlayerAttributesScreen.SetPlayerToDisplay(ActivePlayer);
+                PlayerAttributesScreen.RenderPanel();
 
             RoleEfficiencyScreen.SetPlayerToDisplay(ActivePlayer);
             RoleEfficiencyScreen.RenderPanel();
-                //AppInterface::RenderRoleEfficiency(ActivePlayer);
            
-        }
-        else
-        {
-            //AppInterface::RenderEditRolesScreen(AllRoles);
+            break;
+        case App::ROLE_EDITOR:
             RoleSelectorScreen.RenderPanel();
-            ImGui::ShowDemoWindow(&show_demo_window);
-
+            break;
+        case App::LOAD_FILES:
+            CustomRoleLoaderScreen.RenderPanel();
+            temp = CustomRoleLoaderScreen.GetFileToLoad();
+            if (temp != "")
+            {
+                // resetting the database
+                // this is pretty bad probably better to keep an original database and just change the vector to that
+                RoleSelectorScreen.AllRoles = OriginalDB;
+                UpdateRoleFromCustomFile(RoleSelectorScreen.AllRoles, temp);
+            }
+            ImGui::ShowDemoWindow();
+            break;
+        default:
+            break;
         }
+
 
         // Rendering
         ImGui::Render();
