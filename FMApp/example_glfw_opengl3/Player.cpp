@@ -126,8 +126,12 @@ bool Player::ReadAttributesFromFile(std::string FileName)
         //std::cout << it.Name << " " << it.Value << std::endl;
     }
 
+    if (Attributes.size() > 0)
+        return true;
+    else
+        return false;
+
     //return 0;
-    return true;
 }
 
 std::vector <Attribute> Player::GetPlayerAttributes()

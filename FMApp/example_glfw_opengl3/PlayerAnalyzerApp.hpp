@@ -11,7 +11,7 @@ namespace App
 
     AppState State = MAIN_MENU;
 
-    void SwitchState(const AppState& newState, const std::vector<Role>& allRoles, std::shared_ptr<Player> player = NULL, CustomRoleLoader* roleLoader = NULL)
+    void SwitchState(const AppState& newState, const std::vector<Role>& allRoles, std::shared_ptr<Player> player = NULL, CustomRoleLoader* roleLoader = NULL, SaveRolePanel* roleSaver = NULL)
     {
         switch (newState)
         {
@@ -22,12 +22,17 @@ namespace App
                 }
                 break;
             case ROLE_EDITOR:
+                if (roleSaver != NULL)
+                {
+                    roleSaver->ClearFiles();
+                    roleSaver->LoadFilesInDirectory("custom_roles");
+                }
                 break;
             case LOAD_FILES:
                 if (roleLoader != NULL)
                 {
                     roleLoader->ClearFiles();
-                    roleLoader->GetFilesInDirectory("custom_roles");
+                    roleLoader->LoadFilesInDirectory("custom_roles");
                 }
 
                 break;

@@ -1,18 +1,24 @@
 #pragma once
-#include "UIPanel.h"
+#include "ImagesPanel.h"
 #include <filesystem>
 #include <iostream>
-class CustomRoleLoader : public UIPanel
-{
-    std::vector<std::filesystem::path> Paths;
-    std::string fileToUse;
-public:
-    CustomRoleLoader(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible);
+#include "stb_image.h"
+#include "TextureManager.h"
 
+
+
+class CustomRoleLoader : public ImagesPanel
+{
+    std::string fileToUse;
+    bool FileLoadedByUser = false;
+
+public:
+    CustomRoleLoader(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible, const Image& image);
     void RenderPanel() override;
 
-    std::vector<std::filesystem::path> GetFilesInDirectory(const char* Directory);
-    void ClearFiles();
     std::string GetFileToLoad();
+    bool WasFileLoadedByUser();
+
+   // bool LoadTexture(const char* imagePath, GLuint* out_texture, int* out_width, int* out_height);
 };
 

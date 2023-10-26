@@ -21,6 +21,13 @@ void PlayerUploadFile::RenderFileDragAndDrop(std::shared_ptr<Player>& ActivePlay
                     ActivePlayer = NewPlayer;
                     fileState.isDragging = false;
                 }
+                else
+                {
+                    fileState.isDragging = false;
+
+		            //ImGui::TextWrapped("File could not be loaded, it does not contain data about a FM Player or is not in the right format. Please input a valid file");
+                    ValidFile = false;
+                }
 			}
 			else
 			{
@@ -31,9 +38,13 @@ void PlayerUploadFile::RenderFileDragAndDrop(std::shared_ptr<Player>& ActivePlay
 	}
 	else if(ActivePlayer != NULL)
     {
-		ImGui::Text("Player loaded %s", ActivePlayer->GetName().c_str());
         ImGui::Text("Drop file here to change player loaded ");
 	}
+    else if (!ValidFile)
+    {
+        ImGui::TextWrapped("File could not be loaded, it does not contain data about a FM Player or is not in the right format. Please input a valid file");
+
+    }
     else
     {
         ImGui::Text("Drag file here: ");

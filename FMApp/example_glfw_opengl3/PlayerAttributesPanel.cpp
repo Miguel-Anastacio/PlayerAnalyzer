@@ -22,10 +22,11 @@ void PlayerAttributesPanel::RenderPanel()
 
         if (PlayerAttributes.size() > 0)
         {
-            if (ImGui::BeginTable("table2", 3, flags))
+            float headerSize = 165.0f;
+            ImGui::SetNextItemWidth(3 * headerSize);
+            if (ImGui::BeginTable("table2", 3, flags, ImVec2(520, 0)))
             {
                 int attributesIndex = 0;
-                float headerSize = 160.0f;
                 ImGui::TableSetupColumn("Technical", ImGuiTableColumnFlags_WidthFixed, headerSize);
                 ImGui::TableSetupColumn("Mental", ImGuiTableColumnFlags_WidthFixed, headerSize);
                 ImGui::TableSetupColumn("Physical", ImGuiTableColumnFlags_WidthFixed, headerSize);

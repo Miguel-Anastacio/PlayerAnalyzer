@@ -23,11 +23,11 @@
     <Filter Include="sources\Cpp\UI">
       <UniqueIdentifier>{f476a44b-da7f-42ba-8fd6-d8083c2bc1e5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sources\Headers\States">
-      <UniqueIdentifier>{15d8f399-aeee-496a-ab5a-1778358ae837}</UniqueIdentifier>
-    </Filter>
     <Filter Include="sources\Cpp\States">
       <UniqueIdentifier>{0b94a23a-ec31-4997-87e2-6ec046f3f18a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Headers\External">
+      <UniqueIdentifier>{294b550f-10ba-4942-ac86-3df31a90283b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -89,6 +89,18 @@
       <Filter>sources\Cpp\UI</Filter>
     </ClCompile>
     <ClCompile Include="CustomRoleLoader.cpp">
+      <Filter>sources\Cpp\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="stb_image_build.h">
+      <Filter>sources\Headers\External</Filter>
+    </ClCompile>
+    <ClCompile Include="SaveRolePanel.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ImagesPanel.cpp">
       <Filter>sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -111,9 +123,6 @@
     <ClInclude Include="..\..\backends\imgui_impl_opengl3_loader.h">
       <Filter>sources\Headers\ImguiGraphicsAPI</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>sources\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Define.h">
       <Filter>sources\Headers</Filter>
     </ClInclude>
@@ -124,9 +133,6 @@
       <Filter>sources\Headers</Filter>
     </ClInclude>
     <ClInclude Include="RoleAnalysis.h">
-      <Filter>sources\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="json.hpp">
       <Filter>sources\Headers</Filter>
     </ClInclude>
     <ClInclude Include="boilerplate.h">
@@ -163,7 +169,21 @@
       <Filter>sources\Headers\UI</Filter>
     </ClInclude>
     <ClInclude Include="PlayerAnalyzerApp.hpp" />
-    <ClInclude Include="CustomRoleLoader.h" />
+    <ClInclude Include="CustomRoleLoader.h">
+      <Filter>sources\Headers\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>sources\Headers\External</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>sources\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>sources\Headers\External</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveRolePanel.h" />
+    <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="ImagesPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.txt" />

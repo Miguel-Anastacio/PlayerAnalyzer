@@ -4,11 +4,11 @@
 #include<memory>
 struct Role;
 struct AttributeWeight;
-
+class SaveRolePanel;
 class RoleEditor : public UIPanel
 {
 public:
-    RoleEditor(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible);
+    RoleEditor(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible, SaveRolePanel* roleSaver);
     void RenderPanel() override;
     void SetCurrentRole(Role& role);
 protected:
@@ -27,5 +27,7 @@ protected:
     Role* CurrentRole = NULL;
 
     bool saveWindow = false;
+    SaveRolePanel* SaveRoleScreen;
+
 };
 

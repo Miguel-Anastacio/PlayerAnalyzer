@@ -20,13 +20,20 @@ void RoleSelector::RenderPanel()
         {
             if (role.TypeEnum == Defensive)
             {
-                if (ImGui::Button(role.Name.c_str()))
+                bool button = ImGui::Button(role.Name.c_str());
+                if (role.EditedFlag)
                 {
-       /*             AttributesDisplayed = true;
-                    RolePressed = role;*/
+                    ImGui::SetItemTooltip("This role was edited");
+                    ImGui::SameLine();
+                    ImGui::Text("(*)");
+                    ImGui::SetItemTooltip("This role was edited");
+                }
+                if (button)
+                {
                     MyRoleEditor->SetCurrentRole(role);
                     MyRoleEditor->SetContentsVisibility(true);
                 }
+              
             }
         }
         ImGui::Unindent();
@@ -40,10 +47,16 @@ void RoleSelector::RenderPanel()
         {
             if (role.TypeEnum == Midfield)
             {
-                if (ImGui::Button(role.Name.c_str()))
+                bool button = ImGui::Button(role.Name.c_str());
+                if (role.EditedFlag)
                 {
-                    //AttributesDisplayed = true;
-                    //RolePressed = role;
+                    ImGui::SetItemTooltip("This role was edited");
+                    ImGui::SameLine();
+                    ImGui::Text("(*)");
+                    ImGui::SetItemTooltip("This role was edited");
+                }
+                if (button)
+                {
                     MyRoleEditor->SetCurrentRole(role);
                     MyRoleEditor->SetContentsVisibility(true);
                 }
@@ -60,10 +73,17 @@ void RoleSelector::RenderPanel()
         {
             if (role.TypeEnum == Attacking)
             {
-                if (ImGui::Button(role.Name.c_str()))
+
+                bool button = ImGui::Button(role.Name.c_str());
+                if (role.EditedFlag)
                 {
-                    //AttributesDisplayed = true;
-                    //RolePressed = role;
+                    ImGui::SetItemTooltip("This role was edited");
+                    ImGui::SameLine();
+                    ImGui::Text("(*)");
+                    ImGui::SetItemTooltip("This role was edited");
+                }
+                if (button)
+                {
                     MyRoleEditor->SetCurrentRole(role);
                     MyRoleEditor->SetContentsVisibility(true);
                 }

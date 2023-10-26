@@ -1,10 +1,12 @@
 #include "RoleEditor.h"
 #include "Define.h"
 #include "Database.h"
-RoleEditor::RoleEditor(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible)
+#include "SaveRolePanel.h"
+RoleEditor::RoleEditor(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible, SaveRolePanel* roleSaver)
     : UIPanel(noMove, noResize, noCollapse, name, visible)
 {
     BuildAllAttributesArray();
+    SaveRoleScreen = roleSaver;
 }
 
 void RoleEditor::RenderPanel()
@@ -41,27 +43,27 @@ void RoleEditor::RenderPanel()
 
         if (CurrentRole != NULL)
         {
+            SaveRoleScreen->SetContentsVisibility(true);
+            SaveRoleScreen->SetRoleToSave(CurrentRole);
+            //if (ImGui::Button("Save Role Weigths"))
+            //{
+            //    saveWindow = true;
+            //}
+            //static char inputText[256] = ""; // Buffer to store the text input
+            //if (saveWindow)
+            //{
 
-            if (ImGui::Button("Save Role Weigths"))
-            {
-                saveWindow = true;
+            //    // display save file window
+            //    ImGui::Text("Save Role Window");
 
-            }
-            static char inputText[256] = ""; // Buffer to store the text input
-            if (saveWindow)
-            {
-
-                // display save file window
-                ImGui::Text("Save Role Window");
-
-                // ImGui InputText widget
-                bool status = ImGui::InputText("Enter File Name", inputText, IM_ARRAYSIZE(inputText), ImGuiInputTextFlags_EnterReturnsTrue);
-                if (status)
-                {
-                    WriteRoleWeightsFile(*CurrentRole, inputText);
-                    saveWindow = false;
-                }
-            }
+            //    // ImGui InputText widget
+            //    bool status = ImGui::InputText("Enter File Name", inputText, IM_ARRAYSIZE(inputText), ImGuiInputTextFlags_EnterReturnsTrue);
+            //    if (status)
+            //    {
+            //        WriteRoleWeightsFile(*CurrentRole, inputText);
+            //        saveWindow = false;
+            //    }
+            //}
         }
     }
     ImGui::End();
@@ -226,20 +228,21 @@ void RoleEditor::RenderAttributeSelected(const AttributeWeight* attribute)
     {
         if (isPresent)
         {
-            if (attribute->Weight > 4)
+            if (InputStatus)
             {
-                int a = 2;
+                CurrentRole->Attributes[IndexOfAttributeToUpdate].Weight = temp;
+                //attribute->Weight = 0;
+                CurrentRole->CalculateTotalWeight();
+                CurrentRole->EditedFlag = true;
             }
-  
-            CurrentRole->Attributes[IndexOfAttributeToUpdate].Weight = temp;
-            //attribute->Weight = 0;
-            CurrentRole->CalculateTotalWeight();
+        
         }
         else
         {
             if (temp > 0 && InputStatus)
             {
 
+                CurrentRole->EditedFlag = true;
                 CurrentRole->Attributes.emplace_back(attribute->Name, temp);
                 AttributeSelected = NULL;
                 CurrentRole->CalculateTotalWeight();
@@ -249,10 +252,11 @@ void RoleEditor::RenderAttributeSelected(const AttributeWeight* attribute)
         
     }
     else if (!AttributeSelectedIsInUse && isPresent)
-    {
-        
+    {       
         CurrentRole->Attributes.erase(CurrentRole->Attributes.begin() + IndexOfAttributeToUpdate);
         CurrentRole->CalculateTotalWeight();
+        CurrentRole->EditedFlag = true;
+
         AttributeSelected = nullptr;
     }
 }

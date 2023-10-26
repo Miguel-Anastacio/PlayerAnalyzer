@@ -106,14 +106,14 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..;..\..\backends;..\libs\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..;..\..\backends;..\libs\glfw\include;"..\libs\glew-2.1.0\include\GL";%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\libs\glfw\lib-vc2010-64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libs\glfw\lib-vc2010-64;"..\libs\glew-2.1.0\lib\Release\x64";%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glu32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreSpecificDefaultLibraries>msvcrt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
@@ -145,7 +145,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..;..\..\backends;..\libs\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..;..\..\backends;..\libs\glfw\include;"..\libs\glew-2.1.0\include\GL";%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -154,8 +154,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\libs\glfw\lib-vc2010-64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libs\glfw\lib-vc2010-64;"..\libs\glew-2.1.0\lib\Release\x64";%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glu32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
@@ -172,6 +172,7 @@
     <ClCompile Include="CustomRoleLoader.cpp" />
     <ClCompile Include="Database.cpp" />
     <ClCompile Include="FileUploader.cpp" />
+    <ClCompile Include="ImagesPanel.cpp" />
     <ClCompile Include="PlayerAttributesPanel.cpp" />
     <ClCompile Include="PlayerUploadFile.cpp" />
     <ClCompile Include="PlayerUploadText.cpp" />
@@ -181,6 +182,9 @@
     <ClCompile Include="RoleEditor.cpp" />
     <ClCompile Include="RoleEfficiencyPanel.cpp" />
     <ClCompile Include="RoleSelector.cpp" />
+    <ClCompile Include="SaveRolePanel.cpp" />
+    <ClCompile Include="stb_image_build.h" />
+    <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="UIPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +200,7 @@
     <ClInclude Include="Define.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="FileUploader.h" />
+    <ClInclude Include="ImagesPanel.h" />
     <ClInclude Include="PlayerAnalyzerApp.hpp" />
     <ClInclude Include="PlayerAttributesPanel.h" />
     <ClInclude Include="PlayerUploadFile.h" />
@@ -207,6 +212,9 @@
     <ClInclude Include="RoleEditor.h" />
     <ClInclude Include="RoleEfficiencyPanel.h" />
     <ClInclude Include="RoleSelector.h" />
+    <ClInclude Include="SaveRolePanel.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="TextureManager.h" />
     <ClInclude Include="UI.hpp" />
     <ClInclude Include="UIPanel.h" />
   </ItemGroup>

@@ -82,10 +82,15 @@ void CleanUpDatabase(std::vector<Role>& AllPlayerRoles)
     }
 }
 
-void WriteRoleWeightsFile(const Role& Role, const std::string& fileName)
+bool WriteRoleWeightsFile(const Role& Role, const std::string& fileName)
 {
     std::filesystem::path folderPath = "custom_roles"; // Set the desired folder name here
-    std::string name = fileName + ".txt";
+
+    std::string name = fileName;
+    if (fileName.size()>0)
+    {
+        name = fileName + ".txt";
+    }
     std::filesystem::path filePath = folderPath / name;
     try
     {
@@ -114,21 +119,11 @@ void WriteRoleWeightsFile(const Role& Role, const std::string& fileName)
             file << att.ID << "," << att.Name << "," << att.Weight << std::endl;
         }
         file.close();
+        return true;
     }
 
-    //std::ofstream outfile(filePath, std::ios::out);
-    //
-    ////file.open(filePath);
-    //if (outfile.is_open())
-    //{
-    //    outfile << Role.Name << std::endl;
-    //    for (const auto& att : Role.Attributes)
-    //    {
-    //        outfile << att.Name << "," << att.Weight << std::endl;
-    //    }
-    //    //file.write(Role.Name.c_str(), Role.Name.size());
-    //    outfile.close();
-    //}
+    return false;
+
 }
 
 void UpdateRoleFromCustomFile(std::vector<Role>& AllRoles, const std::string& fileName)
@@ -148,7 +143,6 @@ void UpdateRoleFromCustomFile(std::vector<Role>& AllRoles, const std::string& fi
             // check if line contains an ID
             if (line.find("ID") == 0)
             {
-   
                 try
                 {
                     currentId = std::stoull(line.substr(3));
@@ -166,10 +160,13 @@ void UpdateRoleFromCustomFile(std::vector<Role>& AllRoles, const std::string& fi
                     if (role.ID == currentId)
                     {
                         RoleToEdit = &role;
+                        // clear attribute data
+                        // this wil be read from the file
+                        // leads to more memory allocations
+                        // this code is ran very few times so it is probably not an issue
+                        RoleToEdit->Attributes.clear();
                     }
-
                 }
-
             }
             else
             {
@@ -180,14 +177,13 @@ void UpdateRoleFromCustomFile(std::vector<Role>& AllRoles, const std::string& fi
                     size_t posValue = line.find(",", posName+1);
 
                     // update database
-                    
-
+                 
                     std::string NameAtt = line.substr(posName + 1,posValue - 1 - posName);
 
                     float value = std::stof(line.substr(posValue+1));
                     size_t attributeID = std::stoull(line.substr(0,posName));
 
-                    int index = RoleToEdit->GetAttributeIndex(attributeID);
+                   /* int index = RoleToEdit->GetAttributeIndex(attributeID);
                     if (index != -1)
                     {
                         RoleToEdit->Attributes[index].Weight = value;
@@ -197,8 +193,12 @@ void UpdateRoleFromCustomFile(std::vector<Role>& AllRoles, const std::string& fi
                     {
                         RoleToEdit->Attributes.emplace_back(NameAtt, value);
                         RoleToEdit->CalculateTotalWeight();
-                    }
-
+                    }*/
+                    // leads to more memory allocations
+                    // this code is ran very few times so it is probably not an issue
+                    RoleToEdit->Attributes.emplace_back(NameAtt, value);
+                    RoleToEdit->CalculateTotalWeight();
+                    RoleToEdit->EditedFlag = true;
                 }
             }
         }

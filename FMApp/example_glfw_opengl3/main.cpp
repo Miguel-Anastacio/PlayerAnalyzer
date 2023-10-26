@@ -1,3 +1,5 @@
+#define GLEW_STATIC
+#include "glew.h"
 #include "boilerplate.h"
 
 #include "glfw_callbacks.hpp"
@@ -7,6 +9,7 @@
 #include "RoleEfficiencyPanel.h"
 #include "RoleEditor.h"
 #include "RoleSelector.h"
+#include "SaveRolePanel.h"
 
 #include "Player.h"
 #include "Database.h"
@@ -77,7 +80,7 @@ int main(int, char**)
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
     //io.ConfigViewportsNoAutoMerge = true;
     //io.ConfigViewportsNoTaskBarIcon = true;
-
+   
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
     //ImGui::StyleColorsLight();
@@ -104,7 +107,9 @@ int main(int, char**)
     // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
     // - Our Emscripten build process allows embedding fonts to be accessible at runtime from the "fonts/" folder. See Makefile.emscripten for details.
     //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
+    io.Fonts->AddFontFromFileTTF("fonts/Roboto-Bold.ttf", 24.0f);
+ 
+    io.FontDefault = io.Fonts->AddFontFromFileTTF("fonts/Roboto-Medium.ttf", 22.0f);
     //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
     //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
     //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
@@ -127,16 +132,21 @@ int main(int, char**)
     glfwSetDropCallback(window, Callback::DragAndDropCallback);
     bool state = true;
 
+    TextureManager TextureMgr;
 
     // create UI Panels
     FileUploader FileUploaderScreen(false, false, true, std::string("File Uploader"), true);
     PlayerAttributesPanel PlayerAttributesScreen(false, false, true, std::string("Player Attributes"), true);
     RoleEfficiencyPanel RoleEfficiencyScreen(false, false, true, std::string("Player Role Efficiency"), true);
 
-    RoleEditor RoleEditorScreen(false, false, true, std::string("Role Editor"), true);
     RoleSelector RoleSelectorScreen(false, false, true, std::string("Role Selector"), true);
 
-    CustomRoleLoader CustomRoleLoaderScreen(false, false, true, std::string("Load Files"), true);
+
+    CustomRoleLoader CustomRoleLoaderScreen(false, false, true, std::string("Load Files"), true, TextureMgr.GetImage());
+
+    SaveRolePanel SaveRoleScreen(false, false, true, std::string("Save Role"), true, TextureMgr.GetImage());
+
+    RoleEditor RoleEditorScreen(false, false, true, std::string("Role Editor"), true, &SaveRoleScreen);
 
     RoleSelectorScreen.SetRoleEditor(&RoleEditorScreen);
     RoleSelectorScreen.AllRoles = BuildRoleDatabase();
@@ -145,6 +155,7 @@ int main(int, char**)
     std::vector<Role> OriginalDB = RoleSelectorScreen.AllRoles;
     //PrintArrayOfRoles(AllRoles);
 
+    
     // Main loop
 #ifdef __EMSCRIPTEN__
     // For an Emscripten build we are disabling file-system access, so let's not attempt to do a fopen() of the imgui.ini file.
@@ -173,8 +184,13 @@ int main(int, char**)
 
         if (ImGui::BeginMainMenuBar())
         {
+            ImGuiIO& io = ImGui::GetIO();
+            auto titleFont = io.Fonts->Fonts[0];
+
             ImGuiStyle& style = ImGui::GetStyle();
             style.Colors[ImGuiCol_Button] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+            ImGui::PushFont(titleFont);
+
             if (ImGui::Button("Main Screen"))
             {
                 //ShowExampleMenuFile();
@@ -183,7 +199,7 @@ int main(int, char**)
             }
             if (ImGui::Button("Edit Players Roles"))
             {
-                App::SwitchState(App::ROLE_EDITOR, RoleSelectorScreen.AllRoles);
+                App::SwitchState(App::ROLE_EDITOR, RoleSelectorScreen.AllRoles, NULL, NULL, &SaveRoleScreen);
 
             }
             if (ImGui::Button("Load Custom Player Roles"))
@@ -191,6 +207,8 @@ int main(int, char**)
                 App::SwitchState(App::LOAD_FILES, RoleSelectorScreen.AllRoles, NULL, &CustomRoleLoaderScreen);
 
             }
+            ImGui::PopFont();
+
             style = ImGui::GetStyle();
             style.Colors[ImGuiCol_Button] = ImVec4(0.2f, 0.4f, 0.6f, 1.0f);
             ImGui::EndMainMenuBar();
@@ -227,16 +245,15 @@ int main(int, char**)
             break;
         case App::ROLE_EDITOR:
             RoleSelectorScreen.RenderPanel();
+            SaveRoleScreen.RenderPanel();
             break;
         case App::LOAD_FILES:
             CustomRoleLoaderScreen.RenderPanel();
-            temp = CustomRoleLoaderScreen.GetFileToLoad();
-            if (temp != "")
+            if (CustomRoleLoaderScreen.WasFileLoadedByUser())
             {
                 // resetting the database
-                // this is pretty bad probably better to keep an original database and just change the vector to that
                 RoleSelectorScreen.AllRoles = OriginalDB;
-                UpdateRoleFromCustomFile(RoleSelectorScreen.AllRoles, temp);
+                UpdateRoleFromCustomFile(RoleSelectorScreen.AllRoles, CustomRoleLoaderScreen.GetFileToLoad());
             }
             ImGui::ShowDemoWindow();
             break;

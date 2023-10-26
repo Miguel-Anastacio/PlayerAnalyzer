@@ -11,10 +11,10 @@ void PlayerUploadText::RenderFileUploadText(std::shared_ptr<Player>& player)
     static char inputText[256] = ""; // Buffer to store the text input
 
     // ImGui InputText widget
-    ImGui::InputText("Enter File Name", inputText, IM_ARRAYSIZE(inputText));
+    bool status = ImGui::InputText("Enter File Name", inputText, IM_ARRAYSIZE(inputText), ImGuiInputTextFlags_EnterReturnsTrue);
 
     // ImGui button to trigger file reading
-    if (ImGui::Button("Read File"))
+    /*if (ImGui::Button("Read File"))
     {
         NewPlayer = std::make_shared<Player>();
         if (!NewPlayer->ReadAttributesFromFile(inputText))
@@ -29,5 +29,21 @@ void PlayerUploadText::RenderFileUploadText(std::shared_ptr<Player>& player)
 
         if (!validFile)
             ImGui::Text("Can't find file");
+    }*/
+    if (status)
+    {
+        NewPlayer = std::make_shared<Player>();
+        if (!NewPlayer->ReadAttributesFromFile(inputText))
+        {
+            validFile = false;
+        }
+        else
+        {
+            player = NewPlayer;
+            validFile = true;
+        }
+
     }
+    if (!validFile)
+        ImGui::Text("Can't find file");
 }

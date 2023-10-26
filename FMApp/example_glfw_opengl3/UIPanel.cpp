@@ -11,6 +11,10 @@ UIPanel::UIPanel(const bool& noMove, const bool& noResize, const bool& noCollaps
     Visibility = visible;
 }
 
+//UIPanel::UIPanel(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible, TextureManager& textureMgr)
+//{
+//}
+
 void UIPanel::SetupWindowFlags(const bool& noMove = false, const bool& noResize = false, const bool& noCollapse = false)
 {
     NoMove = noMove;

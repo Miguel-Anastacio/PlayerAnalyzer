@@ -15,7 +15,7 @@ void PrintArrayOfRoles(const std::vector<Role>& AllPlayerRoles);
 
 void CleanUpDatabase(std::vector<Role>& AllPlayerRoles);
 
-void WriteRoleWeightsFile(const Role& AllPlayerRoles, const std::string& fileName);
+bool WriteRoleWeightsFile(const Role& role, const std::string& fileName);
 
 void UpdateRoleFromCustomFile(std::vector<Role>& AllRoles, const std::string& fileName);
 

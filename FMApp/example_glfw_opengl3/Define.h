@@ -221,6 +221,8 @@ struct Role
 
     float TotalWeight = 0;
 
+    bool EditedFlag = false;
+
     void HashRole()
     {
         ID = std::hash<std::string>{}(Name);
