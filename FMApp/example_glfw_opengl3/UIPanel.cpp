@@ -35,6 +35,7 @@ void UIPanel::SetContentsVisibility(const bool& state)
     ContentsVisibility = state;
 }
 
+
 void UIPanel::RenderPanel()
 {
     if (Visibility)
