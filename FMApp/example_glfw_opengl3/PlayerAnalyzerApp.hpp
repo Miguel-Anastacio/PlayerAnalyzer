@@ -18,7 +18,7 @@ namespace App
             case MAIN_MENU:
                 if (player != NULL)
                 {
-                    player->CalculateEfficiencyAllRoles(allRoles);
+                    player->UpdateEfficiency(allRoles);
                 }
                 break;
             case ROLE_EDITOR:

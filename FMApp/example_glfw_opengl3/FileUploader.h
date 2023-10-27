@@ -12,6 +12,8 @@ public:
     FileUploader(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible);
 
     std::shared_ptr<Player> GetPlayerUploaded();
+    void ResetPlayerUploaded();
+    void SetPlayerUploadedRef(std::shared_ptr<Player> pl);
 
     void RenderPanel() override;
 
@@ -24,6 +26,7 @@ protected:
     std::shared_ptr<PlayerUploadText> TextInsertPanel;
     std::shared_ptr<PlayerUploadFile> FileInsertPanel;
 
+    uint16_t ValidPlayersUploaded = 0;
 
 };
 

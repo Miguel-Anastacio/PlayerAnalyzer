@@ -23,8 +23,8 @@ std::vector<Role> BuildRoleDatabase()
 
                 tempRole.Name = role.key();
                 // std::cout << "  Role: " << role.key() << std::endl;
-                tempRole.Name = tempRole.Name + " on " + status.key();
-
+                tempRole.Name = tempRole.Name + " " + status.key();
+                //tempRole.SetRoleMentality(status.key());
                 // Iterate through vital and prefer for each role
                 for (auto& category : status.value().items())
                 {
@@ -36,8 +36,7 @@ std::vector<Role> BuildRoleDatabase()
                         tempRole.HashRole();
                     }
                 }
-
-
+                
                 Database.emplace_back(tempRole);
             }
 
@@ -174,35 +173,37 @@ void UpdateRoleFromCustomFile(std::vector<Role>& AllRoles, const std::string& fi
                 size_t posName = line.find(",");
                 if (posName != std::string::npos)
                 {
-                    size_t posValue = line.find(",", posName+1);
+                    size_t posValue = line.find(",", posName + 1);
 
                     // update database
-                 
-                    std::string NameAtt = line.substr(posName + 1,posValue - 1 - posName);
 
-                    float value = std::stof(line.substr(posValue+1));
-                    size_t attributeID = std::stoull(line.substr(0,posName));
+                    std::string NameAtt = line.substr(posName + 1, posValue - 1 - posName);
 
-                   /* int index = RoleToEdit->GetAttributeIndex(attributeID);
-                    if (index != -1)
-                    {
-                        RoleToEdit->Attributes[index].Weight = value;
-                        RoleToEdit->CalculateTotalWeight();
-                    }
-                    else
+                    float value = std::stof(line.substr(posValue + 1));
+                    size_t attributeID = std::stoull(line.substr(0, posName));
+
+                    /* int index = RoleToEdit->GetAttributeIndex(attributeID);
+                     if (index != -1)
+                     {
+                         RoleToEdit->Attributes[index].Weight = value;
+                         RoleToEdit->CalculateTotalWeight();
+                     }
+                     else
+                     {
+                         RoleToEdit->Attributes.emplace_back(NameAtt, value);
+                         RoleToEdit->CalculateTotalWeight();
+                     }*/
+                     // leads to more memory allocations
+                     // this code is ran very few times so it is probably not an issue
+                    if (RoleToEdit != NULL)
                     {
                         RoleToEdit->Attributes.emplace_back(NameAtt, value);
                         RoleToEdit->CalculateTotalWeight();
-                    }*/
-                    // leads to more memory allocations
-                    // this code is ran very few times so it is probably not an issue
-                    RoleToEdit->Attributes.emplace_back(NameAtt, value);
-                    RoleToEdit->CalculateTotalWeight();
-                    RoleToEdit->EditedFlag = true;
+                        RoleToEdit->EditedFlag = true;
+                    }
                 }
             }
         }
-    
     }
     else
     {

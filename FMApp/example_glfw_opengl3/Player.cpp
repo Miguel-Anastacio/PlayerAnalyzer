@@ -57,11 +57,12 @@ std::string Player::ParseLine(const std::string& line, char separator, int& line
 }
 
 
-bool Player::ReadAttributesFromFile(std::string FileName)
+bool Player::ReadAttributesFromFile(std::string fileName)
 {
-    std::ifstream file(FileName);  // Replace "your_file.txt" with the actual file path
+    std::ifstream file(fileName);  // Replace "your_file.txt" with the actual file path
 
-    Name = FileName;
+    SetUniqueID(fileName);
+    Name = "untitled";
 
     if (file.is_open())
     {
@@ -147,6 +148,27 @@ void Player::ClearAttributes()
 std::string Player::GetName()
 {
     return Name;
+}
+
+void Player::SetName(const std::string& name)
+{
+    Name = name;
+}
+
+void Player::SetCosmeticID(uint16_t id)
+{
+    CosmeticID = id;
+    Name = Name + std::to_string(id);
+}
+
+uint16_t Player::GetCosmeticID()
+{
+    return CosmeticID;
+}
+
+uint64_t Player::GetUniqueID()
+{
+    return UniqueID;
 }
 
 RoleEfficiency Player::GetBestPlayerRole()
@@ -259,4 +281,9 @@ std::vector<RoleEfficiency> Player::GetMidfieldRoles()
 std::vector<RoleEfficiency> Player::GetAttackingRoles()
 {
     return AttackingRoles;
+}
+
+void Player::SetUniqueID(const std::string& filename)
+{
+    UniqueID = std::hash<std::string>{}(filename);
 }

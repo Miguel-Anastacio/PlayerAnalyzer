@@ -13,6 +13,16 @@ std::shared_ptr<Player> FileUploader::GetPlayerUploaded()
     return PlayerUploaded;
 }
 
+void FileUploader::ResetPlayerUploaded()
+{
+    PlayerUploaded = NULL;
+}
+
+void FileUploader::SetPlayerUploadedRef(std::shared_ptr<Player> pl)
+{
+    PlayerUploaded = pl;
+}
+
 void FileUploader::RenderPanel()
 {
     ImGui::Begin("File Uploader", nullptr, window_flags);
@@ -22,13 +32,22 @@ void FileUploader::RenderPanel()
     {
         if (ImGui::BeginTabItem("Insert File Name"))
         {
-            TextInsertPanel->RenderFileUploadText(PlayerUploaded);
+            if (TextInsertPanel->RenderFileUploadText(PlayerUploaded))
+            {
+                PlayerUploaded->SetCosmeticID(ValidPlayersUploaded);
+                ValidPlayersUploaded++;
+            }
             FileState.AcceptingFiles = false;
             ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Drag and Drop File"))
         {
-            FileInsertPanel->RenderFileDragAndDrop(PlayerUploaded, FileState);
+            if (FileInsertPanel->RenderFileDragAndDrop(PlayerUploaded, FileState))
+            {
+                PlayerUploaded->SetCosmeticID(ValidPlayersUploaded);
+                ValidPlayersUploaded++;
+            }
+
             FileState.AcceptingFiles = true;
             ImGui::EndTabItem();
         }

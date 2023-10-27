@@ -7,6 +7,7 @@ RoleEditor::RoleEditor(const bool& noMove, const bool& noResize, const bool& noC
 {
     BuildAllAttributesArray();
     SaveRoleScreen = roleSaver;
+
 }
 
 void RoleEditor::RenderPanel()
@@ -17,14 +18,19 @@ void RoleEditor::RenderPanel()
     {
         ImGui::SameLine();
         ImGui::Text(CurrentRole->Name.c_str());
+        ImGui::SameLine(0, 150.0f);
+        ImGui::Text("Total Weight: %.2f", CurrentRole->TotalWeight);
+        ImGui::SameLine(0, 150.0f);
+        ImGui::Text("Avg Weight / Atribute: %.2f", CurrentRole->TotalWeight/CurrentRole->Attributes.size());
+
         ImGui::Separator();
         static bool bg = false;
         static ImGuiTableFlags flags = ImGuiTableFlags_Borders;
         if (bg)   flags |= ImGuiTableFlags_RowBg;
-        if (ImGui::BeginTable("table2", 6, flags))
+        if (ImGui::BeginTable("table2", 6, flags, ImVec2(655,0)))
         {
             float headerSize = 140.0f;
-            float smallHeaderSize = 45.0f;
+            float smallHeaderSize = 60.0f;
             ImGui::TableSetupColumn("Technical", ImGuiTableColumnFlags_WidthFixed, headerSize);
             ImGui::TableSetupColumn("Weight", ImGuiTableColumnFlags_WidthFixed, smallHeaderSize);
             ImGui::TableSetupColumn("Mental", ImGuiTableColumnFlags_WidthFixed, headerSize);
@@ -45,25 +51,6 @@ void RoleEditor::RenderPanel()
         {
             SaveRoleScreen->SetContentsVisibility(true);
             SaveRoleScreen->SetRoleToSave(CurrentRole);
-            //if (ImGui::Button("Save Role Weigths"))
-            //{
-            //    saveWindow = true;
-            //}
-            //static char inputText[256] = ""; // Buffer to store the text input
-            //if (saveWindow)
-            //{
-
-            //    // display save file window
-            //    ImGui::Text("Save Role Window");
-
-            //    // ImGui InputText widget
-            //    bool status = ImGui::InputText("Enter File Name", inputText, IM_ARRAYSIZE(inputText), ImGuiInputTextFlags_EnterReturnsTrue);
-            //    if (status)
-            //    {
-            //        WriteRoleWeightsFile(*CurrentRole, inputText);
-            //        saveWindow = false;
-            //    }
-            //}
         }
     }
     ImGui::End();
@@ -74,6 +61,7 @@ void RoleEditor::SetCurrentRole(Role& role)
 {
     CurrentRole = &role;
     AttributeSelected = NULL;
+    AttributeSelectedMap.at(PreviousAtributeSelectedID) = false;
 }
 
 void RoleEditor::BuildAllAttributesArray()
@@ -84,19 +72,28 @@ void RoleEditor::BuildAllAttributesArray()
         AttributeWeight att(it, 0);
         att.Type = Technical;
         TechnicalAttributes.emplace_back(att);
+        AttributeSelectedMap.emplace(att.ID, false);
     }
     for (auto& it : PhysicalAttributesNames)
     {
         AttributeWeight att(it, 0);
         att.Type = Physical;
         PhysicalAttributes.emplace_back(att);
+        AttributeSelectedMap.emplace(att.ID, false);
+
     }
     for (auto& it : MentalAttributesNames)
     {
         AttributeWeight att(it, 0);
         att.Type = Mental;
         MentalAttributes.emplace_back(att);
+        AttributeSelectedMap.emplace(att.ID, false);
+
     }
+
+    // assign previous to a random attribute to prevent
+    // exception on first selection
+    PreviousAtributeSelectedID = MentalAttributes[0].ID;
 }
 
 void RoleEditor::RenderAllAttributes()
@@ -106,16 +103,13 @@ void RoleEditor::RenderAllAttributes()
     ImGui::TableSetColumnIndex(Column);
     AttributeWeight* temp = NULL;
  
-    ImGuiStyle& style = ImGui::GetStyle();
-    style.Colors[ImGuiCol_Button] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+
     for (int i = 0; i < TechnicalAttributes.size(); i++)
     {
         RenderAttributeFromVector(TechnicalAttributes, i);
         RenderAttributeFromVector(MentalAttributes, i);
         RenderAttributeFromVector(PhysicalAttributes, i);
     }
-    style = ImGui::GetStyle();
-    style.Colors[ImGuiCol_Button] = ImVec4(0.2f, 0.4f, 0.6f, 1.0f);
 }
 
 
@@ -123,6 +117,18 @@ void RoleEditor::RenderAllAttributes()
 
 void RoleEditor::RenderAttributeFromVector(std::vector<AttributeWeight>& vector, int index)
 {
+
+    ImGuiIO& io = ImGui::GetIO();
+    auto boldFont = io.Fonts->Fonts[0];
+
+    std::vector<float> thresholdAtt;
+    for (int i = 1; i <= 5; i++)
+    {
+        float temp = (CurrentRole->TotalWeight / CurrentRole->Attributes.size() / 3) * i;
+        thresholdAtt.push_back(temp);
+    }
+    Highlight<float> attHighlight(thresholdAtt);
+
     int AttributeIndexinRole = -1;
     if (index < vector.size())
     {
@@ -130,40 +136,27 @@ void RoleEditor::RenderAttributeFromVector(std::vector<AttributeWeight>& vector,
         // no data so just use the default
         if (AttributeIndexinRole == -1)
         {
-            RenderAttributeTableMember(vector[index]);
+            int a = ImGui::TableGetColumnIndex();
+            RenderAttributeTableMember(vector[index], vector[index].Weight, attHighlight, boldFont);
+            //RenderAttributeTableMember(vector[index]);
+            //RenderStringValuePairTableAsSelectable(vector[index].Name, vector[index].Weight, attHighlight, boldFont);
         }
         else
         {
-    
-            RenderAttributeTableMember(CurrentRole->Attributes[AttributeIndexinRole], true);
+            //RenderStringValuePairTableAsSelectable(CurrentRole->Attributes[AttributeIndexinRole].Name, CurrentRole->Attributes[AttributeIndexinRole].Weight, attHighlight, boldFont);
+
+            RenderAttributeTableMember(CurrentRole->Attributes[AttributeIndexinRole], CurrentRole->Attributes[AttributeIndexinRole].Weight, attHighlight, boldFont);
         }
     }
     else
     {
         ImGui::TableNextColumn();
+        ImGui::TableNextColumn();
     }
 
-    ImGui::TableNextColumn();
 }
 
-void RoleEditor::RenderAttributeTableMember(AttributeWeight& att, const bool& highlight)
-{
-    if(highlight)
-        ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, IM_COL32(0, 255, 0, 30));
 
-
-    if (ImGui::Button(att.Name.c_str()))
-    {
-        //if(AttributeSelected->Weight == 0)
-        AttributeSelected = &att;
-        AttributeSelectedIsInUse = false;
-    }
-
-    ImGui::TableNextColumn();
-    if (highlight)
-        ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, IM_COL32(0, 255, 0, 30));
-    ImGui::Text("%.1f", att.Weight);
-}
 
 void RoleEditor::RenderAttributeSelected(const AttributeWeight* attribute)
 {
@@ -182,14 +175,18 @@ void RoleEditor::RenderAttributeSelected(const AttributeWeight* attribute)
     float temp = attribute->Weight;
     bool InputStatus = false;
 
-    if (ImGui::BeginTable("table2", 4))
+    static bool bg = false;
+    static ImGuiTableFlags flags = ImGuiTableFlags_Borders;
+    if (bg)   flags |= ImGuiTableFlags_RowBg;
+
+    if (ImGui::BeginTable("table2", 4, flags, ImVec2(420,0)))
     {
         float headerSize = 140.0f;
         float smallHeaderSize = 60.0f;
-        ImGui::TableSetupColumn("Attribute Selected", ImGuiTableColumnFlags_WidthFixed, headerSize);
+        ImGui::TableSetupColumn("Attribute Selected", ImGuiTableColumnFlags_WidthFixed, 160.0f);
         ImGui::TableSetupColumn("Use", ImGuiTableColumnFlags_WidthFixed, smallHeaderSize);
         ImGui::TableSetupColumn("Weight", ImGuiTableColumnFlags_WidthFixed, smallHeaderSize);
-        ImGui::TableSetupColumn("New Weight", ImGuiTableColumnFlags_WidthFixed, smallHeaderSize);
+        ImGui::TableSetupColumn("New Weight", ImGuiTableColumnFlags_WidthFixed, smallHeaderSize*2);
 
         ImGui::TableHeadersRow();
         ImGui::TableNextRow();

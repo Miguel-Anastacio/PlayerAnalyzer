@@ -1,7 +1,7 @@
 #include "PlayerUploadFile.h"
 #include "Player.h"
 
-void PlayerUploadFile::RenderFileDragAndDrop(std::shared_ptr<Player>& ActivePlayer, FileUploadState& fileState)
+bool PlayerUploadFile::RenderFileDragAndDrop(std::shared_ptr<Player>& ActivePlayer, FileUploadState& fileState)
 {
 	if (fileState.isDragging)
     {
@@ -20,12 +20,11 @@ void PlayerUploadFile::RenderFileDragAndDrop(std::shared_ptr<Player>& ActivePlay
                 {
                     ActivePlayer = NewPlayer;
                     fileState.isDragging = false;
+                    return true;
                 }
                 else
                 {
                     fileState.isDragging = false;
-
-		            //ImGui::TextWrapped("File could not be loaded, it does not contain data about a FM Player or is not in the right format. Please input a valid file");
                     ValidFile = false;
                 }
 			}
@@ -40,13 +39,14 @@ void PlayerUploadFile::RenderFileDragAndDrop(std::shared_ptr<Player>& ActivePlay
     {
         ImGui::Text("Drop file here to change player loaded ");
 	}
-    else if (!ValidFile)
-    {
-        ImGui::TextWrapped("File could not be loaded, it does not contain data about a FM Player or is not in the right format. Please input a valid file");
-
-    }
     else
     {
         ImGui::Text("Drag file here: ");
     }
+
+    if (!ValidFile)
+    {
+        ImGui::TextWrapped("File could not be loaded, it does not contain data about a FM Player or is not in the right format. Please input a valid file");
+    }
+    return false;
 }

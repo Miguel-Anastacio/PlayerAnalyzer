@@ -20,7 +20,7 @@ void RoleSelector::RenderPanel()
         {
             if (role.TypeEnum == Defensive)
             {
-                bool button = ImGui::Button(role.Name.c_str());
+                bool button = ImGui::Selectable(role.Name.c_str(), RolesSelectedMap.at(role.ID));
                 if (role.EditedFlag)
                 {
                     ImGui::SetItemTooltip("This role was edited");
@@ -30,6 +30,10 @@ void RoleSelector::RenderPanel()
                 }
                 if (button)
                 {
+                    RolesSelectedMap.at(PreviousRoleID) = false;
+                    RolesSelectedMap.at(role.ID) = true;
+                    PreviousRoleID = role.ID;
+
                     MyRoleEditor->SetCurrentRole(role);
                     MyRoleEditor->SetContentsVisibility(true);
                 }
@@ -47,7 +51,8 @@ void RoleSelector::RenderPanel()
         {
             if (role.TypeEnum == Midfield)
             {
-                bool button = ImGui::Button(role.Name.c_str());
+
+                bool button = ImGui::Selectable(role.Name.c_str(), RolesSelectedMap.at(role.ID));
                 if (role.EditedFlag)
                 {
                     ImGui::SetItemTooltip("This role was edited");
@@ -57,6 +62,10 @@ void RoleSelector::RenderPanel()
                 }
                 if (button)
                 {
+                    RolesSelectedMap.at(PreviousRoleID) = false;
+                    RolesSelectedMap.at(role.ID) = true;
+                    PreviousRoleID = role.ID;
+
                     MyRoleEditor->SetCurrentRole(role);
                     MyRoleEditor->SetContentsVisibility(true);
                 }
@@ -74,7 +83,7 @@ void RoleSelector::RenderPanel()
             if (role.TypeEnum == Attacking)
             {
 
-                bool button = ImGui::Button(role.Name.c_str());
+                bool button = ImGui::Selectable(role.Name.c_str(), RolesSelectedMap.at(role.ID));
                 if (role.EditedFlag)
                 {
                     ImGui::SetItemTooltip("This role was edited");
@@ -84,6 +93,10 @@ void RoleSelector::RenderPanel()
                 }
                 if (button)
                 {
+                    RolesSelectedMap.at(PreviousRoleID) = false;
+                    RolesSelectedMap.at(role.ID) = true;
+                    PreviousRoleID = role.ID;
+
                     MyRoleEditor->SetCurrentRole(role);
                     MyRoleEditor->SetContentsVisibility(true);
                 }
@@ -104,4 +117,14 @@ void RoleSelector::RenderPanel()
 void RoleSelector::SetRoleEditor(RoleEditor* editor)
 {
     MyRoleEditor = editor;
+}
+
+void RoleSelector::SetRolesSelectedMap()
+{
+    for (const auto role : AllRoles)
+    {
+        RolesSelectedMap.emplace(role.ID, false);
+       
+    }
+    PreviousRoleID = AllRoles[0].ID;
 }

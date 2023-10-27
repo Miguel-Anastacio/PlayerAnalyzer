@@ -94,13 +94,16 @@
     <ClCompile Include="stb_image_build.h">
       <Filter>sources\Headers\External</Filter>
     </ClCompile>
-    <ClCompile Include="SaveRolePanel.cpp">
-      <Filter>sources</Filter>
-    </ClCompile>
     <ClCompile Include="TextureManager.cpp">
       <Filter>sources</Filter>
     </ClCompile>
+    <ClCompile Include="SaveRolePanel.cpp">
+      <Filter>sources\Cpp\UI</Filter>
+    </ClCompile>
     <ClCompile Include="ImagesPanel.cpp">
+      <Filter>sources\Cpp\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayersLoaded.cpp">
       <Filter>sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -181,9 +184,14 @@
     <ClInclude Include="json.hpp">
       <Filter>sources\Headers\External</Filter>
     </ClInclude>
-    <ClInclude Include="SaveRolePanel.h" />
     <ClInclude Include="TextureManager.h" />
-    <ClInclude Include="ImagesPanel.h" />
+    <ClInclude Include="ImagesPanel.h">
+      <Filter>sources\Headers\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveRolePanel.h">
+      <Filter>sources\Headers\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayersLoaded.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.txt" />

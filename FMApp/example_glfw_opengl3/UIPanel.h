@@ -50,11 +50,24 @@ protected:
         {
             if (value < highlight.threshold[i])
             {
+                if (value == 0)
+                {
+                    ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, IM_COL32(0, 0, 0, 0));
+                    break;
+                }
+
                 if (i < highlight.colors.size())
                 {
                     ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, highlight.colors[i]);
                     break;
                 }
+            }
+
+            // when value is outside of thershold jus give him he maximum value
+            else if (i == highlight.threshold.size() - 1)
+            {
+                ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, highlight.colors[i]);
+                break;
             }
         }
     };
@@ -74,7 +87,31 @@ protected:
         }
         else if constexpr (std::is_same_v<T, float>)
         {
-            ImGui::Text("%f", value);
+            ImGui::Text("%.2f", value);
+        }
+        else {
+            ImGui::Text("Unknown Type");
+        }
+
+        ImGui::TableNextColumn();
+        ImGui::PopFont();
+    }
+    template<typename T>
+    void RenderStringValuePairTableAsSelectable(const std::string text, const T& value, const Highlight<T> highlight, ImFont* font)
+    {
+        //ImGui::Indent();
+        ImGui::Selectable(text.c_str());
+        ImGui::TableNextColumn();
+
+        ImGui::PushFont(font);
+        ColorCodeTableItems(value, highlight);
+        if constexpr (std::is_same_v<T, int>)
+        {
+            ImGui::Text("%d", value);
+        }
+        else if constexpr (std::is_same_v<T, float>)
+        {
+            ImGui::Text("%.2f", value);
         }
         else {
             ImGui::Text("Unknown Type");

@@ -10,6 +10,7 @@
 #include "RoleEditor.h"
 #include "RoleSelector.h"
 #include "SaveRolePanel.h"
+#include "PlayersLoaded.h"
 
 #include "Player.h"
 #include "Database.h"
@@ -17,13 +18,13 @@
 //#include "UI.hpp"
 
 
-int IsPlayerAlreadyLoaded(std::string name, const std::vector<std::shared_ptr<Player>>& allPlayers)
+int IsPlayerAlreadyLoaded(const uint64_t& ID, const std::vector<std::shared_ptr<Player>>& allPlayers)
 {
     int i = 0;
     for (auto& it : allPlayers)
     {
 
-        if (name == it->GetName())
+        if (ID == it->GetUniqueID())
         {
             return i;
         }
@@ -110,11 +111,6 @@ int main(int, char**)
     io.Fonts->AddFontFromFileTTF("fonts/Roboto-Bold.ttf", 22.0f);
  
     io.FontDefault = io.Fonts->AddFontFromFileTTF("fonts/Roboto-Medium.ttf", 22.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != nullptr);
 
     // Our state
     bool show_demo_window = true;
@@ -127,33 +123,37 @@ int main(int, char**)
     std::shared_ptr<Player> ActivePlayer;
 
 
-
-
     glfwSetDropCallback(window, Callback::DragAndDropCallback);
-    bool state = true;
-
+ 
     TextureManager TextureMgr;
 
     // create UI Panels
     FileUploader FileUploaderScreen(false, false, true, std::string("File Uploader"), true);
+    FileUploaderScreen.SetPlayerUploadedRef(ActivePlayer);
     PlayerAttributesPanel PlayerAttributesScreen(false, false, true, std::string("Player Attributes"), true);
     RoleEfficiencyPanel RoleEfficiencyScreen(false, false, true, std::string("Player Role Efficiency"), true);
 
     RoleSelector RoleSelectorScreen(false, false, true, std::string("Role Selector"), true);
 
 
-    CustomRoleLoader CustomRoleLoaderScreen(false, false, true, std::string("Load Files"), true, TextureMgr.GetImage());
+    CustomRoleLoader CustomRoleLoaderScreen(false, false, true, std::string("Load Files"), true, TextureMgr.GetFileImage());
 
-    SaveRolePanel SaveRoleScreen(false, false, true, std::string("Save Role"), true, TextureMgr.GetImage());
+    SaveRolePanel SaveRoleScreen(false, false, true, std::string("Save Role"), true, TextureMgr.GetFileImage());
 
     RoleEditor RoleEditorScreen(false, false, true, std::string("Role Editor"), true, &SaveRoleScreen);
+
+    PlayersLoaded PlayersLoadedScreen(false, false, true, std::string("Players Loaded"), true, TextureMgr.GetPlayerImage());
 
     RoleSelectorScreen.SetRoleEditor(&RoleEditorScreen);
     RoleSelectorScreen.AllRoles = BuildRoleDatabase();
 
     CleanUpDatabase(RoleSelectorScreen.AllRoles);
+    RoleSelectorScreen.SetRolesSelectedMap();
     std::vector<Role> OriginalDB = RoleSelectorScreen.AllRoles;
     //PrintArrayOfRoles(AllRoles);
+
+    PlayersLoadedScreen.SetPlayersUploaded(&AllPlayersLoaded);
+
 
     
     // Main loop
@@ -217,13 +217,21 @@ int main(int, char**)
         switch (App::State)
         {
             case App::MAIN_MENU:
+
                 FileUploaderScreen.SetFileState(Callback::fileUploadState);
                 FileUploaderScreen.RenderPanel();
+
+                ///////////////// !!!!!!! improve this !!!!!!!!!!
+
                 Callback::fileUploadState = FileUploaderScreen.GetFileState();
-                ActivePlayer = FileUploaderScreen.GetPlayerUploaded();
+                if(FileUploaderScreen.GetPlayerUploaded() != NULL)
+                    ActivePlayer = FileUploaderScreen.GetPlayerUploaded();
+
                 if (ActivePlayer != nullptr)
                 {
-                    int index = IsPlayerAlreadyLoaded(ActivePlayer->GetName(), AllPlayersLoaded);
+                    FileUploaderScreen.ResetPlayerUploaded();
+
+                    int index = IsPlayerAlreadyLoaded(ActivePlayer->GetUniqueID(), AllPlayersLoaded);
                     if (index != -1)
                     {
                         ActivePlayer = AllPlayersLoaded[index];
@@ -235,14 +243,18 @@ int main(int, char**)
                         ActivePlayer->CalculateEfficiencyAllRoles(RoleSelectorScreen.AllRoles);
                     }
                 }
+                PlayersLoadedScreen.SetCurrentPlayer(ActivePlayer);
+                PlayersLoadedScreen.RenderPanel();
+                ActivePlayer = PlayersLoadedScreen.GetCurrentPlayer();
 
                 PlayerAttributesScreen.SetPlayerToDisplay(ActivePlayer);
                 PlayerAttributesScreen.RenderPanel();
 
-            RoleEfficiencyScreen.SetPlayerToDisplay(ActivePlayer);
-            RoleEfficiencyScreen.RenderPanel();
+                RoleEfficiencyScreen.SetPlayerToDisplay(ActivePlayer);
+                RoleEfficiencyScreen.RenderPanel();
+                ////////////////////////////////////////////////////
            
-            break;
+                break;
         case App::ROLE_EDITOR:
             RoleSelectorScreen.RenderPanel();
             SaveRoleScreen.RenderPanel();

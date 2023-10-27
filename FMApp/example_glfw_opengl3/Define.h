@@ -162,6 +162,15 @@ enum RoleType
     Midfield,
     Attacking
 };
+//enum RoleMentality
+//{
+//    Defend,
+//    Support,
+//    Attack,
+//    Cover,
+//    Stopper
+//};
+
 
 struct AttributeWeight
 {
@@ -219,8 +228,10 @@ struct Role
 
     std::string Name = "Role";
 
+   /* std::string MentalityString = "Default";
+    RoleMentality Mentality;*/
+    
     float TotalWeight = 0;
-
     bool EditedFlag = false;
 
     void HashRole()
@@ -286,7 +297,7 @@ struct Role
             std::cerr << "Invalid Role Type";
     }
 
-    void AddAttributeFromFile(std::string name, std::string category)
+    void AddAttributeFromFile(const std::string& name, const std::string& category)
     {
         float weight = 0;
         if (category == "prefer")
@@ -309,6 +320,23 @@ struct Role
             TotalWeight += att.Weight;
         }
     }
+
+   /* void SetRoleMentality(const std::string& mentality)
+    {
+        MentalityString = mentality;
+        if (mentality == "Defend")
+            Mentality = Defend;
+        else if (mentality == "Cover")
+            Mentality = Cover;
+        else if (mentality == "Stopper")
+            Mentality = Stopper;
+        else if (mentality == "Support")
+            Mentality = Support;
+        else if (mentality == "Attack")
+            Mentality = Attack;
+        else
+            std::cerr << "Invalid Role Type";
+    }*/
 };
 
 

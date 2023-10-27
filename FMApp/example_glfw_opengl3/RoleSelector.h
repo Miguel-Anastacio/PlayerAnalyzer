@@ -1,6 +1,7 @@
 #pragma once
 #include "UIPanel.h"
 #include <vector>
+#include <unordered_map>
 struct Role;
 class RoleEditor;
 class RoleSelector :  public UIPanel
@@ -11,7 +12,12 @@ public:
     void RenderPanel() override;
 
     void SetRoleEditor(RoleEditor* editor);
+
+    void SetRolesSelectedMap();
 private:
     RoleEditor* MyRoleEditor;
+
+    std::unordered_map<uint64_t, bool> RolesSelectedMap;
+    uint64_t PreviousRoleID = 0;
 };
 

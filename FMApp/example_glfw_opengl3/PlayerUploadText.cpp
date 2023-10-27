@@ -1,7 +1,7 @@
 #include "PlayerUploadText.h"
 
 
-void PlayerUploadText::RenderFileUploadText(std::shared_ptr<Player>& player)
+bool PlayerUploadText::RenderFileUploadText(std::shared_ptr<Player>& player)
 {
     std::shared_ptr<Player> NewPlayer;
 
@@ -41,9 +41,12 @@ void PlayerUploadText::RenderFileUploadText(std::shared_ptr<Player>& player)
         {
             player = NewPlayer;
             validFile = true;
+            return true;
         }
 
     }
     if (!validFile)
         ImGui::Text("Can't find file");
+
+    return false;
 }

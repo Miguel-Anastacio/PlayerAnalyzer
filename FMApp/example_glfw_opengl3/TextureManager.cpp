@@ -6,13 +6,22 @@ TextureManager::TextureManager()
     {
         std::cout << "Error loading texture textures/file_icon.png\n" << std::endl;
     }
+    if (LoadTextureFromFile("textures/player.png", &PlayerImage) == false)
+    {
+        std::cout << "Error loading texture textures/player.png\n" << std::endl;
+    }
 }
+
 
 TextureManager::~TextureManager()
 {
     if (FileImage.FileTextureID != 0)
     {
         glDeleteTextures(1, &FileImage.FileTextureID);
+    }
+    if (PlayerImage.FileTextureID != 0)
+    {
+        glDeleteTextures(1, &PlayerImage.FileTextureID);
     }
 }
 
@@ -51,7 +60,12 @@ bool TextureManager::LoadTextureFromFile(const char* imagePath, Image* image)
     return true;
 }
 
-const Image& TextureManager::GetImage()
+const Image& TextureManager::GetFileImage()
 {
     return FileImage;
+}
+
+const Image& TextureManager::GetPlayerImage()
+{
+    return PlayerImage;
 }

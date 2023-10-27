@@ -12,11 +12,13 @@ struct Image
 class TextureManager
 {
     Image FileImage;
+    Image PlayerImage;
 
 public:
     TextureManager();
     ~TextureManager();
     bool LoadTextureFromFile(const char* imagePath, Image* image);
-    const Image& GetImage();
+    const Image& GetFileImage();
+    const Image& GetPlayerImage();
 };
 
