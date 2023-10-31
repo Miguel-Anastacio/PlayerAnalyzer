@@ -4,19 +4,57 @@
 PlayerAttributesPanel::PlayerAttributesPanel(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible)
     : UIPanel(noMove, noResize, noCollapse, name, visible)
 {
-
+    const std::vector<int> ranges = { 4, 8, 12, 16, 20 };
+    AttributesHighligth = std::make_shared<Highlight<int>>(ranges);
 }
 
 void PlayerAttributesPanel::RenderPanel()
 {
     ImGuiIO& io = ImGui::GetIO();
     auto boldFont = io.Fonts->Fonts[0];
-
+   
     ImGui::Begin(Name.c_str(), nullptr, window_flags);
-
     if (PlayerToDisplay != nullptr)
     {
-        std::vector<Attribute> PlayerAttributes = PlayerToDisplay->GetPlayerAttributes();
+        ImGui::Text("Player Loaded: %s", PlayerToDisplay->GetName().c_str());
+        const int bufferSize = 30;
+        char inputBuffer[bufferSize] = "New Name"; // Buffer to store the text input
+        ImGui::SetNextItemWidth(200);
+        // ImGui InputText widget
+        if (ImGui::InputText(" ", inputBuffer, bufferSize, ImGuiInputTextFlags_EnterReturnsTrue))
+        {
+            PlayerToDisplay->SetName(inputBuffer);
+        }
+    }
+    RenderAttributeTable(PlayerToDisplay);
+       
+    ImGui::End();
+}
+
+void PlayerAttributesPanel::SetPlayerToDisplay(const std::shared_ptr<Player>& player)
+{
+    PlayerToDisplay = player;
+}
+
+void PlayerAttributesPanel::SetPlayersHighlight(const std::shared_ptr<Highlight<int>>& newHiglight)
+{
+    AttributesHighligth = newHiglight;
+}
+
+std::shared_ptr<Highlight<int>> PlayerAttributesPanel::GetPlayersHighlight()
+{
+    return AttributesHighligth;
+}
+
+void PlayerAttributesPanel::RenderAttributeTable(const std::shared_ptr<Player>& player)
+{
+    ImGuiIO& io = ImGui::GetIO();
+    auto boldFont = io.Fonts->Fonts[0];
+
+    if (player != nullptr)
+    {
+
+        std::vector<Attribute> PlayerAttributes = player->GetPlayerAttributes();
         Attribute technicalAtt[14];
         Attribute mentalAtt[14];
         Attribute physicalAtt[8];
@@ -37,7 +75,6 @@ void PlayerAttributesPanel::RenderPanel()
 
         }
 
-
         static bool bg = true;
         static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
         if (bg)   flags |= ImGuiTableFlags_Borders;
@@ -46,10 +83,10 @@ void PlayerAttributesPanel::RenderPanel()
         {
             float headerSize = 165.0f;
             float smallHeaderSize = 30.0f;
-            
+
             if (ImGui::BeginTable("table2", 6, flags, ImVec2(640, 0)))
             {
-                int attributesIndex = 0;
+
                 ImGui::TableSetupColumn("Technical", ImGuiTableColumnFlags_WidthFixed, headerSize);
                 ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, smallHeaderSize);
                 ImGui::TableSetupColumn("Mental", ImGuiTableColumnFlags_WidthFixed, headerSize);
@@ -60,34 +97,19 @@ void PlayerAttributesPanel::RenderPanel()
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0);
 
-                //for (int column = 0; column < 3; column++)
-                //{
-                //    for (int i = 0; i < 14; ++i)
-                //    {
-                //        //ImGui::TableNextRow();
-                //        ImGui::TableSetColumnIndex(column);
-                //        if (attributesIndex >= PlayerAttributes.size())
-                //            break;
-                //        ImGui::Text("%-20s %d", PlayerAttributes[attributesIndex].Name.c_str(), PlayerAttributes[attributesIndex].Value);
-                //        attributesIndex++;
-                //    }
-                //}
-                std::vector<int> thresholdAtt = { 4, 8, 12, 16, 20 };
-                Highlight<int> attHighlight(thresholdAtt);
 
-  
                 for (int i = 0; i < 14; ++i)
                 {
                     //ColorCodeTableItems(technicalAtt[i].Value, attHighlight);
                     // render technical attribute
-                    RenderStringValuePairTable(technicalAtt[i].Name, technicalAtt[i].Value, attHighlight, boldFont);
+                    RenderStringValuePairTable(technicalAtt[i].Name, technicalAtt[i].Value, *AttributesHighligth, boldFont);
                     // render mental attribute
-                    RenderStringValuePairTable(mentalAtt[i].Name, mentalAtt[i].Value, attHighlight, boldFont);
+                    RenderStringValuePairTable(mentalAtt[i].Name, mentalAtt[i].Value, *AttributesHighligth, boldFont);
 
                     // render physical attribute
                     if (i < 8)
                     {
-                        RenderStringValuePairTable(physicalAtt[i].Name, physicalAtt[i].Value, attHighlight, boldFont);
+                        RenderStringValuePairTable(physicalAtt[i].Name, physicalAtt[i].Value, *AttributesHighligth, boldFont);
                     }
                     else
                     {
@@ -101,11 +123,5 @@ void PlayerAttributesPanel::RenderPanel()
             }
         }
     }
-    ImGui::End();
-}
-
-void PlayerAttributesPanel::SetPlayerToDisplay(const std::shared_ptr<Player>& player)
-{
-    PlayerToDisplay = player;
 }
 

@@ -9,10 +9,18 @@ public:
 
     void RenderPanel() override;
 
-    void SetPlayerToDisplay(const std::shared_ptr<Player>& player);
-protected:
-    std::shared_ptr<Player> PlayerToDisplay;
 
+
+    void SetPlayerToDisplay(const std::shared_ptr<Player>& player);
+    void SetPlayersHighlight(const  std::shared_ptr<Highlight<int>>& newHiglight);
+    std::shared_ptr<Highlight<int>> GetPlayersHighlight();
+
+protected:
+
+    void RenderAttributeTable(const std::shared_ptr<Player>& player);
+
+    std::shared_ptr<Player> PlayerToDisplay;
+    std::shared_ptr<Highlight<int>> AttributesHighligth;
    
 
 };

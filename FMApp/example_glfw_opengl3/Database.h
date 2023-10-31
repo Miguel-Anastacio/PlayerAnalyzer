@@ -19,4 +19,9 @@ bool WriteRoleWeightsFile(const Role& role, const std::string& fileName);
 
 void UpdateRoleFromCustomFile(std::vector<Role>& AllRoles, const std::string& fileName);
 
+// used to create the preview
+// it reads the file name provided from the folder custom_roles
+// outputs a vector that contains the name of all roles edited by the file
+std::vector<std::string> ReadRolesEditedByFile(const std::string& fileName, const std::vector<Role>& AllRoles);
+
 

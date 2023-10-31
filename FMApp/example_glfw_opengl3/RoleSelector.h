@@ -12,12 +12,18 @@ public:
     void RenderPanel() override;
 
     void SetRoleEditor(RoleEditor* editor);
+    RoleEditor* GetRoleEditor();
 
     void SetRolesSelectedMap();
+
+    void SetOriginalDBRef(const std::vector<Role>& db);
+    void SetAllRoles(const std::vector<Role>& roles);
 private:
-    RoleEditor* MyRoleEditor;
+    RoleEditor* MyRoleEditor = NULL;
 
     std::unordered_map<uint64_t, bool> RolesSelectedMap;
     uint64_t PreviousRoleID = 0;
+
+    const std::vector<Role>* OriginalDB;
 };
 

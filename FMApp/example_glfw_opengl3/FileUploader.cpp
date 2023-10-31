@@ -10,6 +10,8 @@ FileUploader::FileUploader(const bool& noMove, const bool& noResize, const bool&
 
 std::shared_ptr<Player> FileUploader::GetPlayerUploaded()
 {
+    // app is retrieving the new file so reset the flag
+    NewPlayerUploaded = false;
     return PlayerUploaded;
 }
 
@@ -21,6 +23,11 @@ void FileUploader::ResetPlayerUploaded()
 void FileUploader::SetPlayerUploadedRef(std::shared_ptr<Player> pl)
 {
     PlayerUploaded = pl;
+}
+
+bool FileUploader::GetNewPlayerUploaded()
+{
+    return NewPlayerUploaded;
 }
 
 void FileUploader::RenderPanel()
@@ -36,19 +43,21 @@ void FileUploader::RenderPanel()
             {
                 PlayerUploaded->SetCosmeticID(ValidPlayersUploaded);
                 ValidPlayersUploaded++;
+                NewPlayerUploaded = true;
             }
-            FileState.AcceptingFiles = false;
+            FileState->AcceptingFiles = false;
             ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Drag and Drop File"))
         {
-            if (FileInsertPanel->RenderFileDragAndDrop(PlayerUploaded, FileState))
+            if (FileInsertPanel->RenderFileDragAndDrop(PlayerUploaded, *FileState))
             {
                 PlayerUploaded->SetCosmeticID(ValidPlayersUploaded);
                 ValidPlayersUploaded++;
+                NewPlayerUploaded = true;
             }
 
-            FileState.AcceptingFiles = true;
+            FileState->AcceptingFiles = true;
             ImGui::EndTabItem();
         }
         // to do
@@ -60,15 +69,16 @@ void FileUploader::RenderPanel()
         ImGui::EndTabBar();
     }
 
+
     ImGui::End();
 }
 
-void FileUploader::SetFileState(const FileUploadState& file)
+void FileUploader::SetFileState(FileUploadState& file)
 {
-    FileState = file;
+    FileState = &file;
 }
 
-FileUploadState FileUploader::GetFileState()
+FileUploadState* FileUploader::GetFileState()
 {
     return FileState;
 }

@@ -4,7 +4,8 @@
 RoleEfficiencyPanel::RoleEfficiencyPanel(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible)
     : UIPanel(noMove, noResize, noCollapse, name, visible)
 {
-
+    const std::vector<float> ranges = { 20, 40, 60, 80, 100 };
+    EfficiencyHighligth = std::make_shared<Highlight<float>>(ranges);
 }
 
 void RoleEfficiencyPanel::RenderPanel()
@@ -36,8 +37,7 @@ void RoleEfficiencyPanel::RenderPanel()
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::PopFont();
-            std::vector<float> thresholdAtt = {20, 40, 60, 80, 100};
-            Highlight<float> effHighlight(thresholdAtt);
+
 
             std::vector<RoleEfficiency> DefensiveRoles = PlayerToDisplay->GetDefensiveRoles();
             std::vector<RoleEfficiency> MidfieldRoles = PlayerToDisplay->GetMidfieldRoles();
@@ -47,7 +47,7 @@ void RoleEfficiencyPanel::RenderPanel()
                 if (i < DefensiveRoles.size())
                 {
                     //RenderStringValuePairTable(DefensiveRoles[i].RoleName, DefensiveRoles[i].Value, effHighlight, boldFont);
-                    RenderStringValuePairTableAsSelectable(DefensiveRoles[i].RoleName, DefensiveRoles[i].Value, effHighlight, boldFont);
+                    RenderStringValuePairTableAsSelectable(DefensiveRoles[i].RoleName, DefensiveRoles[i].Value, *EfficiencyHighligth, boldFont);
                 }
                 else
                 {
@@ -56,12 +56,12 @@ void RoleEfficiencyPanel::RenderPanel()
                 }
                 
                 //RenderStringValuePairTable(MidfieldRoles[i].RoleName, MidfieldRoles[i].Value, effHighlight, boldFont);
-                RenderStringValuePairTableAsSelectable(MidfieldRoles[i].RoleName, MidfieldRoles[i].Value, effHighlight, boldFont);
+                RenderStringValuePairTableAsSelectable(MidfieldRoles[i].RoleName, MidfieldRoles[i].Value, *EfficiencyHighligth, boldFont);
 
                 if (i < AttackingRoles.size())
                 {
                     //RenderStringValuePairTable(AttackingRoles[i].RoleName, AttackingRoles[i].Value, effHighlight, boldFont);
-                    RenderStringValuePairTableAsSelectable(AttackingRoles[i].RoleName, AttackingRoles[i].Value, effHighlight, boldFont);
+                    RenderStringValuePairTableAsSelectable(AttackingRoles[i].RoleName, AttackingRoles[i].Value, *EfficiencyHighligth, boldFont);
                 }
                 else
                 {
@@ -106,12 +106,21 @@ void RoleEfficiencyPanel::RenderPanel()
         ImGui::Spacing();
         ImGui::Separator();
         RoleEfficiency temp = PlayerToDisplay->GetBestPlayerRole();
-        ImGui::Text("Player Best Role: %-35s  %f", temp.RoleName.c_str(), temp.Value);
+        ImGui::Indent(50.0);
+        ImGui::Text("Player Best Role : ");
+        ImGui::SameLine();
+        ImGui::TextColored(EfficiencyHighligth->GetColors()[4], " %-35s  %.2f", temp.RoleName.c_str(), temp.Value);
+        ImGui::Unindent(50.0);
         ImGui::Separator();
         ImGui::Spacing();
     }
     ImGui::End();
 
+}
+
+std::shared_ptr<Highlight<float>> RoleEfficiencyPanel::GetEfficiencyHighlight()
+{
+    return EfficiencyHighligth;
 }
 
 void RoleEfficiencyPanel::SetPlayerToDisplay(const std::shared_ptr<Player>& player)

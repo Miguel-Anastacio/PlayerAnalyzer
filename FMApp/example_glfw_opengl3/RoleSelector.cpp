@@ -8,11 +8,8 @@ RoleSelector::RoleSelector(const bool& noMove, const bool& noResize, const bool&
 
 void RoleSelector::RenderPanel()
 {
+
     ImGui::Begin(Name.c_str(), nullptr, window_flags);
-
-    ImGuiStyle& style = ImGui::GetStyle();
-    style.Colors[ImGuiCol_Button] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
-
     if (ImGui::TreeNode("Defensive"))
     {
         ImGui::Indent();
@@ -33,9 +30,11 @@ void RoleSelector::RenderPanel()
                     RolesSelectedMap.at(PreviousRoleID) = false;
                     RolesSelectedMap.at(role.ID) = true;
                     PreviousRoleID = role.ID;
-
-                    MyRoleEditor->SetCurrentRole(role);
-                    MyRoleEditor->SetContentsVisibility(true);
+                    if (MyRoleEditor != NULL)
+                    {
+                        MyRoleEditor->SetCurrentRole(role);
+                        MyRoleEditor->SetContentsVisibility(true);
+                    }
                 }
               
             }
@@ -66,8 +65,11 @@ void RoleSelector::RenderPanel()
                     RolesSelectedMap.at(role.ID) = true;
                     PreviousRoleID = role.ID;
 
-                    MyRoleEditor->SetCurrentRole(role);
-                    MyRoleEditor->SetContentsVisibility(true);
+                    if (MyRoleEditor != NULL)
+                    {
+                        MyRoleEditor->SetCurrentRole(role);
+                        MyRoleEditor->SetContentsVisibility(true);
+                    }
                 }
             }
         }
@@ -97,8 +99,12 @@ void RoleSelector::RenderPanel()
                     RolesSelectedMap.at(role.ID) = true;
                     PreviousRoleID = role.ID;
 
-                    MyRoleEditor->SetCurrentRole(role);
-                    MyRoleEditor->SetContentsVisibility(true);
+                    // role selector when it is in the edit roles menu has a reference to the role editor
+                    if (MyRoleEditor != NULL)
+                    {
+                        MyRoleEditor->SetCurrentRole(role);
+                        MyRoleEditor->SetContentsVisibility(true);
+                    }
                 }
             }
         }
@@ -106,11 +112,25 @@ void RoleSelector::RenderPanel()
         ImGui::TreePop();
     }
 
-    style = ImGui::GetStyle();
-    style.Colors[ImGuiCol_Button] = ImVec4(0.2f, 0.4f, 0.6f, 1.0f);
-    ImGui::End();
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
 
-    MyRoleEditor->RenderPanel();
+    if (MyRoleEditor != NULL)
+    {
+        if (ImGui::Button("Reset All Roles"))
+        {
+            AllRoles = *OriginalDB;
+        }
+    }
+
+
+    ImGui::End();
+    if(MyRoleEditor != NULL)
+        MyRoleEditor->RenderPanel();
 
 }
 
@@ -119,12 +139,28 @@ void RoleSelector::SetRoleEditor(RoleEditor* editor)
     MyRoleEditor = editor;
 }
 
+RoleEditor* RoleSelector::GetRoleEditor()
+{
+    return MyRoleEditor;
+}
+
 void RoleSelector::SetRolesSelectedMap()
 {
     for (const auto role : AllRoles)
     {
         RolesSelectedMap.emplace(role.ID, false);
-       
     }
     PreviousRoleID = AllRoles[0].ID;
+}
+
+void RoleSelector::SetAllRoles(const std::vector<Role>& roles)
+{
+    AllRoles = roles;
+    OriginalDB = &roles;
+    SetRolesSelectedMap();
+}
+
+void RoleSelector::SetOriginalDBRef(const std::vector<Role>& db)
+{
+    OriginalDB = &db;
 }

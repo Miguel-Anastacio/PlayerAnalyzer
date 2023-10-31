@@ -8,6 +8,11 @@ RoleEditor::RoleEditor(const bool& noMove, const bool& noResize, const bool& noC
     BuildAllAttributesArray();
     SaveRoleScreen = roleSaver;
 
+    // this ranges vector is just a placeholder
+    // the user does not see it
+    const std::vector<float> ranges = { 20, 40, 60, 80, 100 };
+    WeightHighlight = std::make_shared<Highlight<float>>(ranges);
+
 }
 
 void RoleEditor::RenderPanel()
@@ -62,6 +67,11 @@ void RoleEditor::SetCurrentRole(Role& role)
     CurrentRole = &role;
     AttributeSelected = NULL;
     AttributeSelectedMap.at(PreviousAtributeSelectedID) = false;
+}
+
+std::shared_ptr<Highlight<float>> RoleEditor::GetWeightHighlight()
+{
+    return WeightHighlight;
 }
 
 void RoleEditor::BuildAllAttributesArray()
@@ -121,13 +131,18 @@ void RoleEditor::RenderAttributeFromVector(std::vector<AttributeWeight>& vector,
     ImGuiIO& io = ImGui::GetIO();
     auto boldFont = io.Fonts->Fonts[0];
 
+    // chnage t
     std::vector<float> thresholdAtt;
+    // calculate average weigth
+    // multiply it by 2
+    // divide it by the number of intervals we want: 5
     for (int i = 1; i <= 5; i++)
     {
-        float temp = (CurrentRole->TotalWeight / CurrentRole->Attributes.size() / 3) * i;
+        float temp = (CurrentRole->TotalWeight / CurrentRole->Attributes.size()) * 2 / 5 * i;
         thresholdAtt.push_back(temp);
     }
-    Highlight<float> attHighlight(thresholdAtt);
+    WeightHighlight->UpdateLimts(thresholdAtt);
+    
 
     int AttributeIndexinRole = -1;
     if (index < vector.size())
@@ -137,7 +152,8 @@ void RoleEditor::RenderAttributeFromVector(std::vector<AttributeWeight>& vector,
         if (AttributeIndexinRole == -1)
         {
             int a = ImGui::TableGetColumnIndex();
-            RenderAttributeTableMember(vector[index], vector[index].Weight, attHighlight, boldFont);
+            //float percentage = 
+            RenderAttributeTableMember(vector[index], vector[index].Weight, *WeightHighlight, boldFont);
             //RenderAttributeTableMember(vector[index]);
             //RenderStringValuePairTableAsSelectable(vector[index].Name, vector[index].Weight, attHighlight, boldFont);
         }
@@ -145,7 +161,7 @@ void RoleEditor::RenderAttributeFromVector(std::vector<AttributeWeight>& vector,
         {
             //RenderStringValuePairTableAsSelectable(CurrentRole->Attributes[AttributeIndexinRole].Name, CurrentRole->Attributes[AttributeIndexinRole].Weight, attHighlight, boldFont);
 
-            RenderAttributeTableMember(CurrentRole->Attributes[AttributeIndexinRole], CurrentRole->Attributes[AttributeIndexinRole].Weight, attHighlight, boldFont);
+            RenderAttributeTableMember(CurrentRole->Attributes[AttributeIndexinRole], CurrentRole->Attributes[AttributeIndexinRole].Weight, *WeightHighlight, boldFont);
         }
     }
     else

@@ -23,6 +23,7 @@ void UIPanel::SetupWindowFlags(const bool& noMove = false, const bool& noResize 
     if (NoMove)            window_flags |= ImGuiWindowFlags_NoMove;
     if (NoResize)          window_flags |= ImGuiWindowFlags_NoResize;
     if (NoCollapse)        window_flags |= ImGuiWindowFlags_NoCollapse;
+
 }
 
 void UIPanel::SetVisibility(const bool& state)

@@ -12,7 +12,7 @@ public:
     void RenderPanel() override;
     void SetCurrentRole(Role& role);
 
-
+    std::shared_ptr<Highlight<float>> GetWeightHighlight();
 
 protected:
     void BuildAllAttributesArray();
@@ -21,6 +21,8 @@ protected:
     bool AttributeSelectedIsInUse = false;
     AttributeWeight* AttributeSelected = NULL;
     void RenderAttributeFromVector(std::vector<AttributeWeight>& vector, int index);
+
+    std::shared_ptr<Highlight<float>> WeightHighlight;
 
     template<typename T>
     void RenderAttributeTableMember(AttributeWeight& att, const T& value, const Highlight<T>& highlight, ImFont* font)

@@ -23,11 +23,32 @@
     <Filter Include="sources\Cpp\UI">
       <UniqueIdentifier>{f476a44b-da7f-42ba-8fd6-d8083c2bc1e5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sources\Cpp\States">
-      <UniqueIdentifier>{0b94a23a-ec31-4997-87e2-6ec046f3f18a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="sources\Headers\External">
       <UniqueIdentifier>{294b550f-10ba-4942-ac86-3df31a90283b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Headers\UI\MainMenu">
+      <UniqueIdentifier>{a56f6c9d-4c5a-4e6c-b0e9-19d8c44615c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Headers\UI\EditRoles">
+      <UniqueIdentifier>{83644538-4104-4ae4-a493-4ab92a6a77a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Headers\UI\Loader">
+      <UniqueIdentifier>{d1323a84-0983-47d5-8122-49eb6d0d0b61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Cpp\UI\MainMenu">
+      <UniqueIdentifier>{8f4e5727-14c8-4721-a2c6-72f6db9025f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Cpp\UI\EditRoles">
+      <UniqueIdentifier>{a210252e-4ee6-4393-a04a-6b98c79d237f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Cpp\UI\Loader">
+      <UniqueIdentifier>{48ae1fbd-7c22-44e0-a48c-f3b913d2f37a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Cpp\UI\Comparison">
+      <UniqueIdentifier>{42fc7b47-6ad3-466a-a4fe-c7498f7fbe11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Headers\UI\Comparison">
+      <UniqueIdentifier>{5053d564-6be0-44db-8c2c-f7253c54a725}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -67,43 +88,52 @@
     <ClCompile Include="UIPanel.cpp">
       <Filter>sources\Cpp\UI</Filter>
     </ClCompile>
-    <ClCompile Include="FileUploader.cpp">
-      <Filter>sources\Cpp\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerUploadText.cpp">
-      <Filter>sources\Cpp\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerAttributesPanel.cpp">
-      <Filter>sources\Cpp\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerUploadFile.cpp">
-      <Filter>sources\Cpp\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="RoleEfficiencyPanel.cpp">
-      <Filter>sources\Cpp\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="RoleEditor.cpp">
-      <Filter>sources\Cpp\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="RoleSelector.cpp">
-      <Filter>sources\Cpp\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="CustomRoleLoader.cpp">
-      <Filter>sources\Cpp\UI</Filter>
-    </ClCompile>
     <ClCompile Include="stb_image_build.h">
       <Filter>sources\Headers\External</Filter>
     </ClCompile>
     <ClCompile Include="TextureManager.cpp">
       <Filter>sources</Filter>
     </ClCompile>
-    <ClCompile Include="SaveRolePanel.cpp">
-      <Filter>sources\Cpp\UI</Filter>
-    </ClCompile>
     <ClCompile Include="ImagesPanel.cpp">
       <Filter>sources\Cpp\UI</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerAttributesPanel.cpp">
+      <Filter>sources\Cpp\UI\MainMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerUploadFile.cpp">
+      <Filter>sources\Cpp\UI\MainMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerUploadText.cpp">
+      <Filter>sources\Cpp\UI\MainMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="FileUploader.cpp">
+      <Filter>sources\Cpp\UI\MainMenu</Filter>
+    </ClCompile>
     <ClCompile Include="PlayersLoaded.cpp">
+      <Filter>sources\Cpp\UI\MainMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="RoleEfficiencyPanel.cpp">
+      <Filter>sources\Cpp\UI\MainMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="RoleEditor.cpp">
+      <Filter>sources\Cpp\UI\EditRoles</Filter>
+    </ClCompile>
+    <ClCompile Include="RoleSelector.cpp">
+      <Filter>sources\Cpp\UI\EditRoles</Filter>
+    </ClCompile>
+    <ClCompile Include="SaveRolePanel.cpp">
+      <Filter>sources\Cpp\UI\EditRoles</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomRoleLoader.cpp">
+      <Filter>sources\Cpp\UI\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings.cpp">
+      <Filter>sources\Cpp\UI\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerAttributeComparison.cpp">
       <Filter>sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -132,9 +162,6 @@
     <ClInclude Include="Database.h">
       <Filter>sources\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="UI.hpp">
-      <Filter>sources\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="RoleAnalysis.h">
       <Filter>sources\Headers</Filter>
     </ClInclude>
@@ -150,31 +177,7 @@
     <ClInclude Include="UIPanel.h">
       <Filter>sources\Headers\UI</Filter>
     </ClInclude>
-    <ClInclude Include="FileUploader.h">
-      <Filter>sources\Headers\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerUploadText.h">
-      <Filter>sources\Headers\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerAttributesPanel.h">
-      <Filter>sources\Headers\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerUploadFile.h">
-      <Filter>sources\Headers\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="RoleEfficiencyPanel.h">
-      <Filter>sources\Headers\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="RoleEditor.h">
-      <Filter>sources\Headers\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="RoleSelector.h">
-      <Filter>sources\Headers\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerAnalyzerApp.hpp" />
-    <ClInclude Include="CustomRoleLoader.h">
-      <Filter>sources\Headers\UI</Filter>
-    </ClInclude>
+    <ClInclude Include="Application.h" />
     <ClInclude Include="stb_image.h">
       <Filter>sources\Headers\External</Filter>
     </ClInclude>
@@ -185,16 +188,45 @@
       <Filter>sources\Headers\External</Filter>
     </ClInclude>
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="FileUploader.h">
+      <Filter>sources\Headers\UI\MainMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerUploadFile.h">
+      <Filter>sources\Headers\UI\MainMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerUploadText.h">
+      <Filter>sources\Headers\UI\MainMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayersLoaded.h">
+      <Filter>sources\Headers\UI\MainMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="RoleEfficiencyPanel.h">
+      <Filter>sources\Headers\UI\MainMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerAttributesPanel.h">
+      <Filter>sources\Headers\UI\MainMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="RoleSelector.h">
+      <Filter>sources\Headers\UI\EditRoles</Filter>
+    </ClInclude>
+    <ClInclude Include="RoleEditor.h">
+      <Filter>sources\Headers\UI\EditRoles</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveRolePanel.h">
+      <Filter>sources\Headers\UI\EditRoles</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomRoleLoader.h">
+      <Filter>sources\Headers\UI\Loader</Filter>
+    </ClInclude>
     <ClInclude Include="ImagesPanel.h">
       <Filter>sources\Headers\UI</Filter>
     </ClInclude>
-    <ClInclude Include="SaveRolePanel.h">
-      <Filter>sources\Headers\UI</Filter>
+    <ClInclude Include="Settings.h">
+      <Filter>sources\Headers\UI\Loader</Filter>
     </ClInclude>
-    <ClInclude Include="PlayersLoaded.h" />
+    <ClInclude Include="PlayerAttributeComparison.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\README.txt" />
     <None Include="..\..\misc\debuggers\imgui.natvis">
       <Filter>imgui</Filter>
     </None>

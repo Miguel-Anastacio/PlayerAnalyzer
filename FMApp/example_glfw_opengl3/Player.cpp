@@ -178,14 +178,15 @@ RoleEfficiency Player::GetBestPlayerRole()
 
 void Player::CalculateEfficiencyAllRoles(const std::vector<Role>& AllRoles)
 {
+    if (BestPlayerRole == nullptr)
+    {
+        BestPlayerRole = std::make_shared<RoleEfficiency>();
+    }
+
     for (auto& it : AllRoles)
     {
         float efficiency = RoleAnalysis::CalculateRoleEfficiency(it, Attributes);
 
-        if (BestPlayerRole == nullptr)
-        {
-            BestPlayerRole = std::make_shared<RoleEfficiency>();
-        }
         if (efficiency > BestPlayerRole->Value)
         {
             BestPlayerRole->RoleName = it.Name;
@@ -213,14 +214,21 @@ void Player::CalculateEfficiencyAllRoles(const std::vector<Role>& AllRoles)
 
 void Player::UpdateEfficiency(const std::vector<Role>& AllRoles)
 {
+    if (BestPlayerRole == nullptr)
+    {
+        BestPlayerRole = std::make_shared<RoleEfficiency>();
+    }
+    else
+    {
+        BestPlayerRole->RoleName = "";
+        BestPlayerRole->Value = 0;
+    }
+
     for (auto& it : AllRoles)
     {
         float efficiency = RoleAnalysis::CalculateRoleEfficiency(it, Attributes);
 
-        if (BestPlayerRole == nullptr)
-        {
-            BestPlayerRole = std::make_shared<RoleEfficiency>();
-        }
+        
         if (efficiency > BestPlayerRole->Value)
         {
             BestPlayerRole->RoleName = it.Name;

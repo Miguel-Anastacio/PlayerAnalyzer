@@ -169,10 +169,12 @@
     <ClCompile Include="..\..\imgui_widgets.cpp" />
     <ClCompile Include="..\..\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="..\..\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Application.cpp" />
     <ClCompile Include="CustomRoleLoader.cpp" />
     <ClCompile Include="Database.cpp" />
     <ClCompile Include="FileUploader.cpp" />
     <ClCompile Include="ImagesPanel.cpp" />
+    <ClCompile Include="PlayerAttributeComparison.cpp" />
     <ClCompile Include="PlayerAttributesPanel.cpp" />
     <ClCompile Include="PlayersLoaded.cpp" />
     <ClCompile Include="PlayerUploadFile.cpp" />
@@ -184,6 +186,7 @@
     <ClCompile Include="RoleEfficiencyPanel.cpp" />
     <ClCompile Include="RoleSelector.cpp" />
     <ClCompile Include="SaveRolePanel.cpp" />
+    <ClCompile Include="Settings.cpp" />
     <ClCompile Include="stb_image_build.h" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="UIPanel.cpp" />
@@ -202,7 +205,8 @@
     <ClInclude Include="File.h" />
     <ClInclude Include="FileUploader.h" />
     <ClInclude Include="ImagesPanel.h" />
-    <ClInclude Include="PlayerAnalyzerApp.hpp" />
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="PlayerAttributeComparison.h" />
     <ClInclude Include="PlayerAttributesPanel.h" />
     <ClInclude Include="PlayersLoaded.h" />
     <ClInclude Include="PlayerUploadFile.h" />
@@ -215,15 +219,14 @@
     <ClInclude Include="RoleEfficiencyPanel.h" />
     <ClInclude Include="RoleSelector.h" />
     <ClInclude Include="SaveRolePanel.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="TextureManager.h" />
-    <ClInclude Include="UI.hpp" />
     <ClInclude Include="UIPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\misc\debuggers\imgui.natstepfilter" />
     <None Include="..\..\misc\debuggers\imgui.natvis" />
-    <None Include="..\README.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

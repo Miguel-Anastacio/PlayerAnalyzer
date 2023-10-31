@@ -2,30 +2,118 @@
 #include <imgui.h>
 #include <string>
 #include <vector>
+#include <memory>
+template <typename T>
+struct ColorCode
+{
+    T MaxValue;
+    T MinValue;
+    ImVec4 Color = ImVec4(0, 0, 0, 1.0f);
+
+    ColorCode(const T& max, const T& min, const ImVec4& color) : MaxValue(max), MinValue(min), Color(color)
+    {};
+
+    ColorCode(const T& max, ImVec4 color) : MaxValue(max), Color(color)
+    {
+        MinValue = 0;
+    };
+
+    ColorCode(const T& max) : MaxValue(max)
+    {
+        MinValue = 0;
+    };
+
+   /* ColorCode(const T& max, const T& min) : MaxValue(max), MinValue(min)
+    {
+       
+    }*/
+    ColorCode() {};
+
+};
 
 
 template <typename T>
 struct Highlight
 {
-    std::vector<T> threshold = { 20, 40, 60, 80, 100 };
-    // defaultColors
-    // red, orange, yellow, lime green, green
-    std::vector<ImU32> colors = { IM_COL32(255, 0, 0, 255),
-                        IM_COL32(255, 128, 0, 255),
-                        IM_COL32(255, 255, 0, 190),
-                        IM_COL32(128, 255, 0, 220),
-                        IM_COL32(0, 255, 0, 220)
-                      };
+    //std::vector<T> threshold = { 20, 40, 60, 80, 100 };
+    //// defaultColors
+    //// red, orange, yellow, lime green, green
+    //std::vector<ImU32> colors = { IM_COL32(255, 0, 0, 255),
+    //                    IM_COL32(255, 128, 0, 255),
+    //                    IM_COL32(255, 255, 0, 190),
+    //                    IM_COL32(128, 255, 0, 220),
+    //                    IM_COL32(0, 255, 0, 220)
+    //                  };
 
-    Highlight(const std::vector<T>& t, const std::vector<ImU32>& col) : threshold(t), colors(col)
+  
+
+    std::vector<ColorCode<T>> ColorCodes;
+
+    Highlight(const std::vector<T>& ranges, const std::vector<ImU32>& col)
     {
+        for (int i = 0; i < ranges.size(); i++)
+        {
+            ColorCodes.push_back(ranges[i], col[i]);
+        }
     };
-    Highlight(const std::vector<T>& t) : threshold(t)
+
+    Highlight(const std::vector<T>& ranges) 
     {
+        for (int i = 0; i < ranges.size(); i++)
+        {
+            ColorCodes.push_back(ranges[i]);
+            if (i != 0)
+            {
+                ColorCodes[i].MinValue = ranges[i - 1];
+            }
+        }
+
+        ColorCodes[0].Color = ImVec4(1.0f, 0, 0, 1.0f);
+        ColorCodes[1].Color = ImVec4(1.0f, 0.5f, 0, 1.0f);
+        ColorCodes[2].Color = ImVec4(1.0f, 1.0f, 0, 0.8f);
+        ColorCodes[3].Color = ImVec4(1.0f, 1.0f, 0, 0.9f);
+        ColorCodes[4].Color = ImVec4(0, 1.0f, 0, 0.9f);
+
     };
-    
+
+
+    Highlight(std::vector<ColorCode<T>> codes) : ColorCodes(codes) {};
+
     Highlight() {};
 
+    void CopyColors(const std::vector<ImVec4>& color)
+    {
+        for (int i = 0; i < color.size(); i++)
+        {
+            if (i < ColorCodes.size())
+            {
+                ColorCodes[i].Color = color[i];
+            }
+        }
+    }
+
+    std::vector<ImVec4>GetColors()
+    {
+        std::vector<ImVec4> col;
+
+        for (const auto& c : ColorCodes)
+        {
+            col.push_back(c.Color);
+        }
+        return col;
+    }
+
+    void UpdateLimts(const std::vector<T>& ranges)
+    {
+        for (int i = 0; i<ColorCodes.size(); i++)
+        {
+            ColorCodes[i].MaxValue = ranges[i];
+            if (i != 0)
+            {
+                ColorCodes[i].MinValue = ranges[i - 1];
+            }
+        }
+    }
 };
 
 class UIPanel
@@ -42,31 +130,41 @@ public:
     void SetVisibility(const bool& state);
     void SetContentsVisibility(const bool& state);
 
+
 protected:
+
+    bool Visibility = false;
+    bool ContentsVisibility = false;
+
+    std::string Name;
+    bool NoMove;
+    bool NoResize;
+    bool NoCollapse;
+    ImGuiWindowFlags window_flags = 0;
+
+    
+
     template <typename T>
     void ColorCodeTableItems(const T& value, const Highlight<T>& highlight)
     {
-        for (int i = 0; i < highlight.threshold.size(); i++)
+        for (int i = 0; i < highlight.ColorCodes.size(); i++)
         {
-            if (value < highlight.threshold[i])
+            if (value < highlight.ColorCodes[i].MaxValue)
             {
                 if (value == 0)
                 {
-                    ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, IM_COL32(0, 0, 0, 0));
+                    ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg,IM_COL32_BLACK);
                     break;
                 }
 
-                if (i < highlight.colors.size())
-                {
-                    ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, highlight.colors[i]);
-                    break;
-                }
+                ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, ImGui::GetColorU32(highlight.ColorCodes[i].Color));
+                break;
             }
 
             // when value is outside of thershold jus give him he maximum value
-            else if (i == highlight.threshold.size() - 1)
+            else if (i == highlight.ColorCodes.size() - 1)
             {
-                ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, highlight.colors[i]);
+                ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, ImGui::GetColorU32(highlight.ColorCodes[i].Color));
                 break;
             }
         }
@@ -96,6 +194,7 @@ protected:
         ImGui::TableNextColumn();
         ImGui::PopFont();
     }
+
     template<typename T>
     void RenderStringValuePairTableAsSelectable(const std::string text, const T& value, const Highlight<T> highlight, ImFont* font)
     {
@@ -121,14 +220,8 @@ protected:
         ImGui::PopFont();
     }
 
-    bool Visibility = false;
-    bool ContentsVisibility = false;
 
-    std::string Name;
-    bool NoMove;
-    bool NoResize;
-    bool NoCollapse;
-    ImGuiWindowFlags window_flags = 0;
+
 
 };
 

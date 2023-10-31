@@ -16,6 +16,7 @@ private:
 
     std::shared_ptr<Player>CurrentPlayer;
 
+    
   
 };
 

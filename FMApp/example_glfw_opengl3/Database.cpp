@@ -88,7 +88,10 @@ bool WriteRoleWeightsFile(const Role& Role, const std::string& fileName)
     std::string name = fileName;
     if (fileName.size()>0)
     {
-        name = fileName + ".txt";
+        if (fileName.find(".txt") == std::string::npos)
+        {
+            name = fileName + ".txt";
+        }
     }
     std::filesystem::path filePath = folderPath / name;
     try
@@ -210,6 +213,61 @@ void UpdateRoleFromCustomFile(std::vector<Role>& AllRoles, const std::string& fi
         std::cerr << "Error: Unable to open the file." << std::endl;
         //return 1;  // Exit with an error code
     }
+}
+
+std::vector<std::string> ReadRolesEditedByFile(const std::string& fileName, const std::vector<Role>& AllRoles)
+{
+   
+    std::ifstream file(fileName);
+
+    std::vector<std::string> rolesEdited;
+    if (file.is_open())
+    {
+        Role* RoleToEdit = NULL;
+        std::string line;
+        uint64_t currentId;
+
+        while (std::getline(file, line))
+        {
+            // check if line contains an ID
+            if (line.find("ID") == 0)
+            {
+                try
+                {
+                    currentId = std::stoull(line.substr(3));
+                }
+                catch (const std::invalid_argument& e) {
+                    std::cerr << "Invalid argument: " << e.what() << std::endl;
+                }
+                catch (const std::out_of_range& e) {
+                    std::cerr << "Out of range: " << e.what() << std::endl;
+                    std::cerr << "Problematic string: " << currentId << std::endl;
+                }             
+                for (const auto& role : AllRoles)
+                {
+                    if (role.ID == currentId)
+                    {
+                        // see if it is already present in the vector of strings
+                        bool present = false;
+                        for (const auto& string : rolesEdited)
+                        {
+                            if (role.Name == string)
+                                present = true;
+                        }
+                        if(!present)
+                            rolesEdited.emplace_back(role.Name);
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        std::cerr << "Error: Unable to open the file." << std::endl;
+        //return 1;  // Exit with an error code
+    }
+
+    return rolesEdited;
 }
 
 

@@ -9,9 +9,10 @@ public:
 
     void RenderPanel() override;
 
-
+    std::shared_ptr<Highlight<float>> GetEfficiencyHighlight();
     void SetPlayerToDisplay(const std::shared_ptr<Player>& player);
 protected:
     std::shared_ptr<Player> PlayerToDisplay;
+    std::shared_ptr<Highlight<float>> EfficiencyHighligth;
 };
 

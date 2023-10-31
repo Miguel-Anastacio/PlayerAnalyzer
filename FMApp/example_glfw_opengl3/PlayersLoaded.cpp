@@ -5,86 +5,66 @@ PlayersLoaded::PlayersLoaded(const bool& noMove, const bool& noResize, const boo
 {
     FileImage.width = FileImage.width * 0.075;
     FileImage.height = FileImage.height * 0.05;
+
+    if (true)    window_flags |= ImGuiWindowFlags_NoFocusOnAppearing;
 }
 
 void PlayersLoaded::RenderPanel()
 {
     ImGui::Begin(Name.c_str(), nullptr, window_flags);
     int columns = 0;
-    
-    for (auto& player : *PlayersUploaded)
+    if (PlayersUploaded->size() == 0)
     {
-        if (ImGui::ImageButton(player->GetName().c_str(), (void*)(intptr_t)FileImage.FileTextureID, ImVec2(FileImage.width, FileImage.height)))
-        {
-            ContentsVisibility = true;
-            FileToUse = player->GetName();
-            CurrentPlayer = player;
-        }
-
-        ImGui::SetItemTooltip("Press to load");
-        ImGui::SameLine(65.0f);
-        //ImGui::Spacing();
-        //ImGui::Spacing();
-        if (ImGui::Selectable(player->GetName().c_str(), ContentsVisibility))
-        {
-            ContentsVisibility = true;
-            FileToUse = player->GetName();
-            *CurrentPlayer = *player;
-
-        }
-        ImGui::SetItemTooltip("Press to load");
-
-        //ImGui::Text(player->GetName().c_str());
+        ImGui::TextWrapped("No Players have been loaded. Please use the file uploader to load player data to the app");
+        ImGui::End();
+        return;
     }
 
-    //if (PlayersUploaded->size() > 14)
-    //{
-    //    columns = 14;
-    //}
-    //else
-    //{
-    //    columns = PlayersUploaded->size();
-    //}
-
-    //if (columns > 0)
-    //{
-    //    if (ImGui::BeginTable("tablefiles", columns*2))
-    //    {
-    //        for (int i = 0; i < columns ; i++)
-    //        {
-    //            ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, FileImage.width);
-    //            ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, 40.0f);
-    //        }
-    //        //ImGui::TableHeadersRow();
-    //        ImGui::TableNextRow();
-    //        ImGui::TableSetColumnIndex(0);
-    //        for (const auto& player : *PlayersUploaded)
-    //        {
-    //            if (ImGui::ImageButton(player->GetName().c_str(), (void*)(intptr_t)FileImage.FileTextureID, ImVec2(FileImage.width, FileImage.height)))
-    //            {
-    //                ContentsVisibility = true;
-    //            }
-    //            //ImGui::TableNextColumn();
-    //            ImGui::Spacing();
-    //            ImGui::Spacing();
-    //            ImGui::Text(player->GetName().c_str());
-
-    //            ImGui::TableNextColumn();
-
-    //        }
-    //        ImGui::EndTable();
-    //    }
-    //}
-    //else
-    //{
-    //    ImGui::TextWrapped("No players have been loaded");
-    //}
-
-    if (ContentsVisibility)
+    if (ImGui::IsWindowFocused())
     {
-        ImGui::TextWrapped("Player %s was loaded", FileToUse.c_str());
-    }
 
+        for (auto& player : *PlayersUploaded)
+        {
+            ImGui::PushID(player->GetUniqueID());
+
+            ImVec2 size = ImGui::CalcTextSize(player->GetName().c_str());
+            size.x = size.x + FileImage.width;
+            if (size.x < 200)
+                size.x = ImGui::GetContentRegionMax().x;
+            size.y = FileImage.height + 5;
+            if (ImGui::Selectable(player->GetName().c_str(), ContentsVisibility, 0, size))
+            {
+                ContentsVisibility = true;
+                FileToUse = player->GetName();
+                CurrentPlayer = player;
+            }
+
+
+            ImGui::SetItemTooltip("Press to load");
+            ImGui::SameLine(ImGui::CalcTextSize(player->GetName().c_str()).x + 15.0f);
+
+            if (ImGui::ImageButton("Image Button", (void*)(intptr_t)FileImage.FileTextureID, ImVec2(FileImage.width, FileImage.height)))
+            {
+                ContentsVisibility = true;
+                FileToUse = player->GetName();
+                CurrentPlayer = player;
+            }
+            ImGui::SetItemTooltip("Press to load");
+            ImGui::PopID();
+
+
+            //ImGui::Text(player->GetName().c_str());
+        }
+
+        if (ContentsVisibility)
+        {
+            ImGui::TextWrapped("Player %s was loaded", FileToUse.c_str());
+        }
+    }
+    else
+    {
+        ContentsVisibility = false;
+    }
     ImGui::End();
 }
 

@@ -9,6 +9,7 @@ struct File
 {
     std::filesystem::path Path;
     std::vector<std::string> FileNameStrings;
+    bool Hovered = true;
 
     File(std::filesystem::path path, const std::vector<std::string>& fileStrings)
         : Path(path), FileNameStrings(fileStrings)

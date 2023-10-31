@@ -1,12 +1,33 @@
 #include "CustomRoleLoader.h"
 #include "Database.h"
 
-
-CustomRoleLoader::CustomRoleLoader(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible,const Image& image)
+CustomRoleLoader::CustomRoleLoader(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible,const Image& image, std::vector<Role>& role)
     : ImagesPanel(noMove, noResize, noCollapse, name, visible, image)
 {
     FileImage.width = FileImage.width * 0.75;
     FileImage.height = FileImage.height * 0.75;
+
+    Roles = &role;
+}
+
+
+
+void CustomRoleLoader::RenderPreviewFile()
+{
+    ImGui::BeginChild("ChildL", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f, 260), false);
+    ImGui::SeparatorText("File Preview");
+    ImGui::TextWrapped("Roles edited by file: ");
+    for (const auto& rolesEdited : FilePreview)
+    {
+        ImGui::TextWrapped(rolesEdited.c_str());
+    }
+    ImGui::EndChild();
+}
+
+void CustomRoleLoader::CreatePreview(const std::string& fileName)
+{
+    if (fileName != FileHovered)
+        FilePreview = ReadRolesEditedByFile(fileName, *Roles);
 }
 
 void CustomRoleLoader::RenderPanel()
@@ -25,24 +46,38 @@ void CustomRoleLoader::RenderPanel()
 
     if (columns > 0)
     {
-
-
         if (ImGui::BeginTable("tablefiles", columns))
         {
             for (int i = 0; i < columns; i++)
             {
-                ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, FileImage.width);
+                ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, FileImage.width + 10);
             }
             //ImGui::TableHeadersRow();
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            for (const auto& currentPath : Paths)
+            for (auto& currentPath : Paths)
             {
                 if (ImGui::ImageButton(currentPath.Path.string().c_str(), (void*)(intptr_t)FileImage.FileTextureID, ImVec2(FileImage.width, FileImage.height)))
                 {
-                    ContentsVisibility = true;
                     fileToUse = currentPath.Path.filename().string();
+                    FileLoadedByUser = true;
                 }
+                ImGui::SetItemTooltip("Press to load file");
+
+                if (ImGui::IsItemHovered())
+                {   
+                    currentPath.Hovered = true;
+                    CreatePreview(currentPath.Path.string());
+                    FileHovered = currentPath.Path.string();
+                }
+                else 
+                {
+                    currentPath.Hovered = false;
+                    PreviewVisible = false;
+                    FileHovered = "";
+                    //FilePreview.clear();
+                }
+
                 for (const auto pathStrings : currentPath.FileNameStrings)
                 {
                     ImGui::Text(pathStrings.c_str());
@@ -50,6 +85,15 @@ void CustomRoleLoader::RenderPanel()
 
                 ImGui::TableNextColumn();
             }
+
+            // see if any button is hovered
+            for (const auto& path : Paths)
+            {
+                if (path.Hovered)
+                    PreviewVisible = true;
+            }
+              
+
             ImGui::EndTable();
         }
     }
@@ -58,7 +102,7 @@ void CustomRoleLoader::RenderPanel()
         ImGui::Text("No custom roles files available");
     }
 
-    if (ContentsVisibility)
+   /* if (ContentsVisibility)
     {
         ImGui::Spacing();
         ImGui::Spacing();
@@ -72,10 +116,9 @@ void CustomRoleLoader::RenderPanel()
         {
             ImGui::SameLine(100.0f, 200.0f);
             ContentsVisibility = false;
-            FileLoadedByUser = true;
         }
-    }
-    else if(fileToUse.size()>0)
+    }*/
+    if(fileToUse.size()>0)
     {
         ImGui::Spacing();
         ImGui::Spacing();
@@ -84,6 +127,12 @@ void CustomRoleLoader::RenderPanel()
         ImGui::Spacing();
         ImGui::Text("File %s was loaded", fileToUse.c_str());
     }
+
+    if (PreviewVisible)
+        RenderPreviewFile();
+    else
+        FilePreview.clear();
+
     ImGui::End();
 
 }
@@ -93,41 +142,6 @@ std::string CustomRoleLoader::GetFileToLoad()
     return fileToUse;
 }
 
-//bool CustomRoleLoader::LoadTexture(const char* imagePath, GLuint* out_texture, int* out_width, int* out_height)
-//{
-//    // Load the image using stb_image
-//    int width, height, nrChannels;
-//    unsigned char* data = stbi_load(imagePath, &width, &height, &nrChannels, 0);
-//
-//    if (data == NULL)
-//        return false;
-//
-//    GLuint texture;
-//    glGenTextures(1, &texture);
-//    glBindTexture(GL_TEXTURE_2D, texture);
-//
-//    // Set texture parameters (optional, adjust as needed)
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//
-//    // Load image data into the OpenGL texture
-//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-//
-//    // Generate mipmaps
-//   // glGenerateMipmap(GL_TEXTURE_2D);
-//
-//    // Free image data
-//    stbi_image_free(data);
-//
-//    *out_texture = texture;
-//    *out_height = height;
-//    *out_width = width;
-//
-//    return true;
-//
-//}
 
 
 bool CustomRoleLoader::WasFileLoadedByUser()
