@@ -49,18 +49,25 @@ void RoleEfficiencyPanel::RenderPanel()
             ImGui::PopFont();
 
 
-            std::vector<RoleEfficiency> DefensiveRoles = PlayerToDisplay->GetDefensiveRoles();
+      /*      std::vector<RoleEfficiency> DefensiveRoles = PlayerToDisplay->GetDefensiveRoles();
             std::vector<RoleEfficiency> MidfieldRoles = PlayerToDisplay->GetMidfieldRoles();
-            std::vector<RoleEfficiency> AttackingRoles = PlayerToDisplay->GetAttackingRoles();
+            std::vector<RoleEfficiency> AttackingRoles = PlayerToDisplay->GetAttackingRoles();*/
+
             for (int i = 0; i < MidfieldRoles.size(); i++)
             {
+                bool flagToUpdate = false;
                 if (i < DefensiveRoles.size())
                 {
+                    flagToUpdate = RoleSelectedMap.at(DefensiveRoles[i].ID);
                     //RenderStringValuePairTable(DefensiveRoles[i].RoleName, DefensiveRoles[i].Value, effHighlight, boldFont);
-                    if (RenderStringValuePairTableAsSelectable(DefensiveRoles[i].RoleName, DefensiveRoles[i].Value, *EfficiencyHighligth, boldFont))
+                    if (RenderStringValuePairTableAsSelectable(DefensiveRoles[i].RoleName, DefensiveRoles[i].Value, *EfficiencyHighligth, boldFont, flagToUpdate))
                     {
                         RoleSelected->ID = DefensiveRoles[i].ID;
                         RoleSelected->TypeEnum = Defensive;
+
+                        RoleSelectedMap.at(PreviousRoleID) = false;
+                        RoleSelectedMap.at(DefensiveRoles[i].ID) = true;
+                        PreviousRoleID = DefensiveRoles[i].ID;
                     }
                 }
                 else
@@ -68,22 +75,30 @@ void RoleEfficiencyPanel::RenderPanel()
                     ImGui::TableNextColumn();
                     ImGui::TableNextColumn();
                 }
-                
+                    flagToUpdate = RoleSelectedMap.at(MidfieldRoles[i].ID);
                 //RenderStringValuePairTable(MidfieldRoles[i].RoleName, MidfieldRoles[i].Value, effHighlight, boldFont);
-                if (RenderStringValuePairTableAsSelectable(MidfieldRoles[i].RoleName, MidfieldRoles[i].Value, *EfficiencyHighligth, boldFont))
+                if (RenderStringValuePairTableAsSelectable(MidfieldRoles[i].RoleName, MidfieldRoles[i].Value, *EfficiencyHighligth, boldFont, flagToUpdate))
                 {
                     RoleSelected->ID = MidfieldRoles[i].ID;
                     RoleSelected->TypeEnum = Midfield;
 
+                    RoleSelectedMap.at(PreviousRoleID) = false;
+                    RoleSelectedMap.at(MidfieldRoles[i].ID) = true;
+                    PreviousRoleID = MidfieldRoles[i].ID;
                 }
 
                 if (i < AttackingRoles.size())
                 {
+                    flagToUpdate = RoleSelectedMap.at(AttackingRoles[i].ID);
                     //RenderStringValuePairTable(AttackingRoles[i].RoleName, AttackingRoles[i].Value, effHighlight, boldFont);
-                    if (RenderStringValuePairTableAsSelectable(AttackingRoles[i].RoleName, AttackingRoles[i].Value, *EfficiencyHighligth, boldFont))
+                    if (RenderStringValuePairTableAsSelectable(AttackingRoles[i].RoleName, AttackingRoles[i].Value, *EfficiencyHighligth, boldFont, RoleSelectedMap.at(AttackingRoles[i].ID)))
                     {
                         RoleSelected->ID = AttackingRoles[i].ID;
                         RoleSelected->TypeEnum = Attacking;
+
+                        RoleSelectedMap.at(PreviousRoleID) = false;
+                        RoleSelectedMap.at(AttackingRoles[i].ID) = true;
+                        PreviousRoleID = AttackingRoles[i].ID;
                     }
                 }
                 else
@@ -132,7 +147,8 @@ void RoleEfficiencyPanel::RenderPanel()
         ImGui::Indent(50.0);
         ImGui::Text("Player Best Role : ");
         ImGui::SameLine();
-        ImGui::TextColored(EfficiencyHighligth->GetColors()[4], " %-35s  %.2f", temp.RoleName.c_str(), temp.Value);
+        ImVec4 color = ColorCodeTableItems(temp.Value, *EfficiencyHighligth);
+        ImGui::TextColored(color, " %-35s  %.2f", temp.RoleName.c_str(), temp.Value);
         ImGui::Unindent(50.0);
         ImGui::Separator();
         ImGui::Spacing();
@@ -148,10 +164,43 @@ std::shared_ptr<Highlight<float>> RoleEfficiencyPanel::GetEfficiencyHighlight()
 
 void RoleEfficiencyPanel::SetPlayerToDisplay(Player* player)
 {
-    PlayerToDisplay = player;
+    if (player != NULL)
+    {
+        if (PlayerToDisplay != NULL)
+        {
+            if (PlayerToDisplay->GetUniqueID() != player->GetUniqueID())
+            {
+                PlayerToDisplay = player;
+                UpdateEfficiencyValues();
+            }
+        }
+        else
+        {
+            PlayerToDisplay = player;
+            UpdateEfficiencyValues();
+        }
+    }
 }
 
 Role* RoleEfficiencyPanel::GetRoleSelected()
 {
     return RoleSelected;
+}
+
+void RoleEfficiencyPanel::UpdateEfficiencyValues()
+{
+    DefensiveRoles = PlayerToDisplay->GetDefensiveRoles();
+    MidfieldRoles = PlayerToDisplay->GetMidfieldRoles();
+    AttackingRoles = PlayerToDisplay->GetAttackingRoles();
+}
+
+void RoleEfficiencyPanel::InitRoleSelectedMap(const std::vector<Role>& allRoles)
+{
+    for (const auto& role : allRoles)
+    {
+        RoleSelectedMap.emplace(role.ID, false);
+
+    }
+    PreviousRoleID = allRoles[0].ID;
+
 }

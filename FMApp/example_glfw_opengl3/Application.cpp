@@ -117,6 +117,7 @@ namespace PlayerAnalyzer
         FileUploader FileUploaderScreen(false, false, true, std::string("File Uploader"), true);
 
         PlayerAttributesPanel PlayerAttributesScreen(false, false, true, std::string("Player Attributes"), true);
+
         RoleEfficiencyPanel RoleEfficiencyScreen(false, false, true, std::string("Player Role Efficiency"), true);
 
         RoleSelector RoleSelectorScreen(false, false, true, std::string("Role Selector"), true);
@@ -145,6 +146,7 @@ namespace PlayerAnalyzer
         //PrintArrayOfRoles(AllRoles);
         RoleSelectorScreen.SetOriginalDBRef(OriginalDB);
 
+        RoleEfficiencyScreen.InitRoleSelectedMap(AllRoles);
         // set reference to vector that keeps track of players loaded
         PlayersLoadedScreen.SetPlayersUploaded(&AllPlayersLoaded);
 
@@ -206,40 +208,18 @@ namespace PlayerAnalyzer
                                 pl.CalculateEfficiencyAllRoles(*RoleSelectorScreen.AllRoles);
                                 AllPlayersLoaded.emplace_back(pl);
                             }
-            
+        
                         }
                         if (AllPlayersLoaded.size() > 0)
                             ActivePlayer = &AllPlayersLoaded[AllPlayersLoaded.size() - 1];
 
-
-
-                        //ActivePlayer = FileUploaderScreen.GetPlayerUploaded();
-                        //if (ActivePlayer != nullptr)
-                        //{
-                        //    // make sure it is unique (prevents the same file from being uploaded
-                        //    // BUG - if a file is added by draging and then added by file name there will be two players with the same attributes
-                        //    int index = IsPlayerAlreadyLoaded(ActivePlayer->GetUniqueID(), AllPlayersLoaded);
-                        //    if (index != -1)
-                        //    {
-                        //        // it is not new, so just get the player that is already in the vector
-                        //        ActivePlayer = AllPlayersLoaded[index];
-                        //        ActivePlayer->UpdateEfficiency(*RoleSelectorScreen.AllRoles);
-                        //    }
-                        //    else
-                        //    {
-                        //        AllPlayersLoaded.emplace_back(ActivePlayer);
-                        //        ActivePlayer->CalculateEfficiencyAllRoles(*RoleSelectorScreen.AllRoles);
-                        //    }
-                        //}
                     }
                     // render players loaded
                     PlayersLoadedScreen.SetCurrentPlayer(ActivePlayer);
                     PlayersLoadedScreen.RenderPanel();
                     ActivePlayer = PlayersLoadedScreen.GetCurrentPlayer();
 
-                    // render role efficiency
-                    RoleEfficiencyScreen.SetPlayerToDisplay(ActivePlayer);
-                    RoleEfficiencyScreen.RenderPanel();
+                    EfficiencyScreen(RoleEfficiencyScreen, ActivePlayer, AllRoles);
                     // render playerAttributes
                     PlayerAttributesScreen.SetFirstPlayer(ActivePlayer);
                     PlayerAttributesScreen.RenderPanel();
@@ -329,6 +309,36 @@ namespace PlayerAnalyzer
             break;
         }
         //State = newState;
+    }
+
+    std::vector<AttributeWeight> GetAttributesOfRole(uint64_t ID, const std::vector<Role>& allRoles)
+    {
+        std::vector<AttributeWeight> attributes;
+        for (const auto& role : allRoles)
+        {
+            if (ID == role.ID)
+            {
+                for (const auto& att : role.Attributes)
+                {
+                    attributes.emplace_back(att);
+                }
+                break;
+            }
+        }
+
+        return attributes;
+    }
+
+    void EfficiencyScreen(RoleEfficiencyPanel& efficiency, Player* player, const std::vector<Role>& roles)
+    {
+        // render role efficiency
+        efficiency.SetPlayerToDisplay(player);
+        efficiency.RenderPanel();
+        Role* temp = efficiency.GetRoleSelected();
+        if (temp->ID != 0)
+        {
+            temp->Attributes = GetAttributesOfRole(temp->ID, roles);
+        }
     }
    
    

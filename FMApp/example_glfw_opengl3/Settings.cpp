@@ -1,5 +1,8 @@
+#pragma once
 #include "Settings.h"
-
+#include <fstream>
+#include <istream>
+#include <iostream>
 Settings::Settings(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible)
     : UIPanel(noMove, noResize, noCollapse, name, visible)
 {
@@ -7,13 +10,21 @@ Settings::Settings(const bool& noMove, const bool& noResize, const bool& noColla
     //AttributesHighligth = std::make_shared<Highlight<int>>(ranges);
 }
 
-//Settings::~Settings()
-//{
-//    // save the highlight
-//    nlohmann::json  data;
-//    data["Highlight"] = "Attribute";
-//    data["Ranges"] = {AttributesHighlight->ColorCodes[0].MaxValue, AttributesHighlight->ColorCodes[0].MaxValue }
-//}
+Settings::~Settings()
+{
+    // save the higlight
+    std::ofstream file;
+    file.open("settings.txt", std::ios::out);
+
+    if (file.is_open())
+    {
+        WriteHighlightToFile(*AttributesHighlight, "Attributes", file);
+        WriteHighlightToFile(*EfficiencyHighlight, "Efficiency", file);
+        WriteHighlightToFile(*WeightHighlight, "Weights", file);
+        file.close();
+    }
+
+}
 
 void Settings::RenderPanel()
 {
@@ -106,6 +117,8 @@ void Settings::SetHighlightRefs(std::shared_ptr<Highlight<int>> attHigh, std::sh
     AttributesHighlight = attHigh;
     EfficiencyHighlight = effHigh;
     WeightHighlight = weightHigh;
+
+    ReadFromSettingsFile();
 }
 
 void Settings::RenderEditableColorButton(ImVec4& color, int id, const char* text, const TreeNodeSelected& node)
@@ -137,4 +150,100 @@ void Settings::RenderWeightHighlighColor(Highlight<float>& highlight, const Tree
     RenderEditableColorButton(highlight.ColorCodes[4].Color, 4, "Very above average", node);
 
     ImGui::PopID();
+}
+
+void Settings::ReadFromSettingsFile()
+{
+    std::ifstream file("settings.txt");
+    if (file.is_open())
+    {
+        std::string line;
+        while (std::getline(file, line))
+        {
+            // check if line contains an ID
+            if (line.find("Attributes") != std::string::npos)
+            {
+                for (auto& colorCodes : AttributesHighlight->ColorCodes)
+                {
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.MinValue, line);
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.MaxValue,line);
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.Color.x,line);
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.Color.y,line);
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.Color.z,line);
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.Color.w,line);
+                }          
+            }
+            if (line.find("Efficiency") != std::string::npos)
+            {
+                for (auto& colorCodes : EfficiencyHighlight->ColorCodes)
+                {
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.MinValue, line);
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.MaxValue, line);
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.Color.x, line);
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.Color.y, line);
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.Color.z, line);
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.Color.w, line);
+                }
+            }
+            if (line.find("Weights") != std::string::npos)
+            {
+                for (auto& colorCodes : WeightHighlight->ColorCodes)
+                {
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.MinValue, line);
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.MaxValue, line);
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.Color.x, line);
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.Color.y, line);
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.Color.z, line);
+                    std::getline(file, line);
+                    ReadDataSaveToVariable(colorCodes.Color.w, line);
+                }
+            }
+        }
+
+        file.close();
+    }
+
+}
+
+void Settings::ReadDataSaveToVariable(float& variable, std::string&  line)
+{
+    try {
+        variable = std::stof(line);
+    }
+    catch (std::invalid_argument const& ex) {
+        std::cerr << "Invalid argument: " << ex.what() << std::endl;
+    }
+    catch (std::out_of_range const& ex) {
+        std::cerr << "Out of range: " << ex.what() << std::endl;
+    }
+}
+
+void Settings::ReadDataSaveToVariable(int& variable, std::string& line)
+{
+    try {
+        variable = std::stoi(line);
+    }
+    catch (std::invalid_argument const& ex) {
+        std::cerr << "Invalid argument: " << ex.what() << std::endl;
+    }
+    catch (std::out_of_range const& ex) {
+        std::cerr << "Out of range: " << ex.what() << std::endl;
+    }
 }

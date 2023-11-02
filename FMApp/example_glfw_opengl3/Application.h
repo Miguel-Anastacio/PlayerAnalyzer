@@ -10,6 +10,7 @@ class Player;
 class RoleSelector;
 class CustomRoleLoader;
 class SaveRolePanel;
+class RoleEfficiencyPanel;
 enum class AppState
 {
     MAIN_MENU,
@@ -53,5 +54,12 @@ namespace PlayerAnalyzer
     // operations to perform on UI panels when user navigates through the main menu bar;s
     void SwitchState(const AppState& newState, const std::vector<Role>& allRoles, Player* player = NULL, CustomRoleLoader* roleLoader = NULL, SaveRolePanel* roleSaver = NULL);
     //void SwitchState(const AppState& newState, const std::vector<Role>& allRoles, std::vector<std::shared_ptr<Player>>& allPlayers);
+
+
+    std::vector<AttributeWeight> GetAttributesOfRole(uint64_t ID, const std::vector<Role>& allRoles);
+
+
+    // Render Efficiency Screen
+    void EfficiencyScreen(RoleEfficiencyPanel& efficiency, Player* player, const std::vector<Role>& roles);
 
 }

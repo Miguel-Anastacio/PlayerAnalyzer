@@ -63,3 +63,4 @@ examples/example_sdl2_sdlrenderer/example_sdl2_sdlrenderer
 ##test files
 FMApp/example_glfw_opengl3/example_glfw_opengl3/custom_roles/*
 
+FMApp/example_glfw_opengl3/settings.txt

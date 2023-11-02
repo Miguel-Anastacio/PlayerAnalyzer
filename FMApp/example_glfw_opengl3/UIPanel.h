@@ -70,9 +70,9 @@ struct Highlight
 
         ColorCodes[0].Color = ImVec4(1.0f, 0, 0, 1.0f);
         ColorCodes[1].Color = ImVec4(1.0f, 0.5f, 0, 1.0f);
-        ColorCodes[2].Color = ImVec4(1.0f, 1.0f, 0, 0.8f);
-        ColorCodes[3].Color = ImVec4(1.0f, 1.0f, 0, 0.9f);
-        ColorCodes[4].Color = ImVec4(0, 1.0f, 0, 0.9f);
+        ColorCodes[2].Color = ImVec4(1.0f, 1.0f, 0, 1.0f);
+        ColorCodes[3].Color = ImVec4(0.0f, 0.719f, 0, 1.0f);
+        ColorCodes[4].Color = ImVec4(0, 1.0f, 0, 1.0f);
 
     };
 
@@ -239,10 +239,10 @@ protected:
     }
 
     template<typename T>
-    bool RenderStringValuePairTableAsSelectable(const std::string text, const T& value, const Highlight<T> highlight, ImFont* font)
+    bool RenderStringValuePairTableAsSelectable(const std::string text, const T& value, const Highlight<T> highlight, ImFont* font, bool& state)
     {
         bool selected = false;
-        if (ImGui::Selectable(text.c_str()))
+        if (ImGui::Selectable(text.c_str(), state))
             selected = true;
         ImGui::TableNextColumn();
 
