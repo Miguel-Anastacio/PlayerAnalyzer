@@ -10,12 +10,12 @@ namespace Callback {
     // Example using GLFW
     void DragAndDropCallback(GLFWwindow* window, int count, const char** paths) {
         fileUploadState.filePaths.clear();
+        fileUploadState.isDragging = true;
         for(int i = 0; i < count; i++)
         {
             if (fileUploadState.AcceptingFiles)
             {
                 std::string currentPath = paths[i];
-                fileUploadState.isDragging = true;
                 strncpy(fileUploadState.filePath, paths[i], sizeof(fileUploadState.filePath) - 1);
                 fileUploadState.filePath[sizeof(fileUploadState.filePath) - 1] = '\0';
 

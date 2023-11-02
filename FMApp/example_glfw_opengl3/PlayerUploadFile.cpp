@@ -6,7 +6,7 @@ std::vector<Player> PlayerUploadFile::RenderFileDragAndDrop(std::shared_ptr<Play
     std::vector<Player> players;
 	if (fileState.isDragging)
     {
-		ImGui::Text("Drop file here: ");
+		ImGui::TextWrapped("Drop files here: ");
 		for (const auto file : fileState.filePaths)
 		{
 			// check to see if cursor was inside this panel

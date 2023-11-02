@@ -55,7 +55,7 @@ protected:
         }
 
         ImVec4 Color = ColorCodeTableItems(value, highlight);
-        ImGui::TextColored(Color,"%.1f", value);
+        ImGui::TextColored(Color,"%.2f", value);
         ImGui::PopFont();
         ImGui::TableNextColumn();
 

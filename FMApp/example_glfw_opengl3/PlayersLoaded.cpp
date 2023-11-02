@@ -20,55 +20,52 @@ void PlayersLoaded::RenderPanel()
         return;
     }
 
-    if (ImGui::IsWindowFocused())
-    {
-
-        for (auto& player : *PlayersUploaded)
-        {
-            ImGui::PushID(player.GetUniqueID());
-
-            ImVec2 size = ImGui::CalcTextSize(player.GetName().c_str());
-            size.x = size.x + FileImage.width;
-            if (size.x < 200)
-                size.x = ImGui::GetContentRegionMax().x;
-            size.y = FileImage.height + 5;
-
-            bool selected = false;
-            if (CurrentPlayer->GetUniqueID() == player.GetUniqueID())
-                selected = true;
-
-            if (ImGui::Selectable(player.GetName().c_str(), selected , 0, size))
-            {
-                ContentsVisibility = true;
-                FileToUse = player.GetName();
-                CurrentPlayer = &player;
-            }
-
-
-            ImGui::SetItemTooltip("Press to load");
-            ImGui::SameLine(ImGui::CalcTextSize(player.GetName().c_str()).x + 15.0f);
-
-            if (ImGui::ImageButton("Image Button", (void*)(intptr_t)FileImage.FileTextureID, ImVec2(FileImage.width, FileImage.height)))
-            {
-                ContentsVisibility = true;
-                FileToUse = player.GetName();
-                CurrentPlayer = &player;
-            }
-            ImGui::SetItemTooltip("Press to load");
-            ImGui::PopID();
-
-
-            //ImGui::Text(player->GetName().c_str());
-        }
-
-        if (ContentsVisibility)
-        {
-            ImGui::TextWrapped("Player %s was loaded", FileToUse.c_str());
-        }
-    }
-    else
+    if (!ImGui::IsWindowFocused())
     {
         ContentsVisibility = false;
+    }
+
+    for (auto& player : *PlayersUploaded)
+    {
+        ImGui::PushID(player.GetUniqueID());
+
+        ImVec2 size = ImGui::CalcTextSize(player.GetName().c_str());
+        size.x = size.x + FileImage.width;
+        if (size.x < 200)
+            size.x = ImGui::GetContentRegionMax().x;
+        size.y = FileImage.height + 5;
+
+        bool selected = false;
+        if (CurrentPlayer->GetUniqueID() == player.GetUniqueID())
+            selected = true;
+
+        if (ImGui::Selectable(player.GetName().c_str(), selected , 0, size))
+        {
+            ContentsVisibility = true;
+            FileToUse = player.GetName();
+            CurrentPlayer = &player;
+        }
+
+
+        ImGui::SetItemTooltip("Press to load");
+        ImGui::SameLine(ImGui::CalcTextSize(player.GetName().c_str()).x + 15.0f);
+
+        if (ImGui::ImageButton("Image Button", (void*)(intptr_t)FileImage.FileTextureID, ImVec2(FileImage.width, FileImage.height)))
+        {
+            ContentsVisibility = true;
+            FileToUse = player.GetName();
+            CurrentPlayer = &player;
+        }
+        ImGui::SetItemTooltip("Press to load");
+        ImGui::PopID();
+
+
+        //ImGui::Text(player->GetName().c_str());
+    }
+
+    if (ContentsVisibility)
+    {
+        ImGui::TextWrapped("Player %s was loaded", FileToUse.c_str());
     }
     ImGui::End();
 }

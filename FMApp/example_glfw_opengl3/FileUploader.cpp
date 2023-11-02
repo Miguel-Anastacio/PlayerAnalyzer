@@ -47,7 +47,7 @@ void FileUploader::RenderPanel()
         {
             if (TextInsertPanel->RenderFileUploadText(PlayerUploaded))
             {
-                PlayerUploaded->SetCosmeticID(ValidPlayersUploaded);
+                //PlayerUploaded->SetCosmeticID(ValidPlayersUploaded);
                 AllPlayersUploaded.push_back(*PlayerUploaded);
                 ValidPlayersUploaded++;
                 NewPlayerUploaded = true;
@@ -60,7 +60,7 @@ void FileUploader::RenderPanel()
             AllPlayersUploaded = FileInsertPanel->RenderFileDragAndDrop(PlayerUploaded, *FileState);
             for (auto& pl : AllPlayersUploaded)
             {
-                pl.SetCosmeticID(ValidPlayersUploaded);
+                //pl.SetCosmeticID(ValidPlayersUploaded);
                 ValidPlayersUploaded++;
                 NewPlayerUploaded = true;
             }

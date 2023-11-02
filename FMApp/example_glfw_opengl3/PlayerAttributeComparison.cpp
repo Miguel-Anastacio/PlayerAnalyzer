@@ -11,7 +11,7 @@ void PlayerAttributeComparison::RenderPanel()
     float start = 260;
     float tableLength = 640;
     ImGui::Begin(Name.c_str(), nullptr, window_flags);
-    if (PlayerToDisplay != NULL && SecondPlayer != NULL)
+    if (FirstPlayer != NULL && SecondPlayer != NULL)
     {
         ImGui::Separator();
         ImGui::Indent(start);
@@ -23,7 +23,7 @@ void PlayerAttributeComparison::RenderPanel()
         ImGui::Spacing();
         ImGui::Spacing();
         ImGui::Spacing();
-        RenderAttributeTable(PlayerToDisplay);
+        RenderAttributeTable(FirstPlayer);
         ImGui::SameLine();
         RenderAttributeTable(SecondPlayer);
         ImGui::Spacing();
@@ -50,7 +50,7 @@ void PlayerAttributeComparison::RenderRoleSelectedEfficiency()
     if (ImGui::BeginTable("Comparison", 3, flags, ImVec2(600, 0)))
     {
         ImGui::TableSetupColumn("Role", ImGuiTableColumnFlags_WidthFixed, headerSize*2);
-        ImGui::TableSetupColumn(PlayerToDisplay->GetName().c_str(), ImGuiTableColumnFlags_WidthFixed, headerSize);
+        ImGui::TableSetupColumn(FirstPlayer->GetName().c_str(), ImGuiTableColumnFlags_WidthFixed, headerSize);
         ImGui::TableSetupColumn(SecondPlayer->GetName().c_str(), ImGuiTableColumnFlags_WidthFixed, headerSize);
         ImGui::TableHeadersRow();
         ImGui::TableNextRow();
@@ -58,7 +58,7 @@ void PlayerAttributeComparison::RenderRoleSelectedEfficiency()
 
         if (RoleSelected != NULL)
         {
-            RoleEfficiency player1Eff = PlayerToDisplay->GetEfficiencyOfRole(RoleSelected->ID, RoleSelected->TypeEnum);
+            RoleEfficiency player1Eff = FirstPlayer->GetEfficiencyOfRole(RoleSelected->ID, RoleSelected->TypeEnum);
             RoleEfficiency player2Eff = SecondPlayer->GetEfficiencyOfRole(RoleSelected->ID, RoleSelected->TypeEnum);
 
             ImGui::Text(RoleSelected->Name.c_str());

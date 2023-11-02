@@ -73,10 +73,10 @@ std::string Player::ParseLine(const std::string& line, char separator, int& line
 
 bool Player::ReadAttributesFromFile(std::string fileName)
 {
+    Name = fileName.substr(fileName.find_last_of("\\") + 1);
     std::ifstream file(fileName);  // Replace "your_file.txt" with the actual file path
 
-    SetUniqueID(fileName);
-    Name = "untitled";
+    SetUniqueID(Name);
 
     if (file.is_open())
     {
