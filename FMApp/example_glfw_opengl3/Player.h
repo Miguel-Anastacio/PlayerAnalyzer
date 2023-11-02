@@ -5,6 +5,7 @@ class  Player
 {
 public:
     Player();
+    //Player(const Player& pl);
     ~Player();
 
     std::string ParseLine(const std::string& line, char separator, int& lineEndIndex);

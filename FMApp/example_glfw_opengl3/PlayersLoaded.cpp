@@ -25,29 +25,34 @@ void PlayersLoaded::RenderPanel()
 
         for (auto& player : *PlayersUploaded)
         {
-            ImGui::PushID(player->GetUniqueID());
+            ImGui::PushID(player.GetUniqueID());
 
-            ImVec2 size = ImGui::CalcTextSize(player->GetName().c_str());
+            ImVec2 size = ImGui::CalcTextSize(player.GetName().c_str());
             size.x = size.x + FileImage.width;
             if (size.x < 200)
                 size.x = ImGui::GetContentRegionMax().x;
             size.y = FileImage.height + 5;
-            if (ImGui::Selectable(player->GetName().c_str(), ContentsVisibility, 0, size))
+
+            bool selected = false;
+            if (CurrentPlayer->GetUniqueID() == player.GetUniqueID())
+                selected = true;
+
+            if (ImGui::Selectable(player.GetName().c_str(), selected , 0, size))
             {
                 ContentsVisibility = true;
-                FileToUse = player->GetName();
-                CurrentPlayer = player;
+                FileToUse = player.GetName();
+                CurrentPlayer = &player;
             }
 
 
             ImGui::SetItemTooltip("Press to load");
-            ImGui::SameLine(ImGui::CalcTextSize(player->GetName().c_str()).x + 15.0f);
+            ImGui::SameLine(ImGui::CalcTextSize(player.GetName().c_str()).x + 15.0f);
 
             if (ImGui::ImageButton("Image Button", (void*)(intptr_t)FileImage.FileTextureID, ImVec2(FileImage.width, FileImage.height)))
             {
                 ContentsVisibility = true;
-                FileToUse = player->GetName();
-                CurrentPlayer = player;
+                FileToUse = player.GetName();
+                CurrentPlayer = &player;
             }
             ImGui::SetItemTooltip("Press to load");
             ImGui::PopID();
@@ -68,21 +73,22 @@ void PlayersLoaded::RenderPanel()
     ImGui::End();
 }
 
-void PlayersLoaded::SetPlayersUploaded(std::vector<std::shared_ptr<Player>>* players)
+void PlayersLoaded::SetPlayersUploaded(std::vector<Player>* players)
 {
     PlayersUploaded = players;
 }
 
-void PlayersLoaded::SetCurrentPlayer(std::shared_ptr<Player> player)
+void PlayersLoaded::SetCurrentPlayer(Player* player)
 {
     if (player != NULL)
     {
         CurrentPlayer = player;
 
     }
+
 }
 
-std::shared_ptr<Player> PlayersLoaded::GetCurrentPlayer()
+Player* PlayersLoaded::GetCurrentPlayer()
 {
     return CurrentPlayer;
 }

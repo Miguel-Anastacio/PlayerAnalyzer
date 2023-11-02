@@ -7,13 +7,13 @@ public:
     PlayerAttributeComparison(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible);
     void RenderPanel() override;
 
-    void SetSecondPlayer(const std::shared_ptr<Player>& player);
+    void SetSecondPlayer( Player* player);
 
     void RenderRoleSelectedEfficiency();
 
 
 protected:
-    std::shared_ptr<Player> SecondPlayer = NULL;
+    Player* SecondPlayer = NULL;
 
 
 

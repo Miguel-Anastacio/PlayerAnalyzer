@@ -15,6 +15,12 @@ std::shared_ptr<Player> FileUploader::GetPlayerUploaded()
     return PlayerUploaded;
 }
 
+std::vector<Player> FileUploader::GetAllPlayersUploaded()
+{
+    NewPlayerUploaded = false;
+    return AllPlayersUploaded;
+}
+
 void FileUploader::ResetPlayerUploaded()
 {
     PlayerUploaded = NULL;
@@ -42,6 +48,7 @@ void FileUploader::RenderPanel()
             if (TextInsertPanel->RenderFileUploadText(PlayerUploaded))
             {
                 PlayerUploaded->SetCosmeticID(ValidPlayersUploaded);
+                AllPlayersUploaded.push_back(*PlayerUploaded);
                 ValidPlayersUploaded++;
                 NewPlayerUploaded = true;
             }
@@ -50,9 +57,10 @@ void FileUploader::RenderPanel()
         }
         if (ImGui::BeginTabItem("Drag and Drop File"))
         {
-            if (FileInsertPanel->RenderFileDragAndDrop(PlayerUploaded, *FileState))
+            AllPlayersUploaded = FileInsertPanel->RenderFileDragAndDrop(PlayerUploaded, *FileState);
+            for (auto& pl : AllPlayersUploaded)
             {
-                PlayerUploaded->SetCosmeticID(ValidPlayersUploaded);
+                pl.SetCosmeticID(ValidPlayersUploaded);
                 ValidPlayersUploaded++;
                 NewPlayerUploaded = true;
             }

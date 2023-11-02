@@ -34,7 +34,7 @@ void PlayerAttributeComparison::RenderPanel()
     ImGui::End();
 }
 
-void PlayerAttributeComparison::SetSecondPlayer(const std::shared_ptr<Player>& player)
+void PlayerAttributeComparison::SetSecondPlayer(Player* player)
 {
     SecondPlayer = player;
 }

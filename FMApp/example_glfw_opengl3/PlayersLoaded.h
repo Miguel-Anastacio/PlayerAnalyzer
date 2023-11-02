@@ -9,14 +9,14 @@ public:
     PlayersLoaded(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible, const Image& image);
     void RenderPanel() override;
 
-    void SetPlayersUploaded(std::vector<std::shared_ptr<Player>>* players);
-    void SetCurrentPlayer(std::shared_ptr<Player> player);
-    std::shared_ptr<Player> GetCurrentPlayer();
+    void SetPlayersUploaded(std::vector<Player>* players);
+    void SetCurrentPlayer(Player* player);
+    Player* GetCurrentPlayer();
 private:
-    std::vector<std::shared_ptr<Player>>* PlayersUploaded;
+    
+    std::vector<Player>* PlayersUploaded;
 
-    std::shared_ptr<Player>CurrentPlayer;
-
+    Player* CurrentPlayer = NULL;
     
   
 };

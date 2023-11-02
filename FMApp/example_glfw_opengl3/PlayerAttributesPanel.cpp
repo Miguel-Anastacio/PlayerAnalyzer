@@ -14,19 +14,19 @@ void PlayerAttributesPanel::RenderPanel()
     auto boldFont = io.Fonts->Fonts[0];
    
     ImGui::Begin(Name.c_str(), nullptr, window_flags);
-    if (PlayerToDisplay != nullptr)
+    if (FirstPlayer != nullptr)
     {
-        ImGui::Text("Player Loaded: %s", PlayerToDisplay->GetName().c_str());
+        ImGui::Text("Player Loaded: %s", FirstPlayer->GetName().c_str());
         const int bufferSize = 30;
         char inputBuffer[bufferSize] = "New Name"; // Buffer to store the text input
         ImGui::SetNextItemWidth(200);
         // ImGui InputText widget
         if (ImGui::InputText(" ", inputBuffer, bufferSize, ImGuiInputTextFlags_EnterReturnsTrue))
         {
-            PlayerToDisplay->SetName(inputBuffer);
+            FirstPlayer->SetName(inputBuffer);
         }
     }
-    RenderAttributeTable(PlayerToDisplay);
+    RenderAttributeTable(FirstPlayer);
        
     ImGui::End();
 }
@@ -36,7 +36,12 @@ void PlayerAttributesPanel::SetRoleSelected(Role* role)
     RoleSelected = role;
 }
 
-void PlayerAttributesPanel::SetPlayerToDisplay(const std::shared_ptr<Player>& player)
+void PlayerAttributesPanel::SetFirstPlayer(Player* player)
+{
+    FirstPlayer = player;
+}
+
+void PlayerAttributesPanel::SetPlayerToDisplay(std::shared_ptr<Player> player)
 {
     PlayerToDisplay = player;
 }
@@ -51,7 +56,108 @@ std::shared_ptr<Highlight<int>> PlayerAttributesPanel::GetPlayersHighlight()
     return AttributesHighligth;
 }
 
-void PlayerAttributesPanel::RenderAttributeTable(const std::shared_ptr<Player>& player)
+void PlayerAttributesPanel::RenderAttributeTable(Player* player)
+{
+    ImGuiIO& io = ImGui::GetIO();
+    auto boldFont = io.Fonts->Fonts[0];
+
+    if (player != nullptr)
+    {
+
+        std::vector<Attribute> PlayerAttributes = player->GetPlayerAttributes();
+        Attribute technicalAtt[14];
+        Attribute mentalAtt[14];
+        Attribute physicalAtt[8];
+        if (PlayerAttributes.size() > 0)
+        {
+            for (int i = 0; i < 14; i++)
+            {
+                technicalAtt[i] = PlayerAttributes[i];
+            }
+            for (int i = 0; i < 14; i++)
+            {
+                mentalAtt[i] = PlayerAttributes[i + 14];
+            }
+            for (int i = 0; i < 8; i++)
+            {
+                physicalAtt[i] = PlayerAttributes[i + 28];
+            }
+
+        }
+
+        static bool bg = true;
+        static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+        if (bg)   flags |= ImGuiTableFlags_Borders;
+
+        if (PlayerAttributes.size() > 0)
+        {
+            float headerSize = 165.0f;
+            float smallHeaderSize = 30.0f;
+
+            if (ImGui::BeginTable("table2", 6, flags, ImVec2(640, 0)))
+            {
+
+                ImGui::TableSetupColumn("Technical", ImGuiTableColumnFlags_WidthFixed, headerSize);
+                ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, smallHeaderSize);
+                ImGui::TableSetupColumn("Mental", ImGuiTableColumnFlags_WidthFixed, headerSize);
+                ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, smallHeaderSize);
+                ImGui::TableSetupColumn("Physical", ImGuiTableColumnFlags_WidthFixed, headerSize);
+                ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, smallHeaderSize);
+                ImGui::TableHeadersRow();
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+
+
+                for (int i = 0; i < 14; ++i)
+                {
+                    bool relevant = false;
+                    // is attribute supposed to be higlighted
+                    if (RoleSelected != NULL)
+                    {
+                        if (RoleSelected->ID != 0 && RoleSelected->IsAttributePartOfRole(technicalAtt[i].ID))
+                            relevant = true;
+                    }
+                    // render technical attribute
+                    RenderStringValuePairTableHiglighted(technicalAtt[i].Name, technicalAtt[i].Value, *AttributesHighligth, boldFont, relevant);
+
+                    relevant = false;
+                    // is attribute supposed to be higlighted
+                    if (RoleSelected != NULL)
+                    {
+                        if (RoleSelected->ID != 0 && RoleSelected->IsAttributePartOfRole(mentalAtt[i].ID))
+                            relevant = true;
+                    }
+                    // render mental attribute
+                    RenderStringValuePairTableHiglighted(mentalAtt[i].Name, mentalAtt[i].Value, *AttributesHighligth, boldFont, relevant);
+
+                    // render physical attribute
+                    if (i < 8)
+                    {
+                        relevant = false;
+                        // is attribute supposed to be higlighted
+                        if (RoleSelected != NULL)
+                        {
+                            if (RoleSelected->ID != 0 && RoleSelected->IsAttributePartOfRole(physicalAtt[i].ID))
+                                relevant = true;
+                        }
+                        RenderStringValuePairTableHiglighted(physicalAtt[i].Name, physicalAtt[i].Value, *AttributesHighligth, boldFont, relevant);
+                    }
+                    else
+                    {
+                        ImGui::TableNextColumn();
+                        ImGui::TableNextColumn();
+                    }
+
+                }
+
+
+                ImGui::EndTable();
+            }
+        }
+    }
+}
+
+void PlayerAttributesPanel::RenderAttributeTable(std::shared_ptr<Player> player)
 {
     ImGuiIO& io = ImGui::GetIO();
     auto boldFont = io.Fonts->Fonts[0];

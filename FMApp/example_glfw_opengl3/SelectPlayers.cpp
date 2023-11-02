@@ -18,15 +18,15 @@ void SelectPlayers::RenderPanel()
     HelpMarker("Hold Ctrl to select multiple");
     for (auto& player : *PlayersUploaded)
     {
-        ImGui::PushID(player->GetUniqueID());
+        ImGui::PushID(player.GetUniqueID());
 
-        ImVec2 size = ImGui::CalcTextSize(player->GetName().c_str());
+        ImVec2 size = ImGui::CalcTextSize(player.GetName().c_str());
         size.x = size.x + FileImage.width;
         if (size.x < 200)
             size.x = ImGui::GetContentRegionMax().x;
         size.y = FileImage.height + 5;
 
-        if (ImGui::Selectable(player->GetName().c_str(), PlayersSelectedMap.at(player->GetUniqueID()), 0, size))
+        if (ImGui::Selectable(player.GetName().c_str(), PlayersSelectedMap.at(player.GetUniqueID()), 0, size))
         {
             // control is not held just remove every player and add this one
             if (!ImGui::GetIO().KeyCtrl)
@@ -36,14 +36,14 @@ void SelectPlayers::RenderPanel()
                     pair.second = false;
                 }
                 PlayersSelectedIndex.clear();
-                PlayersSelectedMap.at(player->GetUniqueID()) = true;
+                PlayersSelectedMap.at(player.GetUniqueID()) = true;
                 PlayersSelectedIndex.emplace_back(index);
             }
             // control was held but player was already selected
             // so remove this player from selected vector
-            else if (PlayersSelectedMap.at(player->GetUniqueID()))
+            else if (PlayersSelectedMap.at(player.GetUniqueID()))
             {
-                PlayersSelectedMap.at(player->GetUniqueID()) = false;
+                PlayersSelectedMap.at(player.GetUniqueID()) = false;
                 for (int i = 0; i < PlayersSelectedIndex.size(); i++)
                 {
                     if (PlayersSelectedIndex[i] == index)
@@ -54,16 +54,16 @@ void SelectPlayers::RenderPanel()
                 }
             }
             // control held and player was not already selected
-            else if (!PlayersSelectedMap.at(player->GetUniqueID()))
+            else if (!PlayersSelectedMap.at(player.GetUniqueID()))
             {
-                PlayersSelectedMap.at(player->GetUniqueID()) = true;
+                PlayersSelectedMap.at(player.GetUniqueID()) = true;
                 PlayersSelectedIndex.emplace_back(index);
             }
 
         }
 
         //ImGui::SetItemTooltip("Press to load");
-        ImGui::SameLine(ImGui::CalcTextSize(player->GetName().c_str()).x + 15.0f);
+        ImGui::SameLine(ImGui::CalcTextSize(player.GetName().c_str()).x + 15.0f);
 
         if (ImGui::ImageButton("Image Button", (void*)(intptr_t)FileImage.FileTextureID, ImVec2(FileImage.width, FileImage.height)))
         {
@@ -76,9 +76,9 @@ void SelectPlayers::RenderPanel()
                 PlayersSelectedIndex.clear();
 
             }
-            if(!PlayersSelectedMap.at(player->GetUniqueID()))
+            if(!PlayersSelectedMap.at(player.GetUniqueID()))
                 PlayersSelectedIndex.emplace_back(index);
-            PlayersSelectedMap.at(player->GetUniqueID()) = true;
+            PlayersSelectedMap.at(player.GetUniqueID()) = true;
         }
         //ImGui::SetItemTooltip("Press to load");
         ImGui::PopID();
@@ -89,8 +89,8 @@ void SelectPlayers::RenderPanel()
     {
         if (ImGui::Button("Compare Players"))
         {
-            AttributeComparison->SetPlayerToDisplay((*PlayersUploaded)[PlayersSelectedIndex[0]]);
-            AttributeComparison->SetSecondPlayer((*PlayersUploaded)[PlayersSelectedIndex[1]]);
+            AttributeComparison->SetFirstPlayer(&(*PlayersUploaded)[PlayersSelectedIndex[0]]);
+            AttributeComparison->SetSecondPlayer(&(*PlayersUploaded)[PlayersSelectedIndex[1]]);
 
             for (auto& pair : PlayersSelectedMap)
             {
@@ -104,7 +104,7 @@ void SelectPlayers::RenderPanel()
     ImGui::End();
 }
 
-void SelectPlayers::SetPlayersUploaded(std::vector<std::shared_ptr<Player>>* players)
+void SelectPlayers::SetPlayersUploaded(std::vector<Player>* players)
 {
     PlayersUploaded = players;
    
@@ -119,16 +119,16 @@ void SelectPlayers::SetAttributeComparisonRef(PlayerAttributeComparison* ref)
 void SelectPlayers::UpdatePlayersSelectedMap()
 {
     // goes through all the player and sees id there is a new one
-    for (const auto pl : *PlayersUploaded)
+    for (auto pl : *PlayersUploaded)
     {
         try
         {
-            bool value = PlayersSelectedMap.at(pl->GetUniqueID());
+            bool value = PlayersSelectedMap.at(pl.GetUniqueID());
             
         }
         catch (const std::out_of_range& e)
         {
-            PlayersSelectedMap.emplace(pl->GetUniqueID(), false);
+            PlayersSelectedMap.emplace(pl.GetUniqueID(), false);
         }
     }
 

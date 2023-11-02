@@ -12,6 +12,7 @@ public:
     FileUploader(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible);
 
     std::shared_ptr<Player> GetPlayerUploaded();
+    std::vector<Player> GetAllPlayersUploaded();
     void ResetPlayerUploaded();
     void SetPlayerUploadedRef(std::shared_ptr<Player> pl);
 
@@ -23,6 +24,7 @@ public:
     FileUploadState* GetFileState();
 protected:
     std::shared_ptr<Player> PlayerUploaded;
+    std::vector<Player> AllPlayersUploaded;
     FileUploadState* FileState;
 
     std::shared_ptr<PlayerUploadText> TextInsertPanel;

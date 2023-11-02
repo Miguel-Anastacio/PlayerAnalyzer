@@ -14,10 +14,10 @@ namespace Callback {
         {
             if (fileUploadState.AcceptingFiles)
             {
-                char currentPath[256];
+                std::string currentPath = paths[i];
                 fileUploadState.isDragging = true;
-                strncpy(currentPath, paths[0], sizeof(currentPath) - 1);
-                currentPath[sizeof(fileUploadState.filePath) - 1] = '\0';
+                strncpy(fileUploadState.filePath, paths[i], sizeof(fileUploadState.filePath) - 1);
+                fileUploadState.filePath[sizeof(fileUploadState.filePath) - 1] = '\0';
 
                 fileUploadState.filePaths.emplace_back(currentPath);
             }

@@ -5,6 +5,20 @@ Player::Player()
 
 }
 
+//Player::Player(const Player& pl)
+//{
+//    Attributes = pl.Attributes;
+//    Name = pl.Name;
+//
+//    CosmeticID = pl.CosmeticID;
+//    UniqueID = pl.UniqueID;
+//    DefensiveRoles = pl.DefensiveRoles;
+//    MidfieldRoles = pl.MidfieldRoles;
+//    AttackingRoles = pl.AttackingRoles;
+//
+//    BestPlayerRole = pl.BestPlayerRole;
+//}
+
 Player::~Player()
 {
 

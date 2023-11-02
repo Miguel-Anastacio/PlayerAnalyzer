@@ -11,11 +11,11 @@ public:
     void RenderPanel() override;
 
     std::shared_ptr<Highlight<float>> GetEfficiencyHighlight();
-    void SetPlayerToDisplay(const std::shared_ptr<Player>& player);
+    void SetPlayerToDisplay(Player* player);
 
     Role* GetRoleSelected();
 protected:
-    std::shared_ptr<Player> PlayerToDisplay;
+    Player* PlayerToDisplay = NULL;
     std::shared_ptr<Highlight<float>> EfficiencyHighligth;
 
     Role* RoleSelected = NULL;

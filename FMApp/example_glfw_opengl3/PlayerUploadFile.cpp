@@ -1,12 +1,13 @@
 #include "PlayerUploadFile.h"
 #include "Player.h"
 
-bool PlayerUploadFile::RenderFileDragAndDrop(std::shared_ptr<Player>& ActivePlayer, FileUploadState& fileState)
+std::vector<Player> PlayerUploadFile::RenderFileDragAndDrop(std::shared_ptr<Player>& ActivePlayer, FileUploadState& fileState)
 {
+    std::vector<Player> players;
 	if (fileState.isDragging)
     {
 		ImGui::Text("Drop file here: ");
-		if (*fileState.filePath != ' ')
+		for (const auto file : fileState.filePaths)
 		{
 			// check to see if cursor was inside this panel
 			ImVec2 panelPos = ImGui::GetCursorScreenPos();
@@ -14,13 +15,13 @@ bool PlayerUploadFile::RenderFileDragAndDrop(std::shared_ptr<Player>& ActivePlay
 
 			if (ImGui::IsMouseHoveringRect(panelPos, ImVec2(panelPos.x + panelSize.x, panelPos.y + panelSize.y)))
 			{
-				ImGui::Text(fileState.filePath);
-				std::shared_ptr<Player> NewPlayer = std::make_shared<Player>();
-                if (NewPlayer->ReadAttributesFromFile(fileState.filePath))
+				//ImGui::Text(file.c_str());
+                Player NewPlayer;
+                if (NewPlayer.ReadAttributesFromFile(file))
                 {
-                    ActivePlayer = NewPlayer;
+                    players.emplace_back(NewPlayer);
+                    //*ActivePlayer = NewPlayer;
                     fileState.isDragging = false;
-                    return true;
                 }
                 else
                 {
@@ -48,5 +49,6 @@ bool PlayerUploadFile::RenderFileDragAndDrop(std::shared_ptr<Player>& ActivePlay
     {
         ImGui::TextWrapped("File could not be loaded, it does not contain data about a FM Player or is not in the right format. Please input a valid file");
     }
-    return false;
+
+    return players;
 }

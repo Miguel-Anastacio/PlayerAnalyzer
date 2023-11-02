@@ -12,15 +12,18 @@ public:
 
     void SetRoleSelected(Role* role);
 
-    void SetPlayerToDisplay(const std::shared_ptr<Player>& player);
+    void SetFirstPlayer(Player* player);
+    void SetPlayerToDisplay(std::shared_ptr<Player> player);
     void SetPlayersHighlight(const  std::shared_ptr<Highlight<int>>& newHiglight);
     std::shared_ptr<Highlight<int>> GetPlayersHighlight();
 
 protected:
 
-    void RenderAttributeTable(const std::shared_ptr<Player>& player);
+    void RenderAttributeTable(Player* player);
+    void RenderAttributeTable(std::shared_ptr<Player> player);
 
     std::shared_ptr<Player> PlayerToDisplay = NULL;
+    Player* FirstPlayer = NULL;
     std::shared_ptr<Highlight<int>> AttributesHighligth;
    
     Role* RoleSelected = NULL;

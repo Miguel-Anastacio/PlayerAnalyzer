@@ -137,7 +137,7 @@
       <Filter>sources\Cpp\UI\Comparison</Filter>
     </ClCompile>
     <ClCompile Include="SelectPlayers.cpp">
-      <Filter>sources</Filter>
+      <Filter>sources\Cpp\UI\Comparison</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -230,7 +230,9 @@
     <ClInclude Include="PlayerAttributeComparison.h">
       <Filter>sources\Headers\UI\Comparison</Filter>
     </ClInclude>
-    <ClInclude Include="SelectPlayers.h" />
+    <ClInclude Include="SelectPlayers.h">
+      <Filter>sources\Headers\UI\Comparison</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\misc\debuggers\imgui.natvis">

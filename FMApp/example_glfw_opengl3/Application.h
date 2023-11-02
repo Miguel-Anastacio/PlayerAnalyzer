@@ -34,7 +34,7 @@ namespace PlayerAnalyzer
     void Main();
 
     //void Run();
-    void RenderMainMenuBar(RoleSelector& selector, SaveRolePanel& saveRole, std::shared_ptr<Player> player, CustomRoleLoader& roleLoader, AppState& state, const std::vector<std::shared_ptr<Player>>& allPlayers);
+    void RenderMainMenuBar(RoleSelector& selector, SaveRolePanel& saveRole, Player* player, CustomRoleLoader& roleLoader, AppState& state, std::vector<Player>& allPlayers);
     //void RenderMainMenu();
 
     // UI Panels
@@ -45,13 +45,13 @@ namespace PlayerAnalyzer
     // helper to manage players loaded
     // returns -1 when is a new player
     // otherwise it returns an index
-    static int IsPlayerAlreadyLoaded(const uint64_t& ID, const std::vector<std::shared_ptr<Player>>& allPlayers);
+    static int IsPlayerAlreadyLoaded(const uint64_t& ID, std::vector<Player>& allPlayers);
 
     //Init UI Panels
     
 
     // operations to perform on UI panels when user navigates through the main menu bar;s
-    void SwitchState(const AppState& newState, const std::vector<Role>& allRoles, std::shared_ptr<Player> player = NULL, CustomRoleLoader* roleLoader = NULL, SaveRolePanel* roleSaver = NULL);
-    void SwitchState(const AppState& newState, const std::vector<Role>& allRoles, const std::vector<std::shared_ptr<Player>>& allPlayers);
+    void SwitchState(const AppState& newState, const std::vector<Role>& allRoles, Player* player = NULL, CustomRoleLoader* roleLoader = NULL, SaveRolePanel* roleSaver = NULL);
+    //void SwitchState(const AppState& newState, const std::vector<Role>& allRoles, std::vector<std::shared_ptr<Player>>& allPlayers);
 
 }

@@ -25,7 +25,7 @@ void RoleEfficiencyPanel::RenderPanel()
 
     ImGui::Begin(Name.c_str(), nullptr, window_flags);
 
-    if (PlayerToDisplay != nullptr)
+    if (PlayerToDisplay != NULL && PlayerToDisplay->GetUniqueID() != 0)
     {
         static bool bg = true;
         static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
@@ -146,7 +146,7 @@ std::shared_ptr<Highlight<float>> RoleEfficiencyPanel::GetEfficiencyHighlight()
     return EfficiencyHighligth;
 }
 
-void RoleEfficiencyPanel::SetPlayerToDisplay(const std::shared_ptr<Player>& player)
+void RoleEfficiencyPanel::SetPlayerToDisplay(Player* player)
 {
     PlayerToDisplay = player;
 }

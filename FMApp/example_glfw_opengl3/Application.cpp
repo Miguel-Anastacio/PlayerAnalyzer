@@ -108,8 +108,9 @@ namespace PlayerAnalyzer
         InitImGui();
 
         // Keep Track of players
-        std::vector<std::shared_ptr<Player>> AllPlayersLoaded;
-        std::shared_ptr<Player> ActivePlayer;
+        std::vector<Player> AllPlayersLoaded;
+        //std::shared_ptr<Player> ActivePlayer;
+        Player* ActivePlayer = NULL;
 
         TextureManager TextureMgr;
 
@@ -129,7 +130,7 @@ namespace PlayerAnalyzer
         Settings SettingsPanel(false, false, true, std::string("Settings"), true);
 
         // set fileUploader references to the active player and the file upload state
-        FileUploaderScreen.SetPlayerUploadedRef(ActivePlayer);
+        //FileUploaderScreen.SetPlayerUploadedRef(ActivePlayer);
         FileUploaderScreen.SetFileState(Callback::fileUploadState);
 
         RoleSelectorScreen.SetRoleEditor(&RoleEditorScreen);
@@ -190,24 +191,46 @@ namespace PlayerAnalyzer
                     if (FileUploaderScreen.GetNewPlayerUploaded())
                     {
                         // retrive it from the uploader class
-                        ActivePlayer = FileUploaderScreen.GetPlayerUploaded();
-                        if (ActivePlayer != nullptr)
+                        std::vector<Player> players = FileUploaderScreen.GetAllPlayersUploaded();
+                        for (auto& pl : players)
                         {
-                            // make sure it is unique (prevents the same file from being uploaded
-                            // BUG - if a file is added by draging and then added by file name there will be two players with the same attributes
-                            int index = IsPlayerAlreadyLoaded(ActivePlayer->GetUniqueID(), AllPlayersLoaded);
+                            int index = IsPlayerAlreadyLoaded(pl.GetUniqueID(), AllPlayersLoaded);
                             if (index != -1)
                             {
                                 // it is not new, so just get the player that is already in the vector
-                                ActivePlayer = AllPlayersLoaded[index];
-                                ActivePlayer->UpdateEfficiency(*RoleSelectorScreen.AllRoles);
+                                //ActivePlayer = AllPlayersLoaded[index];
+                                pl.UpdateEfficiency(*RoleSelectorScreen.AllRoles);
                             }
                             else
                             {
-                                AllPlayersLoaded.emplace_back(ActivePlayer);
-                                ActivePlayer->CalculateEfficiencyAllRoles(*RoleSelectorScreen.AllRoles);
+                                pl.CalculateEfficiencyAllRoles(*RoleSelectorScreen.AllRoles);
+                                AllPlayersLoaded.emplace_back(pl);
                             }
+            
                         }
+                        if (AllPlayersLoaded.size() > 0)
+                            ActivePlayer = &AllPlayersLoaded[AllPlayersLoaded.size() - 1];
+
+
+
+                        //ActivePlayer = FileUploaderScreen.GetPlayerUploaded();
+                        //if (ActivePlayer != nullptr)
+                        //{
+                        //    // make sure it is unique (prevents the same file from being uploaded
+                        //    // BUG - if a file is added by draging and then added by file name there will be two players with the same attributes
+                        //    int index = IsPlayerAlreadyLoaded(ActivePlayer->GetUniqueID(), AllPlayersLoaded);
+                        //    if (index != -1)
+                        //    {
+                        //        // it is not new, so just get the player that is already in the vector
+                        //        ActivePlayer = AllPlayersLoaded[index];
+                        //        ActivePlayer->UpdateEfficiency(*RoleSelectorScreen.AllRoles);
+                        //    }
+                        //    else
+                        //    {
+                        //        AllPlayersLoaded.emplace_back(ActivePlayer);
+                        //        ActivePlayer->CalculateEfficiencyAllRoles(*RoleSelectorScreen.AllRoles);
+                        //    }
+                        //}
                     }
                     // render players loaded
                     PlayersLoadedScreen.SetCurrentPlayer(ActivePlayer);
@@ -218,7 +241,7 @@ namespace PlayerAnalyzer
                     RoleEfficiencyScreen.SetPlayerToDisplay(ActivePlayer);
                     RoleEfficiencyScreen.RenderPanel();
                     // render playerAttributes
-                    PlayerAttributesScreen.SetPlayerToDisplay(ActivePlayer);
+                    PlayerAttributesScreen.SetFirstPlayer(ActivePlayer);
                     PlayerAttributesScreen.RenderPanel();
 
                     break;
@@ -268,7 +291,7 @@ namespace PlayerAnalyzer
     //        glfwPollEvents();
 
     //        // Start the Dear ImGui frame
-    void SwitchState(const AppState& newState, const std::vector<Role>& allRoles, std::shared_ptr<Player> player, CustomRoleLoader* roleLoader, SaveRolePanel* roleSaver)
+    void SwitchState(const AppState& newState, const std::vector<Role>& allRoles, Player* player, CustomRoleLoader* roleLoader, SaveRolePanel* roleSaver)
     {
         switch (newState)
         {
@@ -319,7 +342,7 @@ namespace PlayerAnalyzer
     //    }
     //}
 
-    void RenderMainMenuBar(RoleSelector& selector, SaveRolePanel& saveRole, std::shared_ptr<Player> player, CustomRoleLoader& roleLoader, AppState& state, const std::vector<std::shared_ptr<Player>>& allPlayers)
+    void RenderMainMenuBar(RoleSelector& selector, SaveRolePanel& saveRole, Player* player, CustomRoleLoader& roleLoader, AppState& state, std::vector<Player>& allPlayers)
     {
         if (ImGui::BeginMainMenuBar())
         {
@@ -358,7 +381,7 @@ namespace PlayerAnalyzer
 
                 for (auto& pl : allPlayers)
                 {
-                    pl->UpdateEfficiency(*selector.AllRoles);
+                    pl.UpdateEfficiency(*selector.AllRoles);
                 }
 
                 SwitchState(state, *selector.AllRoles, NULL, &roleLoader, NULL);
@@ -372,12 +395,12 @@ namespace PlayerAnalyzer
     }
 
 
-    int IsPlayerAlreadyLoaded(const uint64_t& ID, const std::vector<std::shared_ptr<Player>>& allPlayers)
+    int IsPlayerAlreadyLoaded(const uint64_t& ID, std::vector<Player>& allPlayers)
     {
         int i = 0;
         for (auto& it : allPlayers)
         {
-            if (ID == it->GetUniqueID())
+            if (ID == it.GetUniqueID())
             {
                 return i;
             }
