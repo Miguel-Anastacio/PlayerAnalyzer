@@ -2,6 +2,7 @@
 #include "UIPanel.h"
 #include <memory>
 class Player;
+class Role;
 class PlayerAttributesPanel: public UIPanel
 {
 public:
@@ -9,7 +10,7 @@ public:
 
     void RenderPanel() override;
 
-
+    void SetRoleSelected(Role* role);
 
     void SetPlayerToDisplay(const std::shared_ptr<Player>& player);
     void SetPlayersHighlight(const  std::shared_ptr<Highlight<int>>& newHiglight);
@@ -19,9 +20,9 @@ protected:
 
     void RenderAttributeTable(const std::shared_ptr<Player>& player);
 
-    std::shared_ptr<Player> PlayerToDisplay;
+    std::shared_ptr<Player> PlayerToDisplay = NULL;
     std::shared_ptr<Highlight<int>> AttributesHighligth;
    
-
+    Role* RoleSelected = NULL;
 };
 

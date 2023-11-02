@@ -32,6 +32,9 @@ public:
     std::vector <RoleEfficiency> GetMidfieldRoles();
     std::vector <RoleEfficiency> GetAttackingRoles();
 
+    RoleEfficiency GetEfficiencyOfRole(const uint64_t& ID);
+    RoleEfficiency GetEfficiencyOfRole(const uint64_t& ID, const RoleType& type);
+
 private:
     void SetUniqueID(const std::string&  filename);
     std::vector<Attribute> Attributes;

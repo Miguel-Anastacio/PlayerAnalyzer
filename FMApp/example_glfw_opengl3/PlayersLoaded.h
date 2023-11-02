@@ -1,5 +1,6 @@
 #pragma once
 #include "ImagesPanel.h"
+
 class Player;
 class PlayersLoaded : public ImagesPanel
 {

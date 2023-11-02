@@ -4,16 +4,25 @@
 RoleSelector::RoleSelector(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible )
     : UIPanel(noMove, noResize, noCollapse, name, visible)
 {
+    //RoleSelected = new Role();
+    
+}
+
+RoleSelector::~RoleSelector()
+{
+   /* if (RoleSelected != NULL)
+    {
+        delete RoleSelected;
+    }*/
 }
 
 void RoleSelector::RenderPanel()
 {
-
     ImGui::Begin(Name.c_str(), nullptr, window_flags);
     if (ImGui::TreeNode("Defensive"))
     {
         ImGui::Indent();
-        for (auto& role : AllRoles)
+        for (auto& role : *AllRoles)
         {
             if (role.TypeEnum == Defensive)
             {
@@ -30,11 +39,15 @@ void RoleSelector::RenderPanel()
                     RolesSelectedMap.at(PreviousRoleID) = false;
                     RolesSelectedMap.at(role.ID) = true;
                     PreviousRoleID = role.ID;
+
+
                     if (MyRoleEditor != NULL)
                     {
                         MyRoleEditor->SetCurrentRole(role);
                         MyRoleEditor->SetContentsVisibility(true);
                     }
+                    //*RoleSelected = role;
+                    RoleSelected = &role;
                 }
               
             }
@@ -46,7 +59,7 @@ void RoleSelector::RenderPanel()
     {
         ImGui::Indent();
 
-        for (auto& role : AllRoles)
+        for (auto& role : *AllRoles)
         {
             if (role.TypeEnum == Midfield)
             {
@@ -65,11 +78,15 @@ void RoleSelector::RenderPanel()
                     RolesSelectedMap.at(role.ID) = true;
                     PreviousRoleID = role.ID;
 
+
                     if (MyRoleEditor != NULL)
                     {
                         MyRoleEditor->SetCurrentRole(role);
                         MyRoleEditor->SetContentsVisibility(true);
                     }
+                    //*RoleSelected = role;
+                    RoleSelected = &role;
+
                 }
             }
         }
@@ -80,7 +97,7 @@ void RoleSelector::RenderPanel()
     {
         ImGui::Indent();
 
-        for (auto& role : AllRoles)
+        for (auto& role : *AllRoles)
         {
             if (role.TypeEnum == Attacking)
             {
@@ -105,6 +122,10 @@ void RoleSelector::RenderPanel()
                         MyRoleEditor->SetCurrentRole(role);
                         MyRoleEditor->SetContentsVisibility(true);
                     }
+
+                    //*RoleSelected = role;
+                    RoleSelected = &role;
+
                 }
             }
         }
@@ -123,15 +144,22 @@ void RoleSelector::RenderPanel()
     {
         if (ImGui::Button("Reset All Roles"))
         {
-            AllRoles = *OriginalDB;
+            AllRoles = &OriginalDB;
         }
     }
 
-
+    
     ImGui::End();
-    if(MyRoleEditor != NULL)
+    if (MyRoleEditor != NULL)
+    {
         MyRoleEditor->RenderPanel();
-
+        // role editor might change the role selected so update it
+        if (MyRoleEditor->GetCurrentRole() != NULL && MyRoleEditor->GetCurrentRole()->EditedFlag)
+        {
+            //EditorChangedRole = true;
+        }
+    }
+    
 }
 
 void RoleSelector::SetRoleEditor(RoleEditor* editor)
@@ -146,21 +174,29 @@ RoleEditor* RoleSelector::GetRoleEditor()
 
 void RoleSelector::SetRolesSelectedMap()
 {
-    for (const auto role : AllRoles)
+    for (const auto role : *AllRoles)
     {
         RolesSelectedMap.emplace(role.ID, false);
     }
-    PreviousRoleID = AllRoles[0].ID;
+    PreviousRoleID = (*AllRoles)[0].ID;
 }
 
-void RoleSelector::SetAllRoles(const std::vector<Role>& roles)
+void RoleSelector::SetAllRoles(std::vector<Role>& roles)
 {
-    AllRoles = roles;
-    OriginalDB = &roles;
+    AllRoles = &roles;
+    //OriginalDB = roles;
     SetRolesSelectedMap();
 }
 
-void RoleSelector::SetOriginalDBRef(const std::vector<Role>& db)
+Role* RoleSelector::GetRoleSelected()
 {
-    OriginalDB = &db;
+    return RoleSelected;
+}
+
+
+
+
+void RoleSelector::SetOriginalDBRef(std::vector<Role>& db)
+{
+    OriginalDB = db;
 }

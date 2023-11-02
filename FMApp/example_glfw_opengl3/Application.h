@@ -34,7 +34,7 @@ namespace PlayerAnalyzer
     void Main();
 
     //void Run();
-    void RenderMainMenuBar(RoleSelector& selector, SaveRolePanel& saveRole, std::shared_ptr<Player> player, CustomRoleLoader& roleLoader, AppState& state);
+    void RenderMainMenuBar(RoleSelector& selector, SaveRolePanel& saveRole, std::shared_ptr<Player> player, CustomRoleLoader& roleLoader, AppState& state, const std::vector<std::shared_ptr<Player>>& allPlayers);
     //void RenderMainMenu();
 
     // UI Panels
@@ -52,5 +52,6 @@ namespace PlayerAnalyzer
 
     // operations to perform on UI panels when user navigates through the main menu bar;s
     void SwitchState(const AppState& newState, const std::vector<Role>& allRoles, std::shared_ptr<Player> player = NULL, CustomRoleLoader* roleLoader = NULL, SaveRolePanel* roleSaver = NULL);
+    void SwitchState(const AppState& newState, const std::vector<Role>& allRoles, const std::vector<std::shared_ptr<Player>>& allPlayers);
 
 }

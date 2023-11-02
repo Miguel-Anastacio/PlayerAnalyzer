@@ -1,5 +1,6 @@
 #pragma once
 #include "PlayerAttributesPanel.h"
+struct Role;
 class PlayerAttributeComparison :  public PlayerAttributesPanel
 {
 public:
@@ -7,8 +8,13 @@ public:
     void RenderPanel() override;
 
     void SetSecondPlayer(const std::shared_ptr<Player>& player);
+
+    void RenderRoleSelectedEfficiency();
+
+
 protected:
-    std::shared_ptr<Player> SecondPlayer;
+    std::shared_ptr<Player> SecondPlayer = NULL;
+
 
 
 };

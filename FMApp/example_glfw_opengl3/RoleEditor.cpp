@@ -69,6 +69,11 @@ void RoleEditor::SetCurrentRole(Role& role)
     AttributeSelectedMap.at(PreviousAtributeSelectedID) = false;
 }
 
+Role* RoleEditor::GetCurrentRole()
+{
+    return CurrentRole;
+}
+
 std::shared_ptr<Highlight<float>> RoleEditor::GetWeightHighlight()
 {
     return WeightHighlight;

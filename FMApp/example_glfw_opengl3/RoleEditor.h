@@ -11,6 +11,7 @@ public:
     RoleEditor(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible, SaveRolePanel* roleSaver);
     void RenderPanel() override;
     void SetCurrentRole(Role& role);
+    Role* GetCurrentRole();
 
     std::shared_ptr<Highlight<float>> GetWeightHighlight();
 
@@ -21,6 +22,8 @@ protected:
     bool AttributeSelectedIsInUse = false;
     AttributeWeight* AttributeSelected = NULL;
     void RenderAttributeFromVector(std::vector<AttributeWeight>& vector, int index);
+
+    bool RoleWasEdited = false;
 
     std::shared_ptr<Highlight<float>> WeightHighlight;
 
@@ -45,8 +48,14 @@ protected:
 
         ImGui::TableNextColumn();
         ImGui::PushFont(font);
-        ColorCodeTableItems(value, highlight);
-        ImGui::Text("%.1f", value);
+        if (AttributeSelectedMap.at(att.ID))
+        {
+            // highlight the number as well
+            ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, ImGui::GetColorU32(ImVec4(0.26f, 0.59f, 0.98f, 0.31f)));
+        }
+
+        ImVec4 Color = ColorCodeTableItems(value, highlight);
+        ImGui::TextColored(Color,"%.1f", value);
         ImGui::PopFont();
         ImGui::TableNextColumn();
 

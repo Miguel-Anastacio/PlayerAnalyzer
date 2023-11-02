@@ -130,6 +130,7 @@ public:
     void SetVisibility(const bool& state);
     void SetContentsVisibility(const bool& state);
 
+    virtual void Clear() {};
 
 protected:
 
@@ -142,10 +143,13 @@ protected:
     bool NoCollapse;
     ImGuiWindowFlags window_flags = 0;
 
+    // Helper to display a little (?) mark which shows a tooltip when hovered.
+    // In your own code you may want to display an actual icon if you are using a merged icon fonts (see docs/FONTS.md)
+    static void HelpMarker(const char* desc);
     
 
     template <typename T>
-    void ColorCodeTableItems(const T& value, const Highlight<T>& highlight)
+    ImVec4 ColorCodeTableItems(const T& value, const Highlight<T>& highlight)
     {
         for (int i = 0; i < highlight.ColorCodes.size(); i++)
         {
@@ -153,18 +157,21 @@ protected:
             {
                 if (value == 0)
                 {
-                    ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg,IM_COL32_BLACK);
+                    //ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg,IM_COL32_BLACK);
+                    return ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
                     break;
                 }
 
-                ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, ImGui::GetColorU32(highlight.ColorCodes[i].Color));
+                //ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, ImGui::GetColorU32(highlight.ColorCodes[i].Color));
+                return highlight.ColorCodes[i].Color;
                 break;
             }
 
             // when value is outside of thershold jus give him he maximum value
             else if (i == highlight.ColorCodes.size() - 1)
             {
-                ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, ImGui::GetColorU32(highlight.ColorCodes[i].Color));
+                //ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, ImGui::GetColorU32(highlight.ColorCodes[i].Color));
+                return highlight.ColorCodes[i].Color;
                 break;
             }
         }
@@ -178,14 +185,50 @@ protected:
         ImGui::TableNextColumn();
 
         ImGui::PushFont(font);
-        ColorCodeTableItems(value, highlight);
+        ImVec4 Color = ColorCodeTableItems(value, highlight);
         if constexpr (std::is_same_v<T, int>)
         {
-            ImGui::Text("%d", value);
+            //ImGui::Text("%d", value);
+            ImGui::TextColored(Color,"%d", value);
         }
         else if constexpr (std::is_same_v<T, float>)
         {
-            ImGui::Text("%.2f", value);
+            //ImGui::Text("%.2f", value);
+            ImGui::TextColored(Color, "%.2f", value);
+        }
+        else {
+            ImGui::Text("Unknown Type");
+        }
+
+        ImGui::TableNextColumn();
+        ImGui::PopFont();
+    }
+    template<typename T>
+    void RenderStringValuePairTableHiglighted(const std::string text, const T& value, const Highlight<T> highlight, ImFont* font, bool useDefault = false)
+    {
+        //ImGui::Indent();
+        if (useDefault)
+        {
+            ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, ImGui::GetColorU32(ImVec4(0.26f, 0.59f, 0.98f, 0.31f)));
+        }
+        ImGui::Text(text.c_str());
+        ImGui::TableNextColumn();
+
+        ImGui::PushFont(font);
+        if (useDefault)
+        {
+            ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, ImGui::GetColorU32(ImVec4(0.26f, 0.59f, 0.98f, 0.31f)));
+        }
+        ImVec4 Color = ColorCodeTableItems(value, highlight);
+        if constexpr (std::is_same_v<T, int>)
+        {
+            //ImGui::Text("%d", value);
+            ImGui::TextColored(Color, "%d", value);
+        }
+        else if constexpr (std::is_same_v<T, float>)
+        {
+            //ImGui::Text("%.2f", value);
+            ImGui::TextColored(Color, "%.2f", value);
         }
         else {
             ImGui::Text("Unknown Type");
@@ -196,21 +239,26 @@ protected:
     }
 
     template<typename T>
-    void RenderStringValuePairTableAsSelectable(const std::string text, const T& value, const Highlight<T> highlight, ImFont* font)
+    bool RenderStringValuePairTableAsSelectable(const std::string text, const T& value, const Highlight<T> highlight, ImFont* font)
     {
-        //ImGui::Indent();
-        ImGui::Selectable(text.c_str());
+        bool selected = false;
+        if (ImGui::Selectable(text.c_str()))
+            selected = true;
         ImGui::TableNextColumn();
 
         ImGui::PushFont(font);
-        ColorCodeTableItems(value, highlight);
+        ImVec4 Color = ColorCodeTableItems(value, highlight);
+        if (selected)
+        {
+            ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, ImGui::GetColorU32(ImVec4(0.26f, 0.59f, 0.98f, 0.31f)));
+        }
         if constexpr (std::is_same_v<T, int>)
         {
-            ImGui::Text("%d", value);
+             ImGui::TextColored(Color,"%d", value);
         }
         else if constexpr (std::is_same_v<T, float>)
         {
-            ImGui::Text("%.2f", value);
+            ImGui::TextColored(Color, "%.2f", value);
         }
         else {
             ImGui::Text("Unknown Type");
@@ -218,6 +266,8 @@ protected:
 
         ImGui::TableNextColumn();
         ImGui::PopFont();
+
+        return selected;
     }
 
 

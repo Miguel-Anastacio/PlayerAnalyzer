@@ -31,6 +31,11 @@ void PlayerAttributesPanel::RenderPanel()
     ImGui::End();
 }
 
+void PlayerAttributesPanel::SetRoleSelected(Role* role)
+{
+    RoleSelected = role;
+}
+
 void PlayerAttributesPanel::SetPlayerToDisplay(const std::shared_ptr<Player>& player)
 {
     PlayerToDisplay = player;
@@ -100,16 +105,37 @@ void PlayerAttributesPanel::RenderAttributeTable(const std::shared_ptr<Player>& 
 
                 for (int i = 0; i < 14; ++i)
                 {
-                    //ColorCodeTableItems(technicalAtt[i].Value, attHighlight);
+                    bool relevant = false;
+                    // is attribute supposed to be higlighted
+                    if (RoleSelected != NULL)
+                    {
+                        if (RoleSelected->ID != 0 && RoleSelected->IsAttributePartOfRole(technicalAtt[i].ID))
+                            relevant = true;
+                    }
                     // render technical attribute
-                    RenderStringValuePairTable(technicalAtt[i].Name, technicalAtt[i].Value, *AttributesHighligth, boldFont);
+                    RenderStringValuePairTableHiglighted(technicalAtt[i].Name, technicalAtt[i].Value, *AttributesHighligth, boldFont, relevant);
+
+                    relevant = false;
+                    // is attribute supposed to be higlighted
+                    if (RoleSelected != NULL)
+                    {
+                        if (RoleSelected->ID != 0 && RoleSelected->IsAttributePartOfRole(mentalAtt[i].ID))
+                            relevant = true;
+                    }
                     // render mental attribute
-                    RenderStringValuePairTable(mentalAtt[i].Name, mentalAtt[i].Value, *AttributesHighligth, boldFont);
+                    RenderStringValuePairTableHiglighted(mentalAtt[i].Name, mentalAtt[i].Value, *AttributesHighligth, boldFont, relevant);
 
                     // render physical attribute
                     if (i < 8)
                     {
-                        RenderStringValuePairTable(physicalAtt[i].Name, physicalAtt[i].Value, *AttributesHighligth, boldFont);
+                        relevant = false;
+                        // is attribute supposed to be higlighted
+                        if (RoleSelected != NULL)
+                        {
+                            if (RoleSelected->ID != 0 && RoleSelected->IsAttributePartOfRole(physicalAtt[i].ID))
+                                relevant = true;
+                        }
+                        RenderStringValuePairTableHiglighted(physicalAtt[i].Name, physicalAtt[i].Value, *AttributesHighligth, boldFont, relevant);
                     }
                     else
                     {
@@ -118,6 +144,7 @@ void PlayerAttributesPanel::RenderAttributeTable(const std::shared_ptr<Player>& 
                     }
 
                 }
+
 
                 ImGui::EndTable();
             }

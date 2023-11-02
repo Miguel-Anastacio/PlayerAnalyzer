@@ -186,6 +186,7 @@
     <ClCompile Include="RoleEfficiencyPanel.cpp" />
     <ClCompile Include="RoleSelector.cpp" />
     <ClCompile Include="SaveRolePanel.cpp" />
+    <ClCompile Include="SelectPlayers.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="stb_image_build.h" />
     <ClCompile Include="TextureManager.cpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="RoleEfficiencyPanel.h" />
     <ClInclude Include="RoleSelector.h" />
     <ClInclude Include="SaveRolePanel.h" />
+    <ClInclude Include="SelectPlayers.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="TextureManager.h" />

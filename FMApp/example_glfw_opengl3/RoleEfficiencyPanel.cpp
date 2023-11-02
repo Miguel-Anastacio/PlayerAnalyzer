@@ -6,6 +6,16 @@ RoleEfficiencyPanel::RoleEfficiencyPanel(const bool& noMove, const bool& noResiz
 {
     const std::vector<float> ranges = { 20, 40, 60, 80, 100 };
     EfficiencyHighligth = std::make_shared<Highlight<float>>(ranges);
+
+    RoleSelected = new Role();
+}
+
+RoleEfficiencyPanel::~RoleEfficiencyPanel()
+{
+    if (RoleSelected != NULL)
+    {
+        delete RoleSelected;
+    }
 }
 
 void RoleEfficiencyPanel::RenderPanel()
@@ -47,7 +57,11 @@ void RoleEfficiencyPanel::RenderPanel()
                 if (i < DefensiveRoles.size())
                 {
                     //RenderStringValuePairTable(DefensiveRoles[i].RoleName, DefensiveRoles[i].Value, effHighlight, boldFont);
-                    RenderStringValuePairTableAsSelectable(DefensiveRoles[i].RoleName, DefensiveRoles[i].Value, *EfficiencyHighligth, boldFont);
+                    if (RenderStringValuePairTableAsSelectable(DefensiveRoles[i].RoleName, DefensiveRoles[i].Value, *EfficiencyHighligth, boldFont))
+                    {
+                        RoleSelected->ID = DefensiveRoles[i].ID;
+                        RoleSelected->TypeEnum = Defensive;
+                    }
                 }
                 else
                 {
@@ -56,12 +70,21 @@ void RoleEfficiencyPanel::RenderPanel()
                 }
                 
                 //RenderStringValuePairTable(MidfieldRoles[i].RoleName, MidfieldRoles[i].Value, effHighlight, boldFont);
-                RenderStringValuePairTableAsSelectable(MidfieldRoles[i].RoleName, MidfieldRoles[i].Value, *EfficiencyHighligth, boldFont);
+                if (RenderStringValuePairTableAsSelectable(MidfieldRoles[i].RoleName, MidfieldRoles[i].Value, *EfficiencyHighligth, boldFont))
+                {
+                    RoleSelected->ID = MidfieldRoles[i].ID;
+                    RoleSelected->TypeEnum = Midfield;
+
+                }
 
                 if (i < AttackingRoles.size())
                 {
                     //RenderStringValuePairTable(AttackingRoles[i].RoleName, AttackingRoles[i].Value, effHighlight, boldFont);
-                    RenderStringValuePairTableAsSelectable(AttackingRoles[i].RoleName, AttackingRoles[i].Value, *EfficiencyHighligth, boldFont);
+                    if (RenderStringValuePairTableAsSelectable(AttackingRoles[i].RoleName, AttackingRoles[i].Value, *EfficiencyHighligth, boldFont))
+                    {
+                        RoleSelected->ID = AttackingRoles[i].ID;
+                        RoleSelected->TypeEnum = Attacking;
+                    }
                 }
                 else
                 {
@@ -126,4 +149,9 @@ std::shared_ptr<Highlight<float>> RoleEfficiencyPanel::GetEfficiencyHighlight()
 void RoleEfficiencyPanel::SetPlayerToDisplay(const std::shared_ptr<Player>& player)
 {
     PlayerToDisplay = player;
+}
+
+Role* RoleEfficiencyPanel::GetRoleSelected()
+{
+    return RoleSelected;
 }

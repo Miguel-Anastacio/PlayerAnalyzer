@@ -291,6 +291,70 @@ std::vector<RoleEfficiency> Player::GetAttackingRoles()
     return AttackingRoles;
 }
 
+RoleEfficiency Player::GetEfficiencyOfRole(const uint64_t& ID)
+{
+    for (const auto& def : DefensiveRoles)
+    {
+        if (def.ID == ID)
+        {
+            return def;
+        }
+    }
+
+    for (const auto& mid : MidfieldRoles)
+    {
+        if (mid.ID == ID)
+        {
+            return mid;
+        }
+    }
+
+    for (const auto& off : AttackingRoles)
+    {
+        if (off.ID == ID)
+        {
+            return off;
+        }
+    }
+}
+
+RoleEfficiency Player::GetEfficiencyOfRole(const uint64_t& ID, const RoleType& type)
+{
+    switch (type)
+    {
+    case Defensive:
+        for (const auto& role : DefensiveRoles)
+        {
+            if (role.ID == ID)
+            {
+                return role;
+            }
+        }
+        break;
+    case Midfield:
+        for (const auto& role : MidfieldRoles)
+        {
+            if (role.ID == ID)
+            {
+                return role;
+            }
+        }
+        break;
+    case Attacking:
+        for (const auto& role : AttackingRoles)
+        {
+            if (role.ID == ID)
+            {
+                return role;
+            }
+        }
+        break;
+
+    default:
+        break;
+    }
+}
+
 void Player::SetUniqueID(const std::string& filename)
 {
     UniqueID = std::hash<std::string>{}(filename);
