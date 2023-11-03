@@ -174,7 +174,8 @@ namespace PlayerAnalyzer
         InitLoadFilesMenu(SettingsPanel, RoleEfficiencyScreen, PlayerAttributesScreen, RoleEditorScreen);
 
         // Init all UI Panels of player comparison Menu
-        InitPlayerComparisonMenu(RoleSelectorPlComp, AttributeComparison, PlayersSelection, AllRoles, PlayerAttributesScreen.GetPlayersHighlight(), AllPlayersLoaded);
+        InitPlayerComparisonMenu(RoleSelectorPlComp, AttributeComparison, PlayersSelection, AllRoles, PlayerAttributesScreen.GetPlayersHighlight(),
+                                        RoleEfficiencyScreen.GetEfficiencyHighlight(), AllPlayersLoaded);
 
        
         while (!glfwWindowShouldClose(Window))
@@ -351,11 +352,12 @@ namespace PlayerAnalyzer
     }
 
     void InitPlayerComparisonMenu(RoleSelector& selector, PlayerAttributeComparison& comparison, SelectPlayers& playersSelection, std::vector<Role>& allRoles,
-                                    std::shared_ptr<Highlight<int>> highlight, std::vector<Player>& allPlayers)
+                                    std::shared_ptr<Highlight<int>> highlight, std::shared_ptr<Highlight<float>> effHighlight, std::vector<Player>& allPlayers)
     {
         selector.SetAllRoles(allRoles);
 
         comparison.SetPlayersHighlight(highlight);
+        comparison.SetEfficiencyHiglight(effHighlight);
         comparison.SetRoleSelected(selector.GetRoleSelected());
 
         playersSelection.SetPlayersUploaded(&allPlayers);

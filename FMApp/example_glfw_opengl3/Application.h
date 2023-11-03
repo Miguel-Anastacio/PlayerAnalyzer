@@ -54,7 +54,7 @@ namespace PlayerAnalyzer
     void InitLoadFilesMenu(Settings& settings, RoleEfficiencyPanel& efficiencyPanel, PlayerAttributesPanel& attributes, RoleEditor& editor);
 
     void InitPlayerComparisonMenu(RoleSelector& selector, PlayerAttributeComparison& comparison, SelectPlayers& playersSelection, std::vector<Role>& allRoles,
-                                        std::shared_ptr<Highlight<int>> highlight, std::vector<Player>& allPlayers);
+                              std::shared_ptr<Highlight<int>> highlight, std::shared_ptr<Highlight<float>> effHighlight, std::vector<Player>& allPlayers);
 
 
     void RenderMainMenu(FileUploader& uploader, RoleEfficiencyPanel& efficiencyPanel, PlayersLoaded& loadedPlayersScreen, PlayerAttributesPanel& attributes,

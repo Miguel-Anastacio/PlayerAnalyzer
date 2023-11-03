@@ -9,13 +9,13 @@ public:
 
     void SetSecondPlayer( Player* player);
 
+    void SetEfficiencyHiglight(std::shared_ptr<Highlight<float>>& highlight);
     void RenderRoleSelectedEfficiency();
-
 
 protected:
     Player* SecondPlayer = NULL;
 
-
+    std::shared_ptr<Highlight<float>> EfficiencyHighligth;
 
 };
 

@@ -40,6 +40,11 @@ void PlayerAttributeComparison::SetSecondPlayer(Player* player)
 }
 
 
+void PlayerAttributeComparison::SetEfficiencyHiglight(std::shared_ptr<Highlight<float>>& highlight)
+{
+    EfficiencyHighligth = highlight;
+}
+
 void PlayerAttributeComparison::RenderRoleSelectedEfficiency()
 {
     static bool bg = true;
@@ -60,12 +65,13 @@ void PlayerAttributeComparison::RenderRoleSelectedEfficiency()
         {
             RoleEfficiency player1Eff = FirstPlayer->GetEfficiencyOfRole(RoleSelected->ID, RoleSelected->TypeEnum);
             RoleEfficiency player2Eff = SecondPlayer->GetEfficiencyOfRole(RoleSelected->ID, RoleSelected->TypeEnum);
-
+            ImVec4 color = ColorCodeTableItems(player1Eff.Value, *EfficiencyHighligth);
             ImGui::Text(RoleSelected->Name.c_str());
             ImGui::TableNextColumn();
-            ImGui::Text("%.2f", player1Eff.Value);
+            ImGui::TextColored(color, "%.2f", player1Eff.Value);
             ImGui::TableNextColumn();
-            ImGui::Text("%.2f", player2Eff.Value);
+            color = ColorCodeTableItems(player2Eff.Value, *EfficiencyHighligth);
+            ImGui::TextColored(color, "%.2f", player2Eff.Value);
         }
         else
         {
