@@ -18,10 +18,10 @@ Move the player file to the same folder as the executable and write the name of 
 The user can also edit the color coding used, this new setting will be saved in between sessions.
 
 The implementation of the app uses:
-ImGui for the UI
-GLFW for the window
-OpenGL and stb_image to load images for the UI
-Json for Modern C++ to read the database file 
-   
+    ImGui for the UI
+    GLFW for the window
+    OpenGL and stb_image to load images for the UI
+    Json for Modern C++ to read the database file 
+       
 
 
