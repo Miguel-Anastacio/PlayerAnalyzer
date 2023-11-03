@@ -58,7 +58,7 @@ namespace PlayerAnalyzer
 
 
     void RenderMainMenu(FileUploader& uploader, RoleEfficiencyPanel& efficiencyPanel, PlayersLoaded& loadedPlayersScreen, PlayerAttributesPanel& attributes,
-        Player* activePlayer, std::vector<Player>& allPlayers, const std::vector<Role>& allRoles);
+        Player*& activePlayer, std::vector<Player>& allPlayers, const std::vector<Role>& allRoles);
 
     void RenderEditRolesMenu(RoleSelector& selector, SaveRolePanel& roleSaver);
 
