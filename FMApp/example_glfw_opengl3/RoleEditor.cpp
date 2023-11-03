@@ -113,11 +113,7 @@ void RoleEditor::BuildAllAttributesArray()
 
 void RoleEditor::RenderAllAttributes()
 {
-
-    int Column = 0;
-    ImGui::TableSetColumnIndex(Column);
-    AttributeWeight* temp = NULL;
- 
+    ImGui::TableSetColumnIndex(0);
 
     for (int i = 0; i < TechnicalAttributes.size(); i++)
     {
@@ -202,9 +198,9 @@ void RoleEditor::RenderAttributeSelected(const AttributeWeight* attribute)
 
     if (ImGui::BeginTable("table2", 4, flags, ImVec2(420,0)))
     {
-        float headerSize = 140.0f;
+        float headerSize = 160.0f;
         float smallHeaderSize = 60.0f;
-        ImGui::TableSetupColumn("Attribute Selected", ImGuiTableColumnFlags_WidthFixed, 160.0f);
+        ImGui::TableSetupColumn("Attribute Selected", ImGuiTableColumnFlags_WidthFixed, headerSize);
         ImGui::TableSetupColumn("Use", ImGuiTableColumnFlags_WidthFixed, smallHeaderSize);
         ImGui::TableSetupColumn("Weight", ImGuiTableColumnFlags_WidthFixed, smallHeaderSize);
         ImGui::TableSetupColumn("New Weight", ImGuiTableColumnFlags_WidthFixed, smallHeaderSize*2);

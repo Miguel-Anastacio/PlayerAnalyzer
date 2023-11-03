@@ -174,7 +174,10 @@ protected:
                 return highlight.ColorCodes[i].Color;
                 break;
             }
+ 
         }
+
+        return ImVec4(0, 0, 0, 1);
     };
 
     template<typename T>

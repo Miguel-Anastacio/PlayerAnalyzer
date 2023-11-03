@@ -183,7 +183,6 @@ void UpdateRoleFromCustomFile(std::vector<Role>& AllRoles, const std::string& fi
                     std::string NameAtt = line.substr(posName + 1, posValue - 1 - posName);
 
                     float value = std::stof(line.substr(posValue + 1));
-                    size_t attributeID = std::stoull(line.substr(0, posName));
 
                     /* int index = RoleToEdit->GetAttributeIndex(attributeID);
                      if (index != -1)
@@ -223,7 +222,6 @@ std::vector<std::string> ReadRolesEditedByFile(const std::string& fileName, cons
     std::vector<std::string> rolesEdited;
     if (file.is_open())
     {
-        Role* RoleToEdit = NULL;
         std::string line;
         uint64_t currentId;
 

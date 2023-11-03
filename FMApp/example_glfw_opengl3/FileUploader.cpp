@@ -58,7 +58,7 @@ void FileUploader::RenderPanel()
         if (ImGui::BeginTabItem("Drag and Drop File"))
         {
             AllPlayersUploaded = FileInsertPanel->RenderFileDragAndDrop(PlayerUploaded, *FileState);
-            for (auto& pl : AllPlayersUploaded)
+            for (const auto& pl : AllPlayersUploaded)
             {
                 //pl.SetCosmeticID(ValidPlayersUploaded);
                 ValidPlayersUploaded++;

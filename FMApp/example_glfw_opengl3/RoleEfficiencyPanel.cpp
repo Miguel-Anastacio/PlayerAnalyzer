@@ -32,7 +32,6 @@ void RoleEfficiencyPanel::RenderPanel()
         if (bg)   flags |= ImGuiTableFlags_Borders;
         if (ImGui::BeginTable("table2", 6, flags, ImVec2(1105,0)))
         {
-            int attributesIndex = 0;
             float headerSize = 300.0f;
             float smallHeaderSize = 50.0f;
             ImGui::PushFont(boldFont);

@@ -16,7 +16,7 @@ namespace Callback {
             if (fileUploadState.AcceptingFiles)
             {
                 std::string currentPath = paths[i];
-                strncpy(fileUploadState.filePath, paths[i], sizeof(fileUploadState.filePath) - 1);
+                strncpy_s(fileUploadState.filePath, paths[i], sizeof(fileUploadState.filePath) - 1);
                 fileUploadState.filePath[sizeof(fileUploadState.filePath) - 1] = '\0';
 
                 fileUploadState.filePaths.emplace_back(currentPath);

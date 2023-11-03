@@ -12,7 +12,6 @@ PlayersLoaded::PlayersLoaded(const bool& noMove, const bool& noResize, const boo
 void PlayersLoaded::RenderPanel()
 {
     ImGui::Begin(Name.c_str(), nullptr, window_flags);
-    int columns = 0;
     if (PlayersUploaded->size() == 0)
     {
         ImGui::TextWrapped("No Players have been loaded. Please use the file uploader to load player data to the app");
@@ -39,13 +38,15 @@ void PlayersLoaded::RenderPanel()
         if (CurrentPlayer->GetUniqueID() == player.GetUniqueID())
             selected = true;
 
+        ImVec2 alignment = ImVec2(0, 0.5f);
+        ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, alignment);
         if (ImGui::Selectable(player.GetName().c_str(), selected , 0, size))
         {
             ContentsVisibility = true;
             FileToUse = player.GetName();
             CurrentPlayer = &player;
         }
-
+        ImGui::PopStyleVar();
 
         ImGui::SetItemTooltip("Press to load");
         ImGui::SameLine(ImGui::CalcTextSize(player.GetName().c_str()).x + 15.0f);

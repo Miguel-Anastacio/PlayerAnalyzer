@@ -32,7 +32,6 @@ void Player::CheckNextCharacters(int& position, const std::string& line)
     {
         if (line.at(temp) != ' ')
         {
-            char debug = line.at(temp);
             if (spaceFound)
                 spaceFound = false;
         }
@@ -135,11 +134,11 @@ bool Player::ReadAttributesFromFile(std::string fileName)
         //return 1;  // Exit with an error code
     }
 
-    // Display the parsed data
-    for (const auto& it : Attributes)
-    {
-        //std::cout << it.Name << " " << it.Value << std::endl;
-    }
+    //// Display the parsed data
+    //for (const auto& it : Attributes)
+    //{
+    //    //std::cout << it.Name << " " << it.Value << std::endl;
+    //}
 
     if (Attributes.size() > 0)
         return true;
@@ -223,7 +222,6 @@ void Player::CalculateEfficiencyAllRoles(const std::vector<Role>& AllRoles)
         }
 //        std::cout << Name << " efficiencey at " << it.Name << ": " << efficiency << std::endl;
     }
-        int a = 2;
 }
 
 void Player::UpdateEfficiency(const std::vector<Role>& AllRoles)
@@ -367,6 +365,7 @@ RoleEfficiency Player::GetEfficiencyOfRole(const uint64_t& ID, const RoleType& t
     default:
         break;
     }
+
 }
 
 void Player::SetUniqueID(const std::string& filename)

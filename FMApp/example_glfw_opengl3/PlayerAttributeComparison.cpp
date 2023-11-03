@@ -1,7 +1,7 @@
 #include "PlayerAttributeComparison.h"
 #include "Player.h"
 PlayerAttributeComparison::PlayerAttributeComparison(const bool& noMove, const bool& noResize, const bool& noCollapse, const std::string& name, const bool& visible)
-    : PlayerAttributesPanel(noMove, NoResize, noCollapse, name, visible)
+    : PlayerAttributesPanel(noMove, noResize, noCollapse, name, visible)
 {
 
 }

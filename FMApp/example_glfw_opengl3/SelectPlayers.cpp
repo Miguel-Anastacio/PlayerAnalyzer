@@ -26,6 +26,8 @@ void SelectPlayers::RenderPanel()
             size.x = ImGui::GetContentRegionMax().x;
         size.y = FileImage.height + 5;
 
+        ImVec2 alignment = ImVec2(0, 0.5f);
+        ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, alignment);
         if (ImGui::Selectable(player.GetName().c_str(), PlayersSelectedMap.at(player.GetUniqueID()), 0, size))
         {
             // control is not held just remove every player and add this one
@@ -61,6 +63,7 @@ void SelectPlayers::RenderPanel()
             }
 
         }
+        ImGui::PopStyleVar();
 
         //ImGui::SetItemTooltip("Press to load");
         ImGui::SameLine(ImGui::CalcTextSize(player.GetName().c_str()).x + 15.0f);

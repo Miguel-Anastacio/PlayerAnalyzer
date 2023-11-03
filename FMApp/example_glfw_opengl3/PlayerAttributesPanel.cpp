@@ -11,17 +11,16 @@ PlayerAttributesPanel::PlayerAttributesPanel(const bool& noMove, const bool& noR
 void PlayerAttributesPanel::RenderPanel()
 {
     ImGuiIO& io = ImGui::GetIO();
-    auto boldFont = io.Fonts->Fonts[0];
    
     ImGui::Begin(Name.c_str(), nullptr, window_flags);
     if (FirstPlayer != nullptr)
     {
         ImGui::Text("Player Loaded: %s", FirstPlayer->GetName().c_str());
         const int bufferSize = 30;
-        char inputBuffer[bufferSize] = "New Name"; // Buffer to store the text input
+        char inputBuffer[bufferSize] = ""; // Buffer to store the text input
         ImGui::SetNextItemWidth(200);
         // ImGui InputText widget
-        if (ImGui::InputText(" ", inputBuffer, bufferSize, ImGuiInputTextFlags_EnterReturnsTrue))
+        if (ImGui::InputTextWithHint(" ", "Rename", inputBuffer, bufferSize, ImGuiInputTextFlags_EnterReturnsTrue))
         {
             FirstPlayer->SetName(inputBuffer);
         }

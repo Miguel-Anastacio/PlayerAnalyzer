@@ -2,7 +2,7 @@
 #include "UIPanel.h"
 #include <memory>
 class Player;
-class Role;
+struct Role;
 class PlayerAttributesPanel: public UIPanel
 {
 public:

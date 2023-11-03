@@ -73,6 +73,17 @@ namespace PlayerAnalyzer
         io.FontDefault = io.Fonts->AddFontFromFileTTF("fonts/Roboto-Medium.ttf", 22.0f);
     }
 
+    void NewFrame()
+    {
+        glfwPollEvents();
+        // Start the Dear ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+    }
+
     void Cleanup()
     {
         // Cleanup
@@ -84,8 +95,10 @@ namespace PlayerAnalyzer
         glfwTerminate();
     }
 
-    void ResetRenderer()
+    void ImGuiRenderer()
     {
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
          //ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
          // Update and Render additional Platform Windows
          // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
@@ -107,79 +120,53 @@ namespace PlayerAnalyzer
             return;
         InitImGui();
 
+        //Init Role Database
+        std::vector<Role> OriginalDB;
+        std::vector<Role> AllRoles;
+        InitDatabase(AllRoles, OriginalDB);
+
         // Keep Track of players
         std::vector<Player> AllPlayersLoaded;
-        //std::shared_ptr<Player> ActivePlayer;
         Player* ActivePlayer = NULL;
 
         TextureManager TextureMgr;
 
+        //Main Menu UI Panels
         FileUploader FileUploaderScreen(false, false, true, std::string("File Uploader"), true);
-
         PlayerAttributesPanel PlayerAttributesScreen(false, false, true, std::string("Player Attributes"), true);
-
         RoleEfficiencyPanel RoleEfficiencyScreen(false, false, true, std::string("Player Role Efficiency"), true);
-
-        RoleSelector RoleSelectorScreen(false, false, true, std::string("Role Selector"), true);
-
-        SaveRolePanel SaveRoleScreen(false, false, true, std::string("Save Role"), true, TextureMgr.GetFileImage());
-
-        RoleEditor RoleEditorScreen(false, false, true, std::string("Role Editor"), true, &SaveRoleScreen);
-
         PlayersLoaded PlayersLoadedScreen(false, false, true, std::string("Players Loaded"), true, TextureMgr.GetPlayerImage());
 
+        // Edit Roles Menu UI Panels
+        RoleSelector RoleSelectorScreen(false, false, true, std::string("Role Selector"), true);
+        SaveRolePanel SaveRoleScreen(false, false, true, std::string("Save Role"), true, TextureMgr.GetFileImage());
+        RoleEditor RoleEditorScreen(false, false, true, std::string("Role Editor"), true, &SaveRoleScreen);
+
+        // LoadFiles/Settings Menu UI Panels
         Settings SettingsPanel(false, false, true, std::string("Settings"), true);
+        CustomRoleLoader CustomRoleLoaderScreen(false, false, true, std::string("Load Files"), true, TextureMgr.GetFileImage(), AllRoles);
 
-        // set fileUploader references to the active player and the file upload state
-        //FileUploaderScreen.SetPlayerUploadedRef(ActivePlayer);
-        FileUploaderScreen.SetFileState(Callback::fileUploadState);
-
-        RoleSelectorScreen.SetRoleEditor(&RoleEditorScreen);
-        // make this parte cleaner
-        std::vector<Role> OriginalDB = BuildRoleDatabase();
-        CleanUpDatabase(OriginalDB);
-        std::vector<Role> AllRoles = BuildRoleDatabase();
-        CleanUpDatabase(AllRoles);
-        RoleSelectorScreen.SetAllRoles(AllRoles);
-
-        RoleSelectorScreen.SetRolesSelectedMap();
-        //PrintArrayOfRoles(AllRoles);
-        RoleSelectorScreen.SetOriginalDBRef(OriginalDB);
-
-        RoleEfficiencyScreen.InitRoleSelectedMap(AllRoles);
-        // set reference to vector that keeps track of players loaded
-        PlayersLoadedScreen.SetPlayersUploaded(&AllPlayersLoaded);
-
-        CustomRoleLoader CustomRoleLoaderScreen(false, false, true, std::string("Load Files"), true, TextureMgr.GetFileImage(), *RoleSelectorScreen.AllRoles);
-
-        // references to the highlight structure used by the UI panels that do color coding
-        SettingsPanel.SetHighlightRefs(PlayerAttributesScreen.GetPlayersHighlight(), RoleEfficiencyScreen.GetEfficiencyHighlight(), RoleEditorScreen.GetWeightHighlight());
-
-        PlayerAttributesScreen.SetRoleSelected(RoleEfficiencyScreen.GetRoleSelected());
-
-        AppState State = AppState::MAIN_MENU;
-
-        // Player Comparison Window stuff
+        //Player Comparison UI Panels
         RoleSelector RoleSelectorPlComp(false, false, true, std::string("Role Selector Comparison"), true);
-        RoleSelectorPlComp.SetAllRoles(*RoleSelectorScreen.AllRoles);
         PlayerAttributeComparison AttributeComparison(false, false, true, std::string("Player Comparison"), true);
-
-        AttributeComparison.SetPlayersHighlight(PlayerAttributesScreen.GetPlayersHighlight());
-        AttributeComparison.SetRoleSelected(RoleSelectorPlComp.GetRoleSelected());
-
         SelectPlayers PlayersSelection(false, false, true, std::string("Select Players"), true, TextureMgr.GetPlayerImage());
-        PlayersSelection.SetPlayersUploaded(&AllPlayersLoaded);
-        PlayersSelection.SetAttributeComparisonRef(&AttributeComparison);
 
+        // Init all UI Panels of the main menu
+        InitMainMenu(FileUploaderScreen, RoleEfficiencyScreen, PlayersLoadedScreen, PlayerAttributesScreen, AllRoles, AllPlayersLoaded);
+
+        // Init ALl UI Panels in Role Editor Screen
+        InitEditRolesMenu(RoleSelectorScreen, RoleEditorScreen, AllRoles, OriginalDB);
+
+        // Init All UI Panels in Load Files / Settings Menu
+        InitLoadFilesMenu(SettingsPanel, RoleEfficiencyScreen, PlayerAttributesScreen, RoleEditorScreen);
+
+        // Init all UI Panels of player comparison Menu
+        InitPlayerComparisonMenu(RoleSelectorPlComp, AttributeComparison, PlayersSelection, AllRoles, PlayerAttributesScreen.GetPlayersHighlight(), AllPlayersLoaded);
+
+       
         while (!glfwWindowShouldClose(Window))
         {
-            glfwPollEvents();
-            // Start the Dear ImGui frame
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-            ImGui::NewFrame();
-
-            ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+            NewFrame();
 
             RenderMainMenuBar(RoleSelectorScreen, SaveRoleScreen, ActivePlayer, CustomRoleLoaderScreen, State, AllPlayersLoaded);
 
@@ -187,90 +174,34 @@ namespace PlayerAnalyzer
             {
                 case AppState::MAIN_MENU:
 
-                    // render file uploading
-                    FileUploaderScreen.RenderPanel();
-                    // whenever there is a new player uploaded
-                    if (FileUploaderScreen.GetNewPlayerUploaded())
-                    {
-                        // retrive it from the uploader class
-                        std::vector<Player> players = FileUploaderScreen.GetAllPlayersUploaded();
-                        for (auto& pl : players)
-                        {
-                            int index = IsPlayerAlreadyLoaded(pl.GetUniqueID(), AllPlayersLoaded);
-                            if (index != -1)
-                            {
-                                // it is not new, so just get the player that is already in the vector
-                                //ActivePlayer = AllPlayersLoaded[index];
-                                pl.UpdateEfficiency(*RoleSelectorScreen.AllRoles);
-                            }
-                            else
-                            {
-                                pl.CalculateEfficiencyAllRoles(*RoleSelectorScreen.AllRoles);
-                                AllPlayersLoaded.emplace_back(pl);
-                            }
-        
-                        }
-                        if (AllPlayersLoaded.size() > 0)
-                            ActivePlayer = &AllPlayersLoaded[AllPlayersLoaded.size() - 1];
-
-                    }
-                    // render players loaded
-                    PlayersLoadedScreen.SetCurrentPlayer(ActivePlayer);
-                    PlayersLoadedScreen.RenderPanel();
-                    ActivePlayer = PlayersLoadedScreen.GetCurrentPlayer();
-
-                    EfficiencyScreen(RoleEfficiencyScreen, ActivePlayer, AllRoles);
-                    // render playerAttributes
-                    PlayerAttributesScreen.SetFirstPlayer(ActivePlayer);
-                    PlayerAttributesScreen.RenderPanel();
-
+                    RenderMainMenu(FileUploaderScreen, RoleEfficiencyScreen, PlayersLoadedScreen, PlayerAttributesScreen, ActivePlayer, AllPlayersLoaded, AllRoles);
                     break;
 
                 case AppState::ROLE_EDITOR:
 
-                    RoleSelectorScreen.RenderPanel();
-                    SaveRoleScreen.RenderPanel();
+                    RenderEditRolesMenu(RoleSelectorScreen, SaveRoleScreen);
                     break;
 
                 case AppState::LOAD_FILES:
-                    CustomRoleLoaderScreen.RenderPanel();
-                    if (CustomRoleLoaderScreen.WasFileLoadedByUser())
-                    {
-                        // resetting the database
-                        *RoleSelectorScreen.AllRoles = OriginalDB;
-                        UpdateRoleFromCustomFile(*RoleSelectorScreen.AllRoles, CustomRoleLoaderScreen.GetFileToLoad());
-                    }
-                    SettingsPanel.RenderPanel();
-                    ImGui::ShowDemoWindow();
+
+                    RenderLoadFilesMenu(SettingsPanel, CustomRoleLoaderScreen, AllRoles, OriginalDB);
                     break;
 
                 case AppState::PLAYER_COMPARISON:
-                    RoleSelectorPlComp.RenderPanel();
-                    PlayersSelection.RenderPanel();
-                    AttributeComparison.SetRoleSelected(RoleSelectorPlComp.GetRoleSelected());
-                    AttributeComparison.RenderPanel();
+
+                    RenderPlayerComparisonMenu(RoleSelectorPlComp, PlayersSelection, AttributeComparison);
                     break;
                 default:
                     break;
             }
-            // Rendering
-            ImGui::Render();
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-
-            ResetRenderer();
+            ImGuiRenderer();
         }
 
         Cleanup();
     }
 
-    //void Run()
-    //{
-    //    while (!glfwWindowShouldClose(Window))
-    //    {
-    //        glfwPollEvents();
-
-    //        // Start the Dear ImGui frame
+   
     void SwitchState(const AppState& newState, const std::vector<Role>& allRoles, Player* player, CustomRoleLoader* roleLoader, SaveRolePanel* roleSaver)
     {
         switch (newState)
@@ -287,10 +218,6 @@ namespace PlayerAnalyzer
                 roleSaver->ClearFiles();
                 roleSaver->LoadFilesInDirectory("custom_roles");
             }
-          /*  if (selector != NULL && editor != NULL)
-            {
-                selector->SetRoleEditor(editor);
-            }*/
             break;
         case AppState::LOAD_FILES:
             if (roleLoader != NULL)
@@ -301,14 +228,220 @@ namespace PlayerAnalyzer
             break;
         case AppState::PLAYER_COMPARISON:
            
-            /*if (selector != NULL)
-            {
-                selector->SetRoleEditor(NULL);
-            }*/
+            
         default:
             break;
         }
-        //State = newState;
+    }
+
+    void RenderMainMenuBar(RoleSelector& selector, SaveRolePanel& saveRole, Player* player, CustomRoleLoader& roleLoader, AppState& state, std::vector<Player>& allPlayers)
+    {
+        if (ImGui::BeginMainMenuBar())
+        {
+            ImGuiIO& io = ImGui::GetIO();
+            auto titleFont = io.Fonts->Fonts[0];
+
+            ImGuiStyle& style = ImGui::GetStyle();
+            ImVec4 previousColor = style.Colors[ImGuiCol_Header];
+            style.Colors[ImGuiCol_Header] = style.Colors[ImGuiCol_HeaderActive];
+            //style.Colors[ImGuiCol_S] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+            ImGui::PushFont(titleFont);
+
+            bool selection[4] = { false, false, false, false };
+            selection[(int)state] = true;
+            ImGuiSelectableFlags_ flag = ImGuiSelectableFlags_AllowDoubleClick;
+            ImVec2 size = ImGui::CalcTextSize(" Main Screen ");
+            size.y = size.y * 1.5;
+            if (ImGui::Selectable(" Main Screen ", selection[0], flag, size))
+            {
+                //ShowExampleMenuFile();
+                state = AppState::MAIN_MENU;
+                SwitchState(AppState::MAIN_MENU, *selector.AllRoles, player);
+               
+            }
+            flag = ImGuiSelectableFlags_AllowDoubleClick;
+            size = ImGui::CalcTextSize(" Edit Players Roles ");
+            size.y = size.y * 1.5;
+
+            if (ImGui::Selectable(" Edit Players Roles ", selection[1], flag, size))
+            {
+                state = AppState::ROLE_EDITOR;
+
+                SwitchState(AppState::ROLE_EDITOR, *selector.AllRoles, NULL, NULL, &saveRole);
+
+            }
+            flag = ImGuiSelectableFlags_AllowDoubleClick;
+            size = ImGui::CalcTextSize(" Load Custom Player Roles ");
+            size.y = size.y * 1.5;
+
+            if (ImGui::Selectable(" Load Custom Player Roles ", selection[2], flag, size))
+            {
+                state = AppState::LOAD_FILES;
+
+                SwitchState(AppState::LOAD_FILES, *selector.AllRoles, NULL, &roleLoader, NULL);
+
+            }
+            flag = ImGuiSelectableFlags_AllowDoubleClick;
+            size = ImGui::CalcTextSize(" Player Comparison ");
+            size.y = size.y * 1.5;
+
+            if (ImGui::Selectable(" Player Comparison ", selection[3], flag, size))
+            {
+                //RoleSelector::EditorChangedRole = true;
+                state = AppState::PLAYER_COMPARISON;
+
+                for (auto& pl : allPlayers)
+                {
+                    pl.UpdateEfficiency(*selector.AllRoles);
+                }
+
+                SwitchState(state, *selector.AllRoles, NULL, &roleLoader, NULL);
+            }
+            ImGui::PopFont();
+
+            style = ImGui::GetStyle();
+            style.Colors[ImGuiCol_Header] = previousColor;
+            ImGui::EndMainMenuBar();
+        }
+    }
+
+    void InitDatabase(std::vector<Role>& out_AllRoles, std::vector<Role>& out_OriginalDB)
+    {
+        out_OriginalDB = BuildRoleDatabase();
+        CleanUpDatabase(out_OriginalDB);
+        out_AllRoles = BuildRoleDatabase();
+        CleanUpDatabase(out_AllRoles);
+    }
+
+    void InitMainMenu(FileUploader& uploader, RoleEfficiencyPanel& efficiencyPanel, PlayersLoaded& loadedPlayersScreen,
+                        PlayerAttributesPanel& attributes, const std::vector<Role>& allRoles, std::vector<Player>& allPlayers)
+    {
+        // Init Main Menu
+        // set fileUploader references to the active player and the file upload state
+        uploader.SetFileState(Callback::fileUploadState);
+        efficiencyPanel.InitRoleSelectedMap(allRoles);
+        loadedPlayersScreen.SetPlayersUploaded(&allPlayers);
+        attributes.SetRoleSelected(efficiencyPanel.GetRoleSelected());
+    }
+
+    void InitEditRolesMenu(RoleSelector& selector, RoleEditor& editor, std::vector<Role>& allRoles, std::vector<Role>& originalDB)
+    {
+        selector.SetRoleEditor(&editor);
+        selector.SetAllRoles(allRoles);
+        selector.SetOriginalDBRef(originalDB);
+
+    }
+
+    void InitLoadFilesMenu(Settings& settings, RoleEfficiencyPanel& efficiencyPanel, PlayerAttributesPanel& attributes, RoleEditor& editor)
+    {
+        settings.SetHighlightRefs(attributes.GetPlayersHighlight(), efficiencyPanel.GetEfficiencyHighlight(), editor.GetWeightHighlight());
+    }
+
+    void InitPlayerComparisonMenu(RoleSelector& selector, PlayerAttributeComparison& comparison, SelectPlayers& playersSelection, std::vector<Role>& allRoles,
+                                    std::shared_ptr<Highlight<int>> highlight, std::vector<Player>& allPlayers)
+    {
+        selector.SetAllRoles(allRoles);
+
+        comparison.SetPlayersHighlight(highlight);
+        comparison.SetRoleSelected(selector.GetRoleSelected());
+
+        playersSelection.SetPlayersUploaded(&allPlayers);
+        playersSelection.SetAttributeComparisonRef(&comparison);
+    }
+
+    void RenderMainMenu(FileUploader& uploader, RoleEfficiencyPanel& efficiencyPanel, PlayersLoaded& loadedPlayersScreen, PlayerAttributesPanel& attributes,
+                            Player* activePlayer, std::vector<Player>& allPlayers, const std::vector<Role>& allRoles)
+    {
+        // render file uploading
+        uploader.RenderPanel();
+        // whenever there is a new player uploaded
+        if (uploader.GetNewPlayerUploaded())
+        {
+            // retrive it from the uploader class
+            std::vector<Player> players = uploader.GetAllPlayersUploaded();
+            for (auto& pl : players)
+            {
+                int index = IsPlayerAlreadyLoaded(pl.GetUniqueID(), allPlayers);
+                if (index != -1)
+                {
+                    // it is not new, so just get the player that is already in the vector
+                    //ActivePlayer = AllPlayersLoaded[index];
+                    pl.UpdateEfficiency(allRoles);
+                }
+                else
+                {
+                    pl.CalculateEfficiencyAllRoles(allRoles);
+                    allPlayers.emplace_back(pl);
+                }
+
+            }
+            if (allPlayers.size() > 0)
+                activePlayer = &allPlayers[allPlayers.size() - 1];
+
+        }
+        // render players loaded
+        loadedPlayersScreen.SetCurrentPlayer(activePlayer);
+        loadedPlayersScreen.RenderPanel();
+        activePlayer = loadedPlayersScreen.GetCurrentPlayer();
+        // render efficiency screen
+        EfficiencyScreen(efficiencyPanel, activePlayer, allRoles);
+        // render playerAttributes
+        attributes.SetFirstPlayer(activePlayer);
+        attributes.RenderPanel();
+    }
+
+    void RenderEditRolesMenu(RoleSelector& selector, SaveRolePanel& roleSaver)
+    {
+        selector.RenderPanel();
+        roleSaver.RenderPanel();
+    }
+
+    void RenderLoadFilesMenu(Settings& settings, CustomRoleLoader& roleLoader, std::vector<Role>& allRoles, std::vector<Role>& originalDB)
+    {
+        roleLoader.RenderPanel();
+        if (roleLoader.WasFileLoadedByUser())
+        {
+            // resetting the database
+            allRoles = originalDB;
+            UpdateRoleFromCustomFile(allRoles, roleLoader.GetFileToLoad());
+        }
+        settings.RenderPanel();
+        ImGui::ShowDemoWindow();
+    }
+
+    void RenderPlayerComparisonMenu(RoleSelector& selector, SelectPlayers& playerSelection, PlayerAttributeComparison& comparison)
+    {
+        selector.RenderPanel();
+        playerSelection.RenderPanel();
+        comparison.SetRoleSelected(selector.GetRoleSelected());
+        comparison.RenderPanel();
+    }
+
+    void EfficiencyScreen(RoleEfficiencyPanel& efficiency, Player* player, const std::vector<Role>& roles)
+    {
+        // render role efficiency
+        efficiency.SetPlayerToDisplay(player);
+        efficiency.RenderPanel();
+        Role* temp = efficiency.GetRoleSelected();
+        if (temp->ID != 0)
+        {
+            temp->Attributes = GetAttributesOfRole(temp->ID, roles);
+        }
+    }
+
+    int IsPlayerAlreadyLoaded(const uint64_t& ID, std::vector<Player>& allPlayers)
+    {
+        int i = 0;
+        for (auto& it : allPlayers)
+        {
+            if (ID == it.GetUniqueID())
+            {
+                return i;
+            }
+            i++;
+        }
+
+        return -1;
     }
 
     std::vector<AttributeWeight> GetAttributesOfRole(uint64_t ID, const std::vector<Role>& allRoles)
@@ -328,97 +461,5 @@ namespace PlayerAnalyzer
 
         return attributes;
     }
-
-    void EfficiencyScreen(RoleEfficiencyPanel& efficiency, Player* player, const std::vector<Role>& roles)
-    {
-        // render role efficiency
-        efficiency.SetPlayerToDisplay(player);
-        efficiency.RenderPanel();
-        Role* temp = efficiency.GetRoleSelected();
-        if (temp->ID != 0)
-        {
-            temp->Attributes = GetAttributesOfRole(temp->ID, roles);
-        }
-    }
-   
-   
-    //        ImGui_ImplOpenGL3_NewFrame();
-    //        ImGui_ImplGlfw_NewFrame();
-    //        ImGui::NewFrame();
-
-    //        // our application
-
-    //        ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-    //    }
-    //}
-
-    void RenderMainMenuBar(RoleSelector& selector, SaveRolePanel& saveRole, Player* player, CustomRoleLoader& roleLoader, AppState& state, std::vector<Player>& allPlayers)
-    {
-        if (ImGui::BeginMainMenuBar())
-        {
-            ImGuiIO& io = ImGui::GetIO();
-            auto titleFont = io.Fonts->Fonts[0];
-
-            ImGuiStyle& style = ImGui::GetStyle();
-            style.Colors[ImGuiCol_Button] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
-            ImGui::PushFont(titleFont);
-
-            if (ImGui::Button("Main Screen"))
-            {
-                //ShowExampleMenuFile();
-                state = AppState::MAIN_MENU;
-                SwitchState(AppState::MAIN_MENU, *selector.AllRoles, player);
-                //ImGui::EndMenu();
-            }
-            if (ImGui::Button("Edit Players Roles"))
-            {
-                state = AppState::ROLE_EDITOR;
-
-                SwitchState(AppState::ROLE_EDITOR, *selector.AllRoles, NULL, NULL, &saveRole);
-
-            }
-            if (ImGui::Button("Load Custom Player Roles"))
-            {
-                state = AppState::LOAD_FILES;
-
-                SwitchState(AppState::LOAD_FILES, *selector.AllRoles, NULL, &roleLoader, NULL);
-
-            }
-            if (ImGui::Button("Player Comparison"))
-            {
-                //RoleSelector::EditorChangedRole = true;
-                state = AppState::PLAYER_COMPARISON;
-
-                for (auto& pl : allPlayers)
-                {
-                    pl.UpdateEfficiency(*selector.AllRoles);
-                }
-
-                SwitchState(state, *selector.AllRoles, NULL, &roleLoader, NULL);
-            }
-            ImGui::PopFont();
-
-            style = ImGui::GetStyle();
-            style.Colors[ImGuiCol_Button] = ImVec4(0.2f, 0.4f, 0.6f, 1.0f);
-            ImGui::EndMainMenuBar();
-        }
-    }
-
-
-    int IsPlayerAlreadyLoaded(const uint64_t& ID, std::vector<Player>& allPlayers)
-    {
-        int i = 0;
-        for (auto& it : allPlayers)
-        {
-            if (ID == it.GetUniqueID())
-            {
-                return i;
-            }
-            i++;
-        }
-
-        return -1;
-    }
-
     
 }

@@ -32,7 +32,7 @@ std::vector<Player> PlayerUploadFile::RenderFileDragAndDrop(std::shared_ptr<Play
 			else
 			{
 				const char  empty = ' ';
-				strncpy(fileState.filePath, &empty, 1);
+				strncpy_s(fileState.filePath, &empty, 1);
 			}
 		}
 	}
@@ -40,9 +40,9 @@ std::vector<Player> PlayerUploadFile::RenderFileDragAndDrop(std::shared_ptr<Play
     {
         ImGui::Text("Drop file here to change player loaded ");
 	}
-    else
+    else 
     {
-        ImGui::Text("Drag file here: ");
+        ImGui::TextWrapped("Drag files here (you can drag multiple):");
     }
 
     if (!ValidFile)

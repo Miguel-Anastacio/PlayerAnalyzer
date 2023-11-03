@@ -109,6 +109,7 @@
       <AdditionalIncludeDirectories>..\..;..\..\backends;..\libs\glfw\include;"..\libs\glew-2.1.0\include\GL";%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <PreprocessorDefinitions>_MBCS;_DEBUG%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -156,7 +157,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>..\libs\glfw\lib-vc2010-64;"..\libs\glew-2.1.0\lib\Release\x64";%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;glu32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>

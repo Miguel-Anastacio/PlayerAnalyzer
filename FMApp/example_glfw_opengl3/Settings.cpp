@@ -125,7 +125,7 @@ void Settings::RenderEditableColorButton(ImVec4& color, int id, const char* text
 {
     char buffer[20];
     // Using sprintf to convert int to char*
-    sprintf(buffer, "%d", id);
+    sprintf_s(buffer, "%d", id);
 
     // The buffer now contains the integer as a C-style string
     char* charPointer = buffer;

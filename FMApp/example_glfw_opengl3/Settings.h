@@ -31,7 +31,7 @@ protected:
         for (auto& codes : highlight.ColorCodes)
         {
             // Using sprintf to convert int to char*
-            sprintf(buffer, "%d", i);
+            sprintf_s(buffer, "%d", i);
 
             // The buffer now contains the integer as a C-style string
             char* charPointer = buffer;

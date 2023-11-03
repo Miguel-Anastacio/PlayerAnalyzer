@@ -84,7 +84,6 @@ void SaveRolePanel::RenderPanel()
 
                         if (FileToUse.size() > 0)
                         {
-                            const char* text2 = FileToUse.c_str();
                             std::string string = "Add Role Weight to custom file: " + FileToUse;
                             if (ImGui::Button(string.c_str()))
                             {
