@@ -131,20 +131,33 @@ namespace PlayerAnalyzer
 
         TextureManager TextureMgr;
 
+#ifdef _DEBUG
+        bool NoMove = false;
+        bool NoResize = false;
+        bool NoCollapse = true;
+#else
+        bool NoMove = true;
+        bool NoResize = true;
+        bool NoCollapse = true;
+#endif // _DEBUG
+
+
+
+
         //Main Menu UI Panels
-        FileUploader FileUploaderScreen(false, false, true, std::string("File Uploader"), true);
-        PlayerAttributesPanel PlayerAttributesScreen(false, false, true, std::string("Player Attributes"), true);
-        RoleEfficiencyPanel RoleEfficiencyScreen(false, false, true, std::string("Player Role Efficiency"), true);
-        PlayersLoaded PlayersLoadedScreen(false, false, true, std::string("Players Loaded"), true, TextureMgr.GetPlayerImage());
+        FileUploader FileUploaderScreen(NoMove, NoResize, NoCollapse, std::string("File Uploader"), true);
+        PlayerAttributesPanel PlayerAttributesScreen(NoMove, NoResize, NoCollapse, std::string("Player Attributes"), true);
+        RoleEfficiencyPanel RoleEfficiencyScreen(NoMove, NoResize, NoCollapse, std::string("Player Role Efficiency"), true);
+        PlayersLoaded PlayersLoadedScreen(NoMove, NoResize, NoCollapse, std::string("Players Loaded"), true, TextureMgr.GetPlayerImage());
 
         // Edit Roles Menu UI Panels
-        RoleSelector RoleSelectorScreen(false, false, true, std::string("Role Selector"), true);
-        SaveRolePanel SaveRoleScreen(false, false, true, std::string("Save Role"), true, TextureMgr.GetFileImage());
-        RoleEditor RoleEditorScreen(false, false, true, std::string("Role Editor"), true, &SaveRoleScreen);
+        RoleSelector RoleSelectorScreen(NoMove, NoResize, NoCollapse, std::string("Role Selector"), true);
+        SaveRolePanel SaveRoleScreen(NoMove, NoResize, NoCollapse, std::string("Save Role"), true, TextureMgr.GetFileImage());
+        RoleEditor RoleEditorScreen(NoMove, NoResize, NoCollapse, std::string("Role Editor"), true, &SaveRoleScreen);
 
         // LoadFiles/Settings Menu UI Panels
-        Settings SettingsPanel(false, false, true, std::string("Settings"), true);
-        CustomRoleLoader CustomRoleLoaderScreen(false, false, true, std::string("Load Files"), true, TextureMgr.GetFileImage(), AllRoles);
+        Settings SettingsPanel(NoMove, NoResize, NoCollapse, std::string("Settings"), true);
+        CustomRoleLoader CustomRoleLoaderScreen(NoMove, NoResize, NoCollapse, std::string("Load Files"), true, TextureMgr.GetFileImage(), AllRoles);
 
         //Player Comparison UI Panels
         RoleSelector RoleSelectorPlComp(false, false, true, std::string("Role Selector Comparison"), true);
@@ -271,17 +284,6 @@ namespace PlayerAnalyzer
 
             }
             flag = ImGuiSelectableFlags_AllowDoubleClick;
-            size = ImGui::CalcTextSize(" Load Custom Player Roles ");
-            size.y = size.y * 1.5;
-
-            if (ImGui::Selectable(" Load Custom Player Roles ", selection[2], flag, size))
-            {
-                state = AppState::LOAD_FILES;
-
-                SwitchState(AppState::LOAD_FILES, *selector.AllRoles, NULL, &roleLoader, NULL);
-
-            }
-            flag = ImGuiSelectableFlags_AllowDoubleClick;
             size = ImGui::CalcTextSize(" Player Comparison ");
             size.y = size.y * 1.5;
 
@@ -296,6 +298,17 @@ namespace PlayerAnalyzer
                 }
 
                 SwitchState(state, *selector.AllRoles, NULL, &roleLoader, NULL);
+            }
+            flag = ImGuiSelectableFlags_AllowDoubleClick;
+            size = ImGui::CalcTextSize(" Load Custom Player Roles/Settings ");
+            size.y = size.y * 1.5;
+
+            if (ImGui::Selectable(" Load Custom Player Roles/Settings ", selection[2], flag, size))
+            {
+                state = AppState::LOAD_FILES;
+
+                SwitchState(AppState::LOAD_FILES, *selector.AllRoles, NULL, &roleLoader, NULL);
+
             }
             ImGui::PopFont();
 
@@ -406,7 +419,10 @@ namespace PlayerAnalyzer
             UpdateRoleFromCustomFile(allRoles, roleLoader.GetFileToLoad());
         }
         settings.RenderPanel();
+#ifdef _DEBUG
         ImGui::ShowDemoWindow();
+#endif // _DEBUG
+
     }
 
     void RenderPlayerComparisonMenu(RoleSelector& selector, SelectPlayers& playerSelection, PlayerAttributeComparison& comparison)

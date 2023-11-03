@@ -68,12 +68,12 @@ void FileUploader::RenderPanel()
             FileState->AcceptingFiles = true;
             ImGui::EndTabItem();
         }
-        // to do
-        if (ImGui::BeginTabItem("Paste Image"))
-        {
-            ImGui::Text("This is the Cucumber tab!\nblah blah blah blah blah");
-            ImGui::EndTabItem();
-        }
+        //// to do
+        //if (ImGui::BeginTabItem("Paste Image"))
+        //{
+        //    ImGui::Text("This is the Cucumber tab!\nblah blah blah blah blah");
+        //    ImGui::EndTabItem();
+        //}
         ImGui::EndTabBar();
     }
 
