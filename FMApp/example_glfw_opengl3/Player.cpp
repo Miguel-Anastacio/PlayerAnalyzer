@@ -30,16 +30,17 @@ void Player::CheckNextCharacters(int& position, const std::string& line)
     int trueEndPos = position;
     while (temp < line.size())
     {
-        if (line.at(temp) != ' ')
+        if (line.at(temp) != ' ' && line.at(temp) != '|')
         {
             if (spaceFound)
                 spaceFound = false;
         }
-        else
+        else 
         {
             if (spaceFound)
             {
                 trueEndPos = temp - 1;
+                std::string test = line.substr(position, trueEndPos - position);
                 position = trueEndPos;
                 return;
             }
